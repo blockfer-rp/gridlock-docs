@@ -1,0 +1,36 @@
+{
+  "name": "gridlock-docs",
+  "version": "1.0.0",
+  "description": "GRIDLOCK transforms live crypto price movements into strategic territory battles. Make real-time predictions on BTC, ETH, SOL and more, claiming platforms on a dynamic grid where every market move creates new opportunities for dominance.",
+  "main": "index.js",
+  "scripts": {
+    "start": "docusaurus start",
+    "build": "docusaurus build",
+    "serve": "docusaurus serve",
+    "deploy": "docusaurus deploy",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blockfer-rp/gridlock-docs.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/blockfer-rp/gridlock-docs/issues"
+  },
+  "homepage": "https://github.com/blockfer-rp/gridlock-docs#readme",
+  "dependencies": {
+    "@docusaurus/core": "^3.8.1",
+    "@docusaurus/preset-classic": "^3.8.1",
+    "@docusaurus/theme-search-algolia": "^3.8.1"
+  },
+  "devDependencies": {
+    "@docusaurus/module-type-aliases": "^3.8.1",
+    "@docusaurus/tsconfig": "^3.8.1",
+    "@types/react": "^19.1.11",
+    "@types/react-dom": "^19.1.7",
+    "typescript": "^5.9.2"
+  }
+}

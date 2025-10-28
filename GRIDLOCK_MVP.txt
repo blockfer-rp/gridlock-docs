@@ -1,0 +1,2530 @@
+--- components/BackButton.tsx ---
+import React from 'react';
+
+interface BackButtonProps {
+  onClick: () => void;
+}
+
+const BackButton: React.FC<BackButtonProps> = ({ onClick }) => {
+  return (
+    <button 
+      onClick={onClick} 
+      className="absolute top-0 left-0 text-cyan-400 hover:text-cyan-300 font-bold flex items-center gap-1 transition-colors z-20"
+      aria-label="Go back"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+      </svg>
+      <span>Back</span>
+    </button>
+  );
+};
+
+export default BackButton;
+
+
+--- components/BuildGridScreen.tsx ---
+
+
+import React, { useState, useMemo } from 'react';
+import { Grid } from '../types';
+// Fix: Module '"../constants"' has no exported member 'COINS'.
+import { ALL_COINS } from '../constants';
+import { Coin } from '../types';
+
+interface BuildGridScreenProps {
+  onComplete: (grid: Grid) => void;
+}
+
+const BuildGridScreen: React.FC<BuildGridScreenProps> = ({ onComplete }) => {
+  const [grid, setGrid] = useState<Grid>(Array(9).fill({ coinId: null }));
+  const [selectedCoinId, setSelectedCoinId] = useState<string | null>(null);
+
+  const placedCoinIds = useMemo(() => new Set(grid.map(cell => cell.coinId).filter(Boolean)), [grid]);
+  // Fix: Use ALL_COINS which is exported from constants.ts
+  const availableCoins = useMemo(() => ALL_COINS.filter(c => !placedCoinIds.has(c.id)), [placedCoinIds]);
+  // Fix: Use ALL_COINS which is exported from constants.ts
+  const backupCoins = useMemo(() => ALL_COINS.filter(c => !placedCoinIds.has(c.id)), [placedCoinIds]);
+
+  const handleSelectCoin = (coinId: string) => {
+    if (!placedCoinIds.has(coinId)) {
+      setSelectedCoinId(coinId);
+    }
+  };
+
+  const handlePlaceCoin = (index: number) => {
+    if (selectedCoinId && grid[index].coinId === null) {
+      const newGrid = [...grid];
+      newGrid[index] = { coinId: selectedCoinId };
+      setGrid(newGrid);
+      setSelectedCoinId(null);
+    }
+  };
+
+  const gridIsFull = useMemo(() => placedCoinIds.size === 9, [placedCoinIds]);
+
+  const getCoinButtonClasses = (coin: Coin) => {
+    const isPlaced = placedCoinIds.has(coin.id);
+    if (isPlaced) {
+      return 'p-2 rounded-md flex flex-col items-center justify-center transition-all duration-200 bg-slate-700 opacity-40 cursor-not-allowed';
+    }
+    if (selectedCoinId === coin.id) {
+      return 'p-2 rounded-md flex flex-col items-center justify-center transition-all duration-200 bg-cyan-500 ring-2 ring-cyan-300';
+    }
+    return 'p-2 rounded-md flex flex-col items-center justify-center transition-all duration-200 bg-slate-700 hover:bg-slate-600';
+  };
+
+  const getGridCellClasses = (cell: { coinId: string | null }) => {
+    if (cell.coinId) {
+      return 'aspect-square rounded-lg flex items-center justify-center transition-colors border-2 border-slate-600 bg-slate-800';
+    }
+    if (selectedCoinId) {
+      return 'aspect-square rounded-lg flex items-center justify-center transition-colors bg-slate-700 hover:bg-cyan-500/20 cursor-pointer border-2 border-dashed border-slate-700';
+    }
+    return 'aspect-square rounded-lg flex items-center justify-center transition-colors bg-slate-800 border-2 border-dashed border-slate-700';
+  };
+
+  return (
+    <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-8">
+        <div className="lg:w-1/3">
+            <h2 className="text-3xl font-bold text-center mb-2 font-orbitron text-cyan-400">Step 2: Build Your Grid</h2>
+            <p className="text-center text-slate-400 mb-4">Select a coin, then tap an empty square on the grid to place it. Choose 9 coins.</p>
+            <div className="bg-slate-800 p-4 rounded-lg">
+                <h3 className="font-bold text-lg mb-2 text-slate-300">Coin Pool ({availableCoins.length})</h3>
+                <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-3 gap-2">
+                    {/* Fix: Use ALL_COINS which is exported from constants.ts */}
+                    {ALL_COINS.map(coin => (
+                        <button key={coin.id} onClick={() => handleSelectCoin(coin.id)}
+                            className={getCoinButtonClasses(coin)}
+                        >
+                            {coin.icon()}
+                            <span className="text-xs font-bold">{coin.ticker}</span>
+                        </button>
+                    ))}
+                </div>
+                {gridIsFull && (
+                    <div className="mt-4">
+                        <h3 className="font-bold text-lg mb-2 text-slate-300">Backups</h3>
+                        <div className="flex gap-2">
+                        {backupCoins.map(coin => (
+                             <div key={coin.id} className="p-2 rounded-md flex flex-col items-center justify-center bg-slate-700 opacity-60">
+                                {coin.icon()}
+                                <span className="text-xs font-bold">{coin.ticker}</span>
+                            </div>
+                        ))}
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div>
+        <div className="lg:w-2/3 flex flex-col items-center">
+            <div className="grid grid-cols-3 gap-2 w-full max-w-md aspect-square">
+                {grid.map((cell, index) => {
+                    // Fix: Use ALL_COINS which is exported from constants.ts
+                    const coin = cell.coinId ? ALL_COINS.find(c => c.id === cell.coinId) : null;
+                    return (
+                        <div key={index} onClick={() => handlePlaceCoin(index)}
+                             className={getGridCellClasses(cell)}>
+                            {coin ? (
+                                <div className="flex flex-col items-center text-center">
+                                    {coin.icon()}
+                                    <span className="font-bold text-lg">{coin.ticker}</span>
+                                </div>
+                            ) : (
+                                <span className="text-slate-600 font-bold text-lg">TAP</span>
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
+            <div className="text-center mt-8">
+              <button
+                onClick={() => onComplete(grid)}
+                disabled={!gridIsFull}
+                className="px-8 py-3 bg-cyan-500 text-slate-900 font-bold text-lg rounded-lg shadow-lg shadow-cyan-500/20 hover:bg-cyan-400 transition-all duration-300 transform hover:scale-105 disabled:bg-slate-600 disabled:shadow-none disabled:cursor-not-allowed disabled:scale-100 font-orbitron"
+                >
+                NEXT: ADD POWER-UPS
+              </button>
+            </div>
+        </div>
+    </div>
+  );
+};
+
+export default BuildGridScreen;
+
+--- components/CandlestickChart.tsx ---
+import React, { useState, useEffect } from 'react';
+import { Coin, TimeRangeOption } from '../types';
+import { InspectDataIcon } from './icons';
+
+interface CandlestickChartProps {
+  coin: Coin;
+  timeRange: TimeRangeOption;
+}
+
+interface KlineData {
+  openTime: number;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  isPositive: boolean;
+  changePercent: number;
+  highPercent: number;
+  lowPercent: number;
+  rawData: any; // Added to store raw API response
+}
+
+
+const getBinanceSymbol = (ticker: string): string | null => {
+    const map: { [key: string]: string } = {
+        'BTC': 'BTCUSDT', 'ETH': 'ETHUSDT', 'SOL': 'SOLUSDT', 'DOGE': 'DOGEUSDT', 'XRP': 'XRPUSDT',
+        'UNI': 'UNIUSDT', 'AAVE': 'AAVEUSDT', 'PEPE': '1000PEPEUSDT', 'ENA': 'ENAUSDT', 'PUMP': 'PUMPUSDT',
+        'HYPE': 'HYPEUSDT', 'FART': 'FARTUSDT', 'ZEC': 'ZECUSDT', 'AVAX': 'AVAXUSDT', 'BNB': 'BNBUSDT',
+        'SUI': 'SUIUSDT', 'LTC': 'LTCUSDT', 'APT': 'APTUSDT', 'TON': 'TONUSDT', 'LINK': 'LINKUSDT',
+        'SNX': 'SNXUSDT', 'CRV': 'CRVUSDT', 'LDO': 'LDOUSDT', 'CAKE': 'CAKEUSDT', 'JUP': 'JUPUSDT',
+        'WIF': 'WIFUSDT', 'SHIB': '1000SHIBUSDT', 'POPCAT': 'POPCATUSDT', 'TRUMP': 'TRUMPUSDT', 'PENGU': 'PENGUSDT'
+    };
+    return map[ticker] || null;
+}
+
+const DataInspectionModal: React.FC<{ data: KlineData[], onClose: () => void }> = ({ data, onClose }) => {
+    return (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50" onClick={onClose}>
+            <div className="bg-slate-800 rounded-lg p-6 shadow-2xl shadow-cyan-500/20 w-full max-w-2xl" onClick={(e) => e.stopPropagation()}>
+                <h3 className="text-2xl font-bold mb-4 text-center font-orbitron">Raw API Response (Binance Klines)</h3>
+                <div className="max-h-[70vh] overflow-y-auto space-y-2 pr-2">
+                    {data.map((kline, index) => (
+                        <details key={kline.openTime} className="bg-slate-900 rounded-lg">
+                            <summary className="p-3 cursor-pointer flex justify-between items-center list-none">
+                                <div className="font-bold">Candle #{index + 1}</div>
+                                <div className={`font-semibold text-lg ${kline.changePercent >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                    {kline.changePercent.toFixed(4)}%
+                                </div>
+                            </summary>
+                            <pre className="bg-black/30 p-4 rounded-b-lg text-xs overflow-x-auto">
+                                <code>
+                                    {`[
+  ${kline.rawData[0]}, // Open time
+  "${kline.rawData[1]}", // Open
+  "${kline.rawData[2]}", // High
+  "${kline.rawData[3]}", // Low
+  "${kline.rawData[4]}", // Close
+  "${kline.rawData[5]}", // Volume
+  ${kline.rawData[6]}, // Close time
+  "${kline.rawData[7]}", // Quote asset volume
+  ${kline.rawData[8]}, // Number of trades
+  "${kline.rawData[9]}", // Taker buy base asset volume
+  "${kline.rawData[10]}", // Taker buy quote asset volume
+  "${kline.rawData[11]}"  // Ignore
+]`}
+                                </code>
+                            </pre>
+                        </details>
+                    ))}
+                </div>
+                 <div className="text-center mt-6">
+                    <button onClick={onClose} className="px-6 py-2 bg-slate-600 hover:bg-slate-500 rounded-lg font-bold">Close</button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+
+const CandlestickChart: React.FC<CandlestickChartProps> = ({ coin, timeRange }) => {
+  const [klineData, setKlineData] = useState<KlineData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchKlineData = async () => {
+      setIsLoading(true);
+      setError(null);
+      const symbol = getBinanceSymbol(coin.ticker);
+      if (!symbol) {
+        setError("No Binance symbol available for this coin.");
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(`https://fapi.binance.com/fapi/v1/klines?symbol=${symbol}&interval=${timeRange.interval}&limit=${timeRange.candles}`);
+        if (!response.ok) {
+          throw new Error(`API request failed with status ${response.status}`);
+        }
+        const data = await response.json();
+        const formattedData: KlineData[] = data.map((d: any) => {
+            const open = parseFloat(d[1]);
+            const high = parseFloat(d[2]);
+            const low = parseFloat(d[3]);
+            const close = parseFloat(d[4]);
+            
+            if (open === 0) { // Avoid division by zero
+                return {
+                    openTime: d[0], open, high, low, close,
+                    changePercent: 0, highPercent: 0, lowPercent: 0,
+                    isPositive: close >= open,
+                    rawData: d
+                };
+            }
+
+            const changePercent = ((close - open) / open) * 100;
+            const highPercent = ((high - open) / open) * 100;
+            const lowPercent = ((low - open) / open) * 100;
+            
+            return {
+                openTime: d[0], open, high, low, close,
+                changePercent, highPercent, lowPercent,
+                isPositive: close >= open,
+                rawData: d
+            };
+        });
+        setKlineData(formattedData);
+      } catch (e: any) {
+        setError(e.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchKlineData();
+  }, [coin, timeRange]);
+
+  if (isLoading) {
+    return <div className="w-full bg-slate-800/50 p-6 rounded-lg mb-8 flex items-center justify-center h-[240px]"><p className="text-slate-400">Loading {timeRange.label} Chart Data...</p></div>;
+  }
+  if (error) {
+    return <div className="w-full bg-red-900/50 p-6 rounded-lg mb-8 flex items-center justify-center h-[240px]"><p className="text-red-300">Error: {error}</p></div>;
+  }
+  if (klineData.length === 0) {
+    return <div className="w-full bg-slate-800/50 p-6 rounded-lg mb-8 flex items-center justify-center h-[240px]"><p className="text-slate-400">No chart data available for this coin.</p></div>;
+  }
+
+  // Calculate max change based on high/low range for accurate scaling
+  const maxAbsChange = Math.ceil(Math.max(
+      ...klineData.flatMap(d => [Math.abs(d.highPercent), Math.abs(d.lowPercent)]), 
+      0.5 // Set a minimum for the scale to handle flat markets
+  ));
+
+  return (
+    <div className="w-full bg-slate-800/50 p-6 rounded-lg mb-8 relative">
+       {isModalOpen && <DataInspectionModal data={klineData} onClose={() => setIsModalOpen(false)} />}
+      <button onClick={() => setIsModalOpen(true)} className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors" title="Inspect Raw Data">
+        <InspectDataIcon />
+      </button>
+
+      <h3 className="text-lg font-bold text-center font-orbitron text-slate-300 mb-6">Recent Performance ({timeRange.description}) for {coin.name}</h3>
+      <div className="flex items-center h-48">
+         <div className="h-full flex flex-col justify-between text-xs text-slate-400 pr-4 border-r border-slate-600 py-4">
+          <span>+{maxAbsChange}%</span>
+          <span className="font-bold">0%</span>
+          <span>-{maxAbsChange}%</span>
+        </div>
+
+        <div 
+            className="flex-1 h-full pl-4 relative"
+            style={{ display: 'grid', gridTemplateColumns: `repeat(${timeRange.candles}, minmax(0, 1fr))`, gap: '0.25rem' }}
+        >
+            <div className="absolute top-1/2 left-4 right-0 h-px bg-slate-600 border-t border-dashed border-slate-500 z-0"></div>
+            
+              {klineData.map((d, index) => {
+                  const isPositive = d.isPositive;
+                  const scale = (value: number) => (value / maxAbsChange) * 50;
+                  const bodyHeight = `${Math.abs(scale(d.changePercent))}%`;
+                  const wickHeight = `${Math.abs(scale(d.highPercent - d.lowPercent))}%`;
+                  const wickTop = `${50 - scale(d.highPercent)}%`;
+                  const tooltip = `Candle #${index + 1}\nChange: ${d.changePercent.toFixed(3)}%\nHigh: ${d.highPercent.toFixed(3)}%\nLow: ${d.lowPercent.toFixed(3)}%`;
+                  
+                  return (
+                      <div key={d.openTime} className="h-full flex flex-col items-center" title={tooltip}>
+                          <div className="w-full flex-grow relative flex justify-center">
+                              <div className="w-0.5 bg-slate-600 absolute" style={{ height: wickHeight, top: wickTop }} ></div>
+                              <div className={`w-3/4 max-w-4 absolute transition-all duration-500 ${isPositive ? 'bg-green-500 bottom-1/2 rounded-t' : 'bg-red-500 top-1/2 rounded-b'}`} style={{ height: bodyHeight }}></div>
+                               <div
+                                  className={`absolute text-xs font-semibold whitespace-nowrap ${isPositive ? 'text-green-400' : 'text-red-400'}`}
+                                  style={
+                                      isPositive
+                                          ? { bottom: `calc(50% + ${bodyHeight})`, transform: 'translateY(-2px)' }
+                                          : { top: `calc(50% + ${bodyHeight})`, transform: 'translateY(2px)' }
+                                  }
+                              >
+                                  {d.changePercent.toFixed(2)}%
+                              </div>
+                          </div>
+                           <span className="text-xs text-slate-400 mt-2">{index + 1}</span>
+                      </div>
+                  );
+              })}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default CandlestickChart;
+
+--- components/CoinSelectionScreen.tsx ---
+import React from 'react';
+import { Coin } from '../types';
+import { ALL_COINS } from '../constants';
+import BackButton from './BackButton';
+
+interface CoinSelectionScreenProps {
+  onSelect: (coin: Coin) => void;
+  onBack: () => void;
+}
+
+const CoinSelectionScreen: React.FC<CoinSelectionScreenProps> = ({ onSelect, onBack }) => {
+  return (
+    <div className="w-full max-w-4xl mx-auto flex flex-col items-center relative">
+      <BackButton onClick={onBack} />
+      <h2 className="text-4xl font-bold text-center mt-8 mb-2 font-orbitron text-cyan-400">Select Your Coin</h2>
+      <p className="text-center text-slate-400 mb-8 max-w-xl">Choose the cryptocurrency you want to predict. Its performance will be broken down into candles to form your grid.</p>
+      
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
+        {ALL_COINS.map(coin => (
+          <button 
+            key={coin.id} 
+            onClick={() => onSelect(coin)} 
+            className="p-4 rounded-lg flex flex-col items-center justify-center gap-2 transition-all duration-300 bg-slate-800 hover:bg-cyan-500/80 hover:scale-105 border-2 border-slate-700 hover:border-cyan-400"
+          >
+            {coin.icon()}
+            <div className="text-center">
+                <div className="font-bold text-lg">{coin.name}</div>
+                <div className="text-sm text-slate-400">{coin.ticker}</div>
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default CoinSelectionScreen;
+
+--- components/icons.tsx ---
+import React from 'react';
+
+// Original Icons
+export const EnaIcon: React.FC = () => <div className="text-4xl">⚡</div>;
+export const FartcoinIcon: React.FC = () => <div className="text-4xl">💩</div>;
+export const PumpIcon: React.FC = () => <div className="text-4xl">🎪</div>;
+export const PepeIcon: React.FC = () => <div className="text-4xl">🐸</div>;
+export const BtcIcon: React.FC = () => <div className="text-4xl">₿</div>;
+export const EthIcon: React.FC = () => <div className="text-4xl">⟠</div>;
+export const SolIcon: React.FC = () => <div className="text-4xl">☀️</div>;
+export const HypeIcon: React.FC = () => <div className="text-4xl">🐝</div>;
+export const DogeIcon: React.FC = () => <div className="text-4xl">🐕</div>;
+export const XrpIcon: React.FC = () => <div className="text-4xl">💧</div>;
+export const UniIcon: React.FC = () => <div className="text-4xl">🦄</div>;
+export const AaveIcon: React.FC = () => <div className="text-4xl">👻</div>;
+
+// L1 Icons
+export const ZecIcon: React.FC = () => <div className="text-4xl">ⓩ</div>;
+export const AvaxIcon: React.FC = () => <div className="text-4xl">🔺</div>;
+export const BnbIcon: React.FC = () => <div className="text-4xl">🔶</div>;
+export const SuiIcon: React.FC = () => <div className="text-4xl">💧</div>;
+export const LtcIcon: React.FC = () => <div className="text-4xl">Ł</div>;
+export const AptIcon: React.FC = () => <div className="text-4xl">🏢</div>;
+export const TonIcon: React.FC = () => <div className="text-4xl">💎</div>;
+
+// DeFi Icons
+export const LinkIcon: React.FC = () => <div className="text-4xl">🔗</div>;
+export const WlfiIcon: React.FC = () => <div className="text-4xl">🐺</div>;
+export const SnxIcon: React.FC = () => <div className="text-4xl">⚔️</div>;
+export const MetIcon: React.FC = () => <div className="text-4xl">🎹</div>;
+export const CrvIcon: React.FC = () => <div className="text-4xl">🌈</div>;
+export const LdoIcon: React.FC = () => <div className="text-4xl">🏛️</div>;
+export const CakeIcon: React.FC = () => <div className="text-4xl">🥞</div>;
+export const JupIcon: React.FC = () => <div className="text-4xl">🪐</div>;
+
+// Meme Icons
+export const TrumpIcon: React.FC = () => <div className="text-4xl">🇺🇸</div>;
+export const PenguIcon: React.FC = () => <div className="text-4xl">🐧</div>;
+export const WifIcon: React.FC = () => <div className="text-4xl">🐶</div>;
+export const PurrIcon: React.FC = () => <div className="text-4xl">😻</div>;
+export const ShibIcon: React.FC = () => <div className="text-4xl">🐕‍🦺</div>;
+export const PopcatIcon: React.FC = () => <div className="text-4xl">🙀</div>;
+export const MelaniaIcon: React.FC = () => <div className="text-4xl">👑</div>;
+export const AixbtIcon: React.FC = () => <div className="text-4xl">🤖</div>;
+export const MoondengIcon: React.FC = () => <div className="text-4xl">🦛</div>;
+
+
+// Power-Up & UI Icons
+export const AttackIcon: React.FC = () => <div className="text-2xl">🗡️</div>;
+export const GuardIcon: React.FC = () => <div className="text-2xl">🛡️</div>;
+export const RestoreIcon: React.FC = () => <div className="text-2xl">🔄</div>;
+
+export const InspectDataIcon: React.FC = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+    </svg>
+);
+
+--- components/PerformanceChart.tsx ---
+
+import React, { useState } from 'react';
+import { Coin } from '../types';
+import { InspectDataIcon } from './icons';
+
+interface PerformanceData {
+  coin: Coin;
+  change: number;
+  highPercent: number;
+  lowPercent: number;
+  rawData: any;
+}
+
+interface PerformanceChartProps {
+  data: PerformanceData[];
+}
+
+const DataInspectionModal: React.FC<{ data: PerformanceData[], onClose: () => void }> = ({ data, onClose }) => {
+    return (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50" onClick={onClose}>
+            <div className="bg-slate-800 rounded-lg p-6 shadow-2xl shadow-cyan-500/20 w-full max-w-2xl" onClick={(e) => e.stopPropagation()}>
+                <h3 className="text-2xl font-bold mb-4 text-center font-orbitron">Raw API Response (Binance 24H Ticker)</h3>
+                <div className="max-h-[70vh] overflow-y-auto space-y-2 pr-2">
+                    {data.map(({ coin, change, rawData }) => (
+                        <details key={coin.id} className="bg-slate-900 rounded-lg">
+                            <summary className="p-3 cursor-pointer flex justify-between items-center list-none">
+                                <div className="flex items-center gap-3">
+                                    {coin.icon()}
+                                    <div>
+                                        <div className="font-bold">{coin.name}</div>
+                                        <div className="text-xs text-slate-400">{coin.ticker}</div>
+                                    </div>
+                                </div>
+                                <div className={`font-semibold text-lg ${change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                    {change.toFixed(4)}%
+                                </div>
+                            </summary>
+                            <pre className="bg-black/30 p-4 rounded-b-lg text-xs overflow-x-auto">
+                                <code>
+                                    {JSON.stringify(rawData, null, 2)}
+                                </code>
+                            </pre>
+                        </details>
+                    ))}
+                </div>
+                 <div className="text-center mt-6">
+                    <button onClick={onClose} className="px-6 py-2 bg-slate-600 hover:bg-slate-500 rounded-lg font-bold">Close</button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+
+const PerformanceChart: React.FC<PerformanceChartProps> = ({ data }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  // Calculate max change based on high/low range for accurate scaling
+  const maxAbsChange = Math.ceil(Math.max(
+      ...data.flatMap(d => [Math.abs(d.highPercent), Math.abs(d.lowPercent)]), 
+      5 // Set a minimum of 5% for the scale to handle flat markets
+  ));
+
+  return (
+    <div className="w-full bg-slate-800/50 p-6 rounded-lg mb-8 relative">
+       {isModalOpen && <DataInspectionModal data={data} onClose={() => setIsModalOpen(false)} />}
+      <button onClick={() => setIsModalOpen(true)} className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors" title="Inspect Raw Data">
+        <InspectDataIcon />
+      </button>
+
+      <h3 className="text-lg font-bold text-center font-orbitron text-slate-300 mb-6">24H Market Performance</h3>
+      <div className="flex items-center h-48">
+        <div className="h-full flex flex-col justify-between text-xs text-slate-400 pr-4 border-r border-slate-600 py-4">
+          <span>+{maxAbsChange}%</span>
+          <span className="font-bold">0%</span>
+          <span>-{maxAbsChange}%</span>
+        </div>
+
+        <div className="flex-1 h-full grid grid-cols-12 gap-2 pl-4 relative">
+            <div className="absolute top-1/2 left-4 right-0 h-px bg-slate-600 border-t border-dashed border-slate-500 z-0"></div>
+
+            {data.map(({ coin, change, highPercent, lowPercent }) => {
+                const isPositive = change >= 0;
+
+                // Helper to scale a % value to a % of half the chart height
+                const scale = (value: number) => (value / maxAbsChange) * 50;
+
+                const bodyHeight = `${Math.abs(scale(change))}%`;
+                const wickHeight = `${Math.abs(scale(highPercent - lowPercent))}%`;
+                const wickTop = `${50 - scale(highPercent)}%`;
+
+                const tooltip = `${coin.name}: ${change.toFixed(2)}%\nHigh: ${highPercent.toFixed(2)}%\nLow: ${lowPercent.toFixed(2)}%`;
+
+                return (
+                    <div key={coin.id} className="h-full flex flex-col items-center" title={tooltip}>
+                        <div className="w-full flex-grow relative flex justify-center">
+                            {/* Wick (Full Daily Range) */}
+                            <div
+                                className="w-0.5 bg-slate-600 absolute"
+                                style={{
+                                    height: wickHeight,
+                                    top: wickTop,
+                                }}
+                            ></div>
+                            
+                            {/* Body (Net 24h Change) */}
+                            <div
+                                className={`w-3/4 max-w-4 absolute transition-all duration-500 ${isPositive ? 'bg-green-500 bottom-1/2 rounded-t' : 'bg-red-500 top-1/2 rounded-b'}`}
+                                style={{ height: bodyHeight }}
+                            ></div>
+
+                             {/* Final Value Label */}
+                            <div
+                                className={`absolute text-xs font-semibold whitespace-nowrap ${isPositive ? 'text-green-400' : 'text-red-400'}`}
+                                style={
+                                    isPositive
+                                        ? { bottom: `calc(50% + ${bodyHeight})`, transform: 'translateY(-2px)' }
+                                        : { top: `calc(50% + ${bodyHeight})`, transform: 'translateY(2px)' }
+                                }
+                            >
+                                {change.toFixed(2)}%
+                            </div>
+                        </div>
+                        <span className="text-xs font-bold mt-2">{coin.ticker}</span>
+                    </div>
+                );
+            })}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default PerformanceChart;
+
+--- components/PowerUpScreen.tsx ---
+
+
+import React, { useState } from 'react';
+import { Grid, PowerUpPlacement, PowerUpType } from '../types';
+// Fix: Module '"../constants"' has no exported member 'COINS'.
+import { ALL_COINS, POWER_UPS } from '../constants';
+import { AttackIcon, GuardIcon, RestoreIcon } from './icons';
+
+interface PowerUpScreenProps {
+  grid: Grid;
+  onComplete: (powerUps: PowerUpPlacement) => void;
+}
+
+const PowerUpIcon: React.FC<{ type: PowerUpType }> = ({ type }) => {
+    if (type === 'ATTACK') return <AttackIcon />;
+    if (type === 'GUARD') return <GuardIcon />;
+    if (type === 'RESTORE') return <RestoreIcon />;
+    return null;
+}
+
+const PowerUpScreen: React.FC<PowerUpScreenProps> = ({ grid, onComplete }) => {
+  const [placements, setPlacements] = useState<PowerUpPlacement>({});
+  const [selectedPowerUp, setSelectedPowerUp] = useState<PowerUpType | null>(null);
+
+  const handlePlacePowerUp = (index: number) => {
+    if (selectedPowerUp) {
+      // Remove any existing powerup at this index to prevent duplicates
+      const newPlacements = {...placements};
+      const existingPowerUp = Object.entries(newPlacements).find(([, i]) => i === index);
+      if (existingPowerUp) {
+        delete newPlacements[existingPowerUp[0] as PowerUpType];
+      }
+
+      setPlacements(prev => ({ ...newPlacements, [selectedPowerUp]: index }));
+      setSelectedPowerUp(null);
+    }
+  };
+  
+  const getPowerUpButtonClasses = (pupType: PowerUpType) => {
+    if (selectedPowerUp === pupType) {
+        if (pupType === 'ATTACK') return 'px-6 py-3 rounded-lg font-bold flex items-center gap-2 transition-all bg-red-500 ring-2 ring-white';
+        if (pupType === 'GUARD') return 'px-6 py-3 rounded-lg font-bold flex items-center gap-2 transition-all bg-blue-500 ring-2 ring-white';
+        return 'px-6 py-3 rounded-lg font-bold flex items-center gap-2 transition-all bg-green-500 ring-2 ring-white'; // RESTORE
+    }
+    return 'px-6 py-3 rounded-lg font-bold flex items-center gap-2 transition-all bg-slate-700 hover:bg-slate-600';
+  };
+  
+  const getGridCellClasses = () => {
+      if (selectedPowerUp) {
+          return 'aspect-square rounded-lg flex items-center justify-center transition-colors bg-slate-800 border-2 border-slate-600 relative cursor-pointer hover:bg-slate-700';
+      }
+      return 'aspect-square rounded-lg flex items-center justify-center transition-colors bg-slate-800 border-2 border-slate-600 relative';
+  };
+
+  return (
+    <div className="w-full max-w-4xl mx-auto flex flex-col items-center">
+      <h2 className="text-3xl font-bold text-center mb-2 font-orbitron text-cyan-400">Step 3: Add Power-Ups (Optional)</h2>
+      <p className="text-center text-slate-400 mb-8">Place your chips on the board. For now, they're just for show!</p>
+
+      <div className="flex justify-center gap-4 mb-8">
+        {POWER_UPS.map(pup => (
+          <button
+            key={pup.type}
+            onClick={() => setSelectedPowerUp(pup.type)}
+            className={getPowerUpButtonClasses(pup.type)}
+          >
+            <PowerUpIcon type={pup.type} /> {pup.name}
+          </button>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-3 gap-2 w-full max-w-md aspect-square">
+        {grid.map((cell, index) => {
+          // Fix: Use ALL_COINS which is exported from constants.ts
+          const coin = cell.coinId ? ALL_COINS.find(c => c.id === cell.coinId) : null;
+          const placedPowerUp = Object.entries(placements).find(([, i]) => i === index)?.[0] as PowerUpType | undefined;
+          
+          return (
+            <div key={index} onClick={() => handlePlacePowerUp(index)}
+                 className={getGridCellClasses()}
+            >
+              {coin && (
+                <div className="flex flex-col items-center text-center">
+                  {coin.icon()}
+                  <span className="font-bold text-lg">{coin.ticker}</span>
+                </div>
+              )}
+              {placedPowerUp && (
+                  <div className="absolute top-1 right-1 bg-slate-900/80 rounded-full p-1">
+                    <PowerUpIcon type={placedPowerUp} />
+                  </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="text-center mt-8">
+        <button
+          onClick={() => onComplete(placements)}
+          className="px-12 py-4 bg-green-500 text-slate-900 font-bold text-xl rounded-lg shadow-lg shadow-green-500/20 hover:bg-green-400 transition-all duration-300 transform hover:scale-105 font-orbitron"
+        >
+          LOCK IN GRID!
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default PowerUpScreen;
+
+--- components/PredictScreen.tsx ---
+
+
+import React, { useState, useMemo } from 'react';
+import { Predictions, PredictionDirection } from '../types';
+// Fix: Module '"../constants"' has no exported member 'COINS'.
+import { ALL_COINS } from '../constants';
+
+interface PredictScreenProps {
+  initialPredictions: Predictions;
+  onComplete: (predictions: Predictions) => void;
+}
+
+const PredictScreen: React.FC<PredictScreenProps> = ({ initialPredictions, onComplete }) => {
+  const [predictions, setPredictions] = useState<Predictions>(initialPredictions);
+
+  const handlePrediction = (coinId: string, direction: PredictionDirection) => {
+    setPredictions((prev) => ({ ...prev, [coinId]: direction }));
+  };
+
+  const allPredicted = useMemo(() => {
+    return Object.values(predictions).every((p) => p !== null);
+  }, [predictions]);
+
+  const getPredictionButtonClasses = (prediction: PredictionDirection | null, buttonDirection: PredictionDirection) => {
+    const isSelected = prediction === buttonDirection;
+    if (isSelected) {
+        if (buttonDirection === 'UP') {
+            return 'w-1/2 py-2 rounded font-bold text-xl transition-colors bg-green-500 text-white';
+        }
+        // DOWN
+        return 'w-1/2 py-2 rounded font-bold text-xl transition-colors bg-red-500 text-white';
+    }
+    return 'w-1/2 py-2 rounded font-bold text-xl transition-colors bg-slate-700 hover:bg-slate-600';
+  };
+
+  return (
+    <div className="w-full max-w-4xl mx-auto">
+      <h2 className="text-3xl font-bold text-center mb-2 font-orbitron text-cyan-400">Step 1: Make Your Predictions</h2>
+      <p className="text-center text-slate-400 mb-8">For each coin, will its price go UP or DOWN in the next 24 hours?</p>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Fix: Use ALL_COINS which is exported from constants.ts */}
+        {ALL_COINS.map((coin) => (
+          <div key={coin.id} className="bg-slate-800 p-4 rounded-lg flex flex-col items-center">
+            <div className="flex items-center gap-3 mb-3">
+              {coin.icon()}
+              <span className="text-xl font-bold">{coin.name}</span>
+            </div>
+            <div className="flex gap-2 w-full">
+              <button
+                onClick={() => handlePrediction(coin.id, 'UP')}
+                className={getPredictionButtonClasses(predictions[coin.id] ?? null, 'UP')}
+              >
+                ↑
+              </button>
+              <button
+                onClick={() => handlePrediction(coin.id, 'DOWN')}
+                className={getPredictionButtonClasses(predictions[coin.id] ?? null, 'DOWN')}
+              >
+                ↓
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="text-center mt-8">
+        <button
+          onClick={() => onComplete(predictions)}
+          disabled={!allPredicted}
+          className="px-8 py-3 bg-cyan-500 text-slate-900 font-bold text-lg rounded-lg shadow-lg shadow-cyan-500/20 hover:bg-cyan-400 transition-all duration-300 transform hover:scale-105 disabled:bg-slate-600 disabled:shadow-none disabled:cursor-not-allowed disabled:scale-100 font-orbitron"
+        >
+          NEXT: BUILD YOUR GRID
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default PredictScreen;
+
+--- components/ResultsScreen.tsx ---
+import React, { useState, useEffect } from 'react';
+import { SettledResult, PowerUpType, Coin, GameType } from '../types';
+import { ALL_COINS } from '../constants';
+import { AttackIcon, GuardIcon, RestoreIcon } from './icons';
+
+interface ResultsScreenProps {
+  result: SettledResult;
+  onPlayAgain: () => void;
+}
+
+const PowerUpIcon: React.FC<{ type: PowerUpType }> = ({ type }) => {
+    if (type === 'ATTACK') return <AttackIcon />;
+    if (type === 'GUARD') return <GuardIcon />;
+    if (type === 'RESTORE') return <RestoreIcon />;
+    return null;
+}
+
+const PowerUpNameMap = {
+    ATTACK: 'Attack',
+    GUARD: 'Guard',
+    RESTORE: 'Restore'
+};
+
+const ResultsScreen: React.FC<ResultsScreenProps> = ({ result, onPlayAgain }) => {
+  const isCoinGrid = result.gameType === GameType.COIN_GRID;
+  const gridSize = result.grid.length;
+  
+  let gridCols = 'grid-cols-3';
+  if (isCoinGrid && result.timeRange) {
+    gridCols = `grid-cols-${result.timeRange.gridCols}`;
+  } else if (!isCoinGrid) { // Market Grid
+    gridCols = 'grid-cols-4';
+  }
+
+  const [revealedCells, setRevealedCells] = useState<boolean[]>(Array(gridSize).fill(false));
+  const [animatedScore, setAnimatedScore] = useState(0);
+
+  const gridCorrectness = isCoinGrid 
+    ? (result.settledCandles || []).map(c => c.isCorrect)
+    : result.grid.map((cell, index) => {
+        if (!cell.coinId) return false;
+        const powerUp = result.powerUps[index];
+        if (powerUp?.type === 'RESTORE') return true;
+        const settledCoin = result.settledCoins.find(sc => sc.coinId === cell.coinId);
+        return settledCoin?.isCorrect || false;
+    });
+
+  const numCorrect = gridCorrectness.filter(c => c).length;
+
+  useEffect(() => {
+    const revealDelay = 3000 / gridSize;
+    const revealTimer = setInterval(() => {
+        setRevealedCells(prev => {
+            const nextIndex = prev.findIndex(r => !r);
+            if(nextIndex === -1) {
+                clearInterval(revealTimer);
+                return prev;
+            }
+            const newState = [...prev];
+            newState[nextIndex] = true;
+            return newState;
+        })
+    }, revealDelay);
+    return () => clearInterval(revealTimer);
+  }, [gridSize]);
+
+  useEffect(() => {
+    if(revealedCells.every(r => r)){
+        const scoreTimer = setInterval(() => {
+            setAnimatedScore(prev => {
+                const step = Math.ceil(result.totalScore / 50);
+                const newScore = prev + step;
+                if (newScore >= result.totalScore) {
+                    clearInterval(scoreTimer);
+                    return result.totalScore;
+                }
+                return newScore;
+            });
+        }, 20);
+        return () => clearInterval(scoreTimer);
+    }
+  }, [revealedCells, result.totalScore]);
+
+  const getResultCellClasses = (isCorrect: boolean, revealed: boolean) => {
+    const baseClasses = 'aspect-square rounded-lg flex items-center justify-center relative p-1 transition-all duration-500 transform';
+    if (revealed) {
+      const colorClasses = isCorrect
+        ? 'bg-green-500/30 border-2 border-green-400'
+        : 'bg-red-500/30 border-2 border-red-400';
+      return `${baseClasses} scale-100 opacity-100 ${colorClasses}`;
+    }
+    return `${baseClasses} scale-50 opacity-0`;
+  };
+
+  return (
+    <div className="w-full max-w-6xl mx-auto flex flex-col items-center">
+      <h2 className="text-4xl md:text-5xl font-bold text-center mb-2 font-orbitron text-yellow-400">SETTLEMENT COMPLETE!</h2>
+      <p className="text-xl text-slate-300 mb-6">You got {numCorrect} out of {gridSize} predictions correct! 🎯</p>
+
+      <div className="flex flex-col md:flex-row gap-8 w-full">
+        <div className="md:w-1/2 flex flex-col items-center">
+           <div className={`grid ${gridCols} gap-2 w-full max-w-4xl`}>
+                {result.grid.map((cell, index) => {
+                    const coin = cell.coinId ? ALL_COINS.find(c => c.id === cell.coinId) : null;
+                    const isCorrect = gridCorrectness[index];
+                    const revealed = revealedCells[index];
+                    const placedPowerUp = result.powerUps[index];
+                    const powerUpResult = placedPowerUp ? result.powerUpScores.find(p => p.type === placedPowerUp.type) : undefined;
+                    
+                    let powerUpIconContainerClasses = "absolute top-1 right-1 bg-slate-900/80 rounded-full p-1 transition-all";
+                    if (powerUpResult) {
+                        powerUpIconContainerClasses += powerUpResult.success 
+                            ? " ring-2 ring-yellow-400 shadow-lg shadow-yellow-400/50" 
+                            : " opacity-40";
+                    }
+
+                    return (
+                        <div key={index} className={getResultCellClasses(isCorrect, revealed)}>
+                            {isCoinGrid ? (
+                                <div className="flex flex-col items-center text-center">
+                                    <div className="absolute top-1 left-1 text-2xl">{isCorrect ? '✅' : '❌'}</div>
+                                    <span className="font-bold text-xl"># {index + 1}</span>
+                                </div>
+                            ) : (
+                                coin && (
+                                    <div className="flex flex-col items-center text-center">
+                                        <div className="absolute top-1 left-1 text-2xl">{isCorrect ? '✅' : '❌'}</div>
+                                        {coin.icon()}
+                                        <span className="font-bold text-lg">{coin.ticker}</span>
+                                    </div>
+                                )
+                            )}
+                            {placedPowerUp && (
+                                <div className={powerUpIconContainerClasses}>
+                                    <PowerUpIcon type={placedPowerUp.type} />
+                                </div>
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
+             {isCoinGrid && result.selectedCoin && (
+                <div className="mt-4 flex items-center gap-3 bg-slate-800/50 p-3 rounded-lg">
+                    {result.selectedCoin.icon()}
+                    <h3 className="text-2xl font-bold font-orbitron">{result.selectedCoin.name} ({result.selectedCoin.ticker}) - {result.timeRange?.label}</h3>
+                </div>
+            )}
+        </div>
+        <div className="md:w-1/2 bg-slate-800 p-6 rounded-lg">
+            <h3 className="text-2xl font-bold font-orbitron text-cyan-400 mb-4">Points Breakdown</h3>
+            <div className="space-y-2 max-h-64 overflow-y-auto pr-2">
+                {result.scores.map((score, i) => (
+                    <div key={i} className="flex justify-between items-baseline text-lg">
+                        <span className="text-slate-300">{score.name}</span>
+                        <span className="font-semibold text-yellow-400">{score.points.toLocaleString()} pts</span>
+                    </div>
+                ))}
+                 {result.scores.length === 0 && <p className="text-slate-400">No scoring patterns were made.</p>}
+            </div>
+
+            {result.powerUpScores.length > 0 && (
+                <>
+                <hr className="border-slate-600 my-4" />
+                <h3 className="text-xl font-bold font-orbitron text-cyan-400 mb-3">Power-Ups</h3>
+                 <div className="space-y-2">
+                    {result.powerUpScores.map((pup, i) => (
+                        <div key={i} className="flex justify-between items-baseline text-lg">
+                            <span className="text-slate-300 flex items-center gap-2">
+                                {PowerUpNameMap[pup.type]}
+                                <span className={`text-sm font-semibold ${pup.success ? 'text-green-400' : 'text-red-400'}`}>
+                                    {pup.success ? 'SUCCESS' : 'FAILED'}
+                                </span>
+                            </span>
+                            <span className="font-semibold text-yellow-400">{pup.points.toLocaleString()} pts</span>
+                        </div>
+                    ))}
+                 </div>
+                </>
+            )}
+
+            <hr className="border-slate-600 my-4" />
+            <div className="text-center">
+                <p className="text-slate-400 text-lg">TOTAL SCORE</p>
+                <p className="text-6xl font-bold font-orbitron text-yellow-300 tracking-wider">
+                    {animatedScore.toLocaleString()}
+                </p>
+            </div>
+        </div>
+      </div>
+       <div className="text-center mt-12">
+        <button
+          onClick={onPlayAgain}
+          className="px-10 py-4 bg-cyan-500 text-slate-900 font-bold text-xl rounded-lg shadow-lg shadow-cyan-500/20 hover:bg-cyan-400 transition-all duration-300 transform hover:scale-105 font-orbitron"
+        >
+          PLAY AGAIN
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default ResultsScreen;
+
+--- components/SetupCoinGridScreen.tsx ---
+import React, { useState, useMemo } from 'react';
+import { Grid, Predictions, PowerUpPlacement, PredictionDirection, PowerUpType, Coin, PowerUp, TimeRangeOption } from '../types';
+import { POWER_UPS } from '../constants';
+import { AttackIcon, GuardIcon, RestoreIcon } from './icons';
+import CandlestickChart from './CandlestickChart';
+import BackButton from './BackButton';
+
+interface SetupCoinGridScreenProps {
+  coin: Coin;
+  timeRange: TimeRangeOption;
+  onComplete: (data: { grid: Grid; predictions: Predictions; powerUps: PowerUpPlacement }) => void;
+  onBack: () => void;
+}
+
+const PowerUpIcon: React.FC<{ type: PowerUpType }> = ({ type }) => {
+    if (type === 'ATTACK') return <AttackIcon />;
+    if (type === 'GUARD') return <GuardIcon />;
+    if (type === 'RESTORE') return <RestoreIcon />;
+    return null;
+}
+
+const PowerUpSelectionModal: React.FC<{
+  availablePowerUpTypes: PowerUpType[];
+  currentPowerUpOnCell: PowerUp | undefined;
+  onSelect: (powerUpType: PowerUpType) => void;
+  onRemove: () => void;
+  onClose: () => void;
+}> = ({ availablePowerUpTypes, currentPowerUpOnCell, onSelect, onRemove, onClose }) => {
+  return (
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50" onClick={onClose}>
+      <div className="bg-slate-800 rounded-lg p-6 shadow-2xl shadow-cyan-500/20" onClick={(e) => e.stopPropagation()}>
+        <h3 className="text-2xl font-bold mb-4 text-center font-orbitron">Select Power-Up</h3>
+        <div className="flex flex-col gap-3">
+          {POWER_UPS.map(pup => {
+            const isPlacedElsewhere = !availablePowerUpTypes.includes(pup.type) && currentPowerUpOnCell?.type !== pup.type;
+            return (
+              <button 
+                  key={pup.type} 
+                  onClick={() => onSelect(pup.type)}
+                  disabled={isPlacedElsewhere} 
+                  className="p-3 rounded-lg flex items-center gap-4 transition-all duration-200 bg-slate-700 hover:bg-cyan-500 hover:scale-105 w-full disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:bg-slate-700"
+              >
+                  <PowerUpIcon type={pup.type} />
+                  <span className="text-lg font-bold">{pup.name}</span>
+              </button>
+            )
+          })}
+          {currentPowerUpOnCell && (
+            <button onClick={onRemove} className="p-3 mt-2 rounded-lg flex items-center gap-4 justify-center transition-all duration-200 bg-red-800 hover:bg-red-700 w-full">
+              <span className="text-lg font-bold">Remove Power-Up</span>
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const SetupCoinGridScreen: React.FC<SetupCoinGridScreenProps> = ({ coin, timeRange, onComplete, onBack }) => {
+  const initialGrid: Grid = Array(timeRange.candles).fill(0).map((_, i) => ({ coinId: coin.id, candleIndex: i }));
+  const [grid] = useState<Grid>(initialGrid);
+  const [predictions, setPredictions] = useState<Predictions>({});
+  const [powerUps, setPowerUps] = useState<PowerUpPlacement>({});
+  const [powerUpModalOpenForCell, setPowerUpModalOpenForCell] = useState<number | null>(null);
+
+  const availablePowerUpTypes = useMemo(() => {
+    const placedTypes = new Set(Object.values(powerUps).map(p => (p as PowerUp).type));
+    return POWER_UPS.map(p => p.type).filter(t => !placedTypes.has(t));
+  }, [powerUps]);
+
+  const isSetupComplete = useMemo(() => {
+    return Object.keys(predictions).length === timeRange.candles && Object.values(predictions).every(p => p !== null);
+  }, [predictions, timeRange.candles]);
+
+  const handleOpenPowerUpModal = (index: number) => {
+    setPowerUpModalOpenForCell(index);
+  };
+  
+  const handleSelectPowerUp = (powerUpType: PowerUpType) => {
+    if (powerUpModalOpenForCell !== null) {
+      const newPowerUps = { ...powerUps };
+      // Remove any existing powerup at this index
+      delete newPowerUps[powerUpModalOpenForCell];
+      newPowerUps[powerUpModalOpenForCell] = { type: powerUpType };
+      setPowerUps(newPowerUps);
+    }
+    setPowerUpModalOpenForCell(null);
+  };
+  
+  const handleRemovePowerUp = () => {
+    if (powerUpModalOpenForCell !== null) {
+      const newPowerUps = {...powerUps};
+      delete newPowerUps[powerUpModalOpenForCell];
+      setPowerUps(newPowerUps);
+    }
+    setPowerUpModalOpenForCell(null);
+  };
+  
+  const handlePrediction = (index: number, direction: PredictionDirection) => {
+    setPredictions(prev => ({...prev, [index]: direction}));
+  };
+
+  const getGridPredictionButtonClasses = (prediction: PredictionDirection | null, buttonDirection: PredictionDirection) => {
+    const isSelected = prediction === buttonDirection;
+    if (isSelected) {
+      return buttonDirection === 'UP'
+        ? 'w-1/2 py-1 rounded font-bold text-base transition-colors bg-green-500'
+        : 'w-1/2 py-1 rounded font-bold text-base transition-colors bg-red-500';
+    }
+    return 'w-1/2 py-1 rounded font-bold text-base transition-colors bg-slate-700 hover:bg-slate-600';
+  };
+
+  const gridColsClass = `grid-cols-${timeRange.gridCols}`;
+
+  return (
+    <div className="w-full max-w-6xl mx-auto flex flex-col items-center relative">
+       <BackButton onClick={onBack} />
+      {powerUpModalOpenForCell !== null && (
+        <PowerUpSelectionModal
+          availablePowerUpTypes={availablePowerUpTypes}
+          currentPowerUpOnCell={powerUps[powerUpModalOpenForCell]}
+          onSelect={handleSelectPowerUp}
+          onRemove={handleRemovePowerUp}
+          onClose={() => setPowerUpModalOpenForCell(null)}
+        />
+      )}
+      
+      <div className="w-full mt-8">
+        <CandlestickChart coin={coin} timeRange={timeRange} />
+      </div>
+
+      <div className="flex flex-col items-center w-full">
+        <h2 className="text-3xl font-bold text-center mb-2 font-orbitron text-cyan-400">Predict the Candlesticks</h2>
+        <p className="text-center text-slate-400 mb-6">For each candle in the {timeRange.label}, predict if it will close UP or DOWN.</p>
+        <div className={`grid ${gridColsClass} gap-2 w-full max-w-4xl`}>
+          {grid.map((cell, index) => {
+            const prediction = predictions[index] ?? null;
+            const placedPowerUp = powerUps[index];
+
+            return (
+              <div key={index} className="aspect-square rounded-lg flex flex-col items-center justify-center transition-all duration-200 relative p-1 bg-slate-800 border-2 border-slate-700">
+                <button onClick={() => handleOpenPowerUpModal(index)} className="absolute top-1 left-1 w-6 h-6 bg-slate-900/80 rounded-full flex items-center justify-center text-cyan-400 hover:bg-slate-700 z-10 transition-colors">
+                  {placedPowerUp ? <PowerUpIcon type={placedPowerUp.type} /> : <span className="font-bold text-base">+</span>}
+                </button>
+                <div className="text-center">
+                  <span className="font-bold text-lg"># {index + 1}</span>
+                </div>
+                <div className="flex gap-1 mt-1 w-full">
+                  <button onClick={() => handlePrediction(index, 'UP')} className={getGridPredictionButtonClasses(prediction, 'UP')}>↑</button>
+                  <button onClick={() => handlePrediction(index, 'DOWN')} className={getGridPredictionButtonClasses(prediction, 'DOWN')}>↓</button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div className="mt-8">
+          <button onClick={() => onComplete({ grid, predictions, powerUps })} disabled={!isSetupComplete}
+            className="px-12 py-4 bg-green-500 text-slate-900 font-bold text-xl rounded-lg shadow-lg shadow-green-500/20 hover:bg-green-400 transition-all duration-300 transform hover:scale-105 font-orbitron disabled:bg-slate-600 disabled:shadow-none disabled:cursor-not-allowed disabled:scale-100"
+          >
+            LOCK IN GRID!
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SetupCoinGridScreen;
+
+
+--- components/SetupGridScreen.tsx ---
+import React, { useState, useMemo, useEffect } from 'react';
+import { Grid, Predictions, PowerUpPlacement, PredictionDirection, PowerUpType, Coin, PowerUp } from '../types';
+import { POWER_UPS } from '../constants';
+import { AttackIcon, GuardIcon, RestoreIcon } from './icons';
+import PerformanceChart from './PerformanceChart';
+import BackButton from './BackButton';
+
+interface SetupGridScreenProps {
+  coinPool: Coin[];
+  onComplete: (data: { grid: Grid; predictions: Predictions; powerUps: PowerUpPlacement }) => void;
+  onBack: () => void;
+}
+
+const getBinanceSymbol = (ticker: string): string | null => {
+    const map: { [key: string]: string } = {
+        'BTC': 'BTCUSDT', 'ETH': 'ETHUSDT', 'SOL': 'SOLUSDT', 'DOGE': 'DOGEUSDT', 'XRP': 'XRPUSDT',
+        'UNI': 'UNIUSDT', 'AAVE': 'AAVEUSDT', 'PEPE': '1000PEPEUSDT', 'ENA': 'ENAUSDT', 'PUMP': 'PUMPUSDT',
+        'HYPE': 'HYPEUSDT', 'FART': 'FARTUSDT', 'ZEC': 'ZECUSDT', 'AVAX': 'AVAXUSDT', 'BNB': 'BNBUSDT',
+        'SUI': 'SUIUSDT', 'LTC': 'LTCUSDT', 'APT': 'APTUSDT', 'TON': 'TONUSDT', 'LINK': 'LINKUSDT',
+        'SNX': 'SNXUSDT', 'CRV': 'CRVUSDT', 'LDO': 'LDOUSDT', 'CAKE': 'CAKEUSDT', 'JUP': 'JUPUSDT',
+        'WIF': 'WIFUSDT', 'SHIB': '1000SHIBUSDT', 'POPCAT': 'POPCATUSDT', 'TRUMP': 'TRUMPUSDT', 'PENGU': 'PENGUSDT'
+    };
+    return map[ticker] || null;
+}
+
+const PowerUpIcon: React.FC<{ type: PowerUpType }> = ({ type }) => {
+    if (type === 'ATTACK') return <AttackIcon />;
+    if (type === 'GUARD') return <GuardIcon />;
+    if (type === 'RESTORE') return <RestoreIcon />;
+    return null;
+}
+
+const CoinSelectionModal: React.FC<{
+  availableCoins: Coin[];
+  onSelect: (coinId: string) => void;
+  onClose: () => void;
+}> = ({ availableCoins, onSelect, onClose }) => {
+  return (
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50" onClick={onClose}>
+      <div className="bg-slate-800 rounded-lg p-6 shadow-2xl shadow-cyan-500/20" onClick={(e) => e.stopPropagation()}>
+        <h3 className="text-2xl font-bold mb-4 text-center font-orbitron">Select a Coin</h3>
+        <div className="grid grid-cols-4 gap-4">
+          {availableCoins.map(coin => (
+            <button key={coin.id} onClick={() => onSelect(coin.id)} className="p-3 rounded-lg flex flex-col items-center justify-center transition-all duration-200 bg-slate-700 hover:bg-cyan-500 hover:scale-105">
+              {coin.icon()}
+              <span className="text-sm font-bold mt-1">{coin.ticker}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const PowerUpSelectionModal: React.FC<{
+  availablePowerUpTypes: PowerUpType[];
+  currentPowerUpOnCell: PowerUp | undefined;
+  onSelect: (powerUpType: PowerUpType) => void;
+  onRemove: () => void;
+  onClose: () => void;
+}> = ({ availablePowerUpTypes, currentPowerUpOnCell, onSelect, onRemove, onClose }) => {
+  return (
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50" onClick={onClose}>
+      <div className="bg-slate-800 rounded-lg p-6 shadow-2xl shadow-cyan-500/20" onClick={(e) => e.stopPropagation()}>
+        <h3 className="text-2xl font-bold mb-4 text-center font-orbitron">Select Power-Up</h3>
+        <div className="flex flex-col gap-3">
+          {POWER_UPS.map(pup => {
+            const isPlacedElsewhere = !availablePowerUpTypes.includes(pup.type) && currentPowerUpOnCell?.type !== pup.type;
+            return (
+              <button 
+                  key={pup.type} 
+                  onClick={() => onSelect(pup.type)}
+                  disabled={isPlacedElsewhere} 
+                  className="p-3 rounded-lg flex items-center gap-4 transition-all duration-200 bg-slate-700 hover:bg-cyan-500 hover:scale-105 w-full disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:bg-slate-700"
+              >
+                  <PowerUpIcon type={pup.type} />
+                  <span className="text-lg font-bold">{pup.name}</span>
+              </button>
+            )
+          })}
+          {currentPowerUpOnCell && (
+            <button onClick={onRemove} className="p-3 mt-2 rounded-lg flex items-center gap-4 justify-center transition-all duration-200 bg-red-800 hover:bg-red-700 w-full">
+              <span className="text-lg font-bold">Remove Power-Up</span>
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const SetupGridScreen: React.FC<SetupGridScreenProps> = ({ coinPool, onComplete, onBack }) => {
+  const [grid, setGrid] = useState<Grid>(Array(12).fill({ coinId: null }));
+  const [predictions, setPredictions] = useState<Predictions>({});
+  const [powerUps, setPowerUps] = useState<PowerUpPlacement>({});
+  
+  const [modalOpenForCell, setModalOpenForCell] = useState<number | null>(null);
+  const [powerUpModalOpenForCell, setPowerUpModalOpenForCell] = useState<number | null>(null);
+
+  const [performanceData, setPerformanceData] = useState<{ coin: Coin, change: number, highPercent: number, lowPercent: number, rawData: any }[]>([]);
+  const [isLoadingPerformance, setIsLoadingPerformance] = useState(true);
+
+  useEffect(() => {
+    const fetchPerformanceData = async () => {
+      setIsLoadingPerformance(true);
+      const promises = coinPool.map(async (coin) => {
+        const symbol = getBinanceSymbol(coin.ticker);
+        if (!symbol) {
+          return { coin, change: 0, highPercent: 0, lowPercent: 0, rawData: { error: "No Binance symbol available for this coin." } };
+        }
+
+        try {
+          const response = await fetch(`https://fapi.binance.com/fapi/v1/ticker/24hr?symbol=${symbol}`);
+          if (!response.ok) {
+            console.error(`Failed to fetch 24hr ticker for ${symbol}`);
+            return { coin, change: 0, highPercent: 0, lowPercent: 0, rawData: { error: `API request failed with status ${response.status}` } };
+          }
+          const data = await response.json();
+          
+          const change = parseFloat(data.priceChangePercent);
+          const openPrice = parseFloat(data.openPrice);
+          const highPrice = parseFloat(data.highPrice);
+          const lowPrice = parseFloat(data.lowPrice);
+
+          if (isNaN(change) || !openPrice) {
+            return { coin, change: 0, highPercent: 0, lowPercent: 0, rawData: data };
+          }
+
+          const highPercent = ((highPrice - openPrice) / openPrice) * 100;
+          const lowPercent = ((lowPrice - openPrice) / openPrice) * 100;
+
+          return { coin, change, highPercent, lowPercent, rawData: data };
+
+        } catch (error) {
+          console.error(`Error fetching 24hr ticker for ${symbol}:`, error);
+          return { coin, change: 0, highPercent: 0, lowPercent: 0, rawData: { error: `Client-side fetch error: ${error}` } };
+        }
+      });
+
+      const results = await Promise.all(promises);
+      
+      results.sort((a, b) => Math.abs(b.change) - Math.abs(a.change));
+      
+      setPerformanceData(results);
+      setIsLoadingPerformance(false);
+    };
+
+    fetchPerformanceData();
+  }, [coinPool]);
+
+  const placedCoinIds = useMemo(() => new Set(grid.map(cell => cell.coinId).filter(Boolean)), [grid]);
+  const availableCoins = useMemo(() => coinPool.filter(c => !placedCoinIds.has(c.id)), [placedCoinIds, coinPool]);
+
+  const availablePowerUpTypes = useMemo(() => {
+    const placedTypes = new Set(Object.values(powerUps).map(p => (p as PowerUp).type));
+    return POWER_UPS.map(p => p.type).filter(t => !placedTypes.has(t));
+  }, [powerUps]);
+
+
+  const isSetupComplete = useMemo(() => {
+    if (placedCoinIds.size !== 12) return false;
+    for (const cell of grid) {
+        if (cell.coinId && predictions[cell.coinId] == null) {
+            return false;
+        }
+    }
+    return true;
+  }, [grid, predictions, placedCoinIds]);
+
+  const handleCellClick = (index: number) => {
+    const cell = grid[index];
+    if (!cell.coinId) {
+      setModalOpenForCell(index);
+    }
+  };
+  
+  const handleOpenPowerUpModal = (e: React.MouseEvent, index: number) => {
+    e.stopPropagation();
+    setPowerUpModalOpenForCell(index);
+  };
+
+  const handleSelectCoin = (coinId: string) => {
+    if (modalOpenForCell !== null) {
+      const newGrid = [...grid];
+      newGrid[modalOpenForCell] = { coinId };
+      setGrid(newGrid);
+      setPredictions(prev => ({...prev, [coinId]: null}));
+    }
+    setModalOpenForCell(null);
+  };
+
+  const handleSelectPowerUp = (powerUpType: PowerUpType) => {
+    if (powerUpModalOpenForCell === null) return;
+    const newPowerUps = { ...powerUps };
+    
+    const existingEntry = Object.entries(newPowerUps).find(([, pup]) => (pup as PowerUp).type === powerUpType);
+    if (existingEntry) {
+        delete newPowerUps[parseInt(existingEntry[0])];
+    }
+    
+    delete newPowerUps[powerUpModalOpenForCell];
+    newPowerUps[powerUpModalOpenForCell] = { type: powerUpType };
+    setPowerUps(newPowerUps);
+    setPowerUpModalOpenForCell(null);
+  };
+
+  const handleRemovePowerUp = () => {
+    if (powerUpModalOpenForCell !== null) {
+        const newPowerUps = {...powerUps};
+        delete newPowerUps[powerUpModalOpenForCell];
+        setPowerUps(newPowerUps);
+    }
+    setPowerUpModalOpenForCell(null);
+  };
+  
+  const handlePrediction = (coinId: string, direction: PredictionDirection) => {
+      setPredictions(prev => ({...prev, [coinId]: direction}));
+  };
+
+  const handleClearCell = (e: React.MouseEvent, index: number) => {
+    e.stopPropagation();
+    const cellToClear = grid[index];
+    if (!cellToClear.coinId) return;
+    const coinIdToClear = cellToClear.coinId;
+    const newGrid = [...grid];
+    newGrid[index] = { coinId: null };
+    setGrid(newGrid);
+    const newPredictions = { ...predictions };
+    delete newPredictions[coinIdToClear];
+    setPredictions(newPredictions);
+    if (powerUps[index]) {
+      const newPowerUps = { ...powerUps };
+      delete newPowerUps[index];
+      setPowerUps(newPowerUps);
+    }
+  };
+  
+  const getGridPredictionButtonClasses = (prediction: PredictionDirection | null, buttonDirection: PredictionDirection) => {
+    const isSelected = prediction === buttonDirection;
+    if (isSelected) {
+      return buttonDirection === 'UP'
+        ? 'w-1/2 py-1 rounded font-bold text-base transition-colors bg-green-500'
+        : 'w-1/2 py-1 rounded font-bold text-base transition-colors bg-red-500';
+    }
+    return 'w-1/2 py-1 rounded font-bold text-base transition-colors bg-slate-700 hover:bg-slate-600';
+  };
+
+  return (
+    <div className="w-full max-w-6xl mx-auto flex flex-col items-center relative">
+      <BackButton onClick={onBack} />
+      {modalOpenForCell !== null && <CoinSelectionModal availableCoins={availableCoins} onSelect={handleSelectCoin} onClose={() => setModalOpenForCell(null)} />}
+      {powerUpModalOpenForCell !== null && (
+        <PowerUpSelectionModal
+          availablePowerUpTypes={availablePowerUpTypes}
+          currentPowerUpOnCell={powerUps[powerUpModalOpenForCell]}
+          onSelect={handleSelectPowerUp}
+          onRemove={handleRemovePowerUp}
+          onClose={() => setPowerUpModalOpenForCell(null)}
+        />
+      )}
+      
+      <div className="w-full mt-8">
+        {isLoadingPerformance ? (
+            <div className="w-full bg-slate-800/50 p-6 rounded-lg mb-8 flex items-center justify-center h-[240px]"><p className="text-slate-400">Loading Market Data...</p></div>
+        ) : (
+            <PerformanceChart data={performanceData} />
+        )}
+      </div>
+
+      <div className="flex flex-col items-center w-full">
+        <h2 className="text-3xl font-bold text-center mb-2 font-orbitron text-cyan-400">Build Your Grid & Make Predictions</h2>
+        <p className="text-center text-slate-400 mb-6">Click an empty square to place a coin, then predict UP or DOWN. Fill all 12 spots.</p>
+        <div className="grid grid-cols-4 gap-2 w-full max-w-2xl">
+          {grid.map((cell, index) => {
+            const coin = cell.coinId ? coinPool.find(c => c.id === cell.coinId) : null;
+            const prediction = coin ? predictions[coin.id] : null;
+            const placedPowerUp = powerUps[index];
+
+            if (coin) {
+              return (
+                <div key={index} className="aspect-square rounded-lg flex flex-col items-center justify-center transition-all duration-200 relative p-1 bg-slate-800 border-2 border-slate-700">
+                  <button onClick={(e) => handleClearCell(e, index)} className="absolute top-1 right-1 w-6 h-6 bg-red-900/80 rounded-full flex items-center justify-center text-red-300 hover:bg-red-800 z-10 transition-colors font-bold text-sm">
+                    X
+                  </button>
+                  <button onClick={(e) => handleOpenPowerUpModal(e, index)} className="absolute top-1 left-1 w-6 h-6 bg-slate-900/80 rounded-full flex items-center justify-center text-cyan-400 hover:bg-slate-700 z-10 transition-colors">
+                    {placedPowerUp ? <PowerUpIcon type={placedPowerUp.type} /> : <span className="font-bold text-base">+</span>}
+                  </button>
+                  <div className="flex flex-col items-center text-center">
+                      {coin.icon()}
+                      <span className="font-bold text-lg">{coin.ticker}</span>
+                  </div>
+                  <div className="flex gap-1 mt-1 w-full">
+                    <button onClick={() => handlePrediction(coin.id, 'UP')} className={getGridPredictionButtonClasses(prediction, 'UP')}>↑</button>
+                    <button onClick={() => handlePrediction(coin.id, 'DOWN')} className={getGridPredictionButtonClasses(prediction, 'DOWN')}>↓</button>
+                  </div>
+                </div>
+              );
+            }
+
+            return (
+              <button key={index} onClick={() => handleCellClick(index)} className="aspect-square rounded-lg flex items-center justify-center transition-colors bg-slate-800/60 hover:bg-cyan-500/20 border-2 border-dashed border-slate-700">
+                <span className="text-slate-600 font-bold text-2xl">+</span>
+              </button>
+            );
+          })}
+        </div>
+        <div className="mt-8">
+          <button onClick={() => onComplete({ grid, predictions, powerUps })} disabled={!isSetupComplete}
+            className="px-12 py-4 bg-green-500 text-slate-900 font-bold text-xl rounded-lg shadow-lg shadow-green-500/20 hover:bg-green-400 transition-all duration-300 transform hover:scale-105 font-orbitron disabled:bg-slate-600 disabled:shadow-none disabled:cursor-not-allowed disabled:scale-100"
+          >
+            LOCK IN GRID!
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SetupGridScreen;
+
+--- components/SubtypeSelectionScreen.tsx ---
+import React from 'react';
+import { GameSubtype } from '../types';
+import BackButton from './BackButton';
+
+interface SubtypeSelectionScreenProps {
+  onSelect: (subtype: GameSubtype) => void;
+  onBack: () => void;
+}
+
+const subtypes: { type: GameSubtype, name: string, description: string }[] = [
+    { type: 'L1_CHAINS', name: 'L1 Chains', description: 'The titans of crypto. Predict the movements of foundational blockchains.' },
+    { type: 'MEMES', name: 'Memes', description: 'High risk, high reward. Can you tame the chaotic energy of meme coins?' },
+    { type: 'DEFI', name: 'DeFi', description: 'The future of finance. Pick the winners and losers in the DeFi ecosystem.' },
+];
+
+const SubtypeSelectionScreen: React.FC<SubtypeSelectionScreenProps> = ({ onSelect, onBack }) => {
+  return (
+    <div className="w-full max-w-4xl mx-auto flex flex-col items-center text-center relative">
+      <BackButton onClick={onBack} />
+      <h2 className="text-4xl font-bold text-center mt-8 mb-2 font-orbitron text-cyan-400">Select Your Arena</h2>
+      <p className="text-slate-400 mb-8 max-w-xl">Choose a coin category to build your Market Grid. Each category features a unique roster of 12 coins.</p>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+        {subtypes.map(subtype => (
+          <button 
+            key={subtype.type} 
+            onClick={() => onSelect(subtype.type)} 
+            className="p-6 rounded-lg flex flex-col items-center justify-start text-center gap-2 transition-all duration-300 bg-slate-800 hover:bg-cyan-500/80 hover:scale-105 border-2 border-slate-700 hover:border-cyan-400 h-full"
+          >
+            <div className="font-bold text-3xl font-orbitron">{subtype.name}</div>
+            <div className="text-md text-slate-300 mt-2">{subtype.description}</div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default SubtypeSelectionScreen;
+
+
+--- components/TimeRangeSelectionScreen.tsx ---
+import React from 'react';
+import { Coin, TimeRangeOption } from '../types';
+import { TIME_RANGE_OPTIONS } from '../constants';
+import BackButton from './BackButton';
+
+interface TimeRangeSelectionScreenProps {
+  coin: Coin;
+  onSelect: (range: TimeRangeOption) => void;
+  onBack: () => void;
+}
+
+const TimeRangeSelectionScreen: React.FC<TimeRangeSelectionScreenProps> = ({ coin, onSelect, onBack }) => {
+  return (
+    <div className="w-full max-w-4xl mx-auto flex flex-col items-center text-center relative">
+      <BackButton onClick={onBack} />
+      <div className="flex items-center gap-4 mb-4 bg-slate-800/50 p-4 rounded-lg mt-8">
+        {coin.icon()}
+        <h2 className="text-4xl font-bold font-orbitron">{coin.name}</h2>
+      </div>
+      <h3 className="text-2xl font-bold text-cyan-400 font-orbitron">Select Game Length</h3>
+      <p className="text-slate-400 mb-8 max-w-xl">Choose the time frame for your grid. This will determine the number of candles you predict and the grid size.</p>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+        {TIME_RANGE_OPTIONS.map(range => (
+          <button 
+            key={range.key} 
+            onClick={() => onSelect(range)} 
+            className="p-6 rounded-lg flex flex-col items-center justify-center gap-2 transition-all duration-300 bg-slate-800 hover:bg-cyan-500/80 hover:scale-105 border-2 border-slate-700 hover:border-cyan-400"
+          >
+            <div className="text-center">
+                <div className="font-bold text-3xl font-orbitron">{range.label}</div>
+                <div className="text-md text-slate-300 mt-2">{range.description}</div>
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default TimeRangeSelectionScreen;
+
+
+--- components/WaitScreen.tsx ---
+import React, { useState, useEffect, useCallback } from 'react';
+import { Grid, PowerUpPlacement, Predictions, PowerUpType, SettledCoin, PatternScore, SettledResult, PredictionDirection, PowerUpScore, PowerUp, GameType, Coin, SettledCandle, TimeRangeOption, GameSubtype } from '../types';
+import { ALL_COINS, PATTERNS_4X3_MARKET, SCORING_4X3_MARKET, POWER_UP_BONUS, PATTERNS_4X4, SCORING_4X4, PATTERNS_6X4, SCORING_6X4, PATTERNS_4X3, SCORING_4X3 } from '../constants';
+import { AttackIcon, GuardIcon, RestoreIcon } from './icons';
+
+interface WaitScreenProps {
+  gameType: GameType;
+  gameSubtype: GameSubtype | null;
+  grid: Grid;
+  powerUps: PowerUpPlacement;
+  predictions: Predictions;
+  onSettle: (result: SettledResult) => void;
+  selectedCoin: Coin | null; // For Coin Grid
+  timeRange: TimeRangeOption | null; // For Coin Grid
+  coinPool: Coin[];
+}
+
+const PowerUpIcon: React.FC<{ type: PowerUpType }> = ({ type }) => {
+    if (type === 'ATTACK') return <AttackIcon />;
+    if (type === 'GUARD') return <GuardIcon />;
+    if (type === 'RESTORE') return <RestoreIcon />;
+    return null;
+}
+
+const GAME_DURATION_SECONDS = 5; // Using 5 seconds for demo instead of 24 hours/4 hours
+
+const WaitScreen: React.FC<WaitScreenProps> = ({ gameType, gameSubtype, grid, powerUps, predictions, onSettle, selectedCoin, timeRange, coinPool }) => {
+  const [timeLeft, setTimeLeft] = useState(GAME_DURATION_SECONDS);
+  const [livePrices, setLivePrices] = useState<{[coinId: string]: { change: number }}>({});
+  
+  const calculateMarketGridResults = useCallback(() => {
+    const finalChanges = coinPool.map(coin => ({
+      coinId: coin.id,
+      finalChange: (Math.random() * 20 - 10)
+    }));
+    
+    const settledCoins: SettledCoin[] = finalChanges.map(change => {
+      const prediction = predictions[change.coinId];
+      const actualDirection: PredictionDirection = change.finalChange >= 0 ? 'UP' : 'DOWN';
+      const isCorrect = prediction === actualDirection;
+      return { ...change, rank: 0, prediction, isCorrect }; // Rank is no longer used for correctness
+    });
+    
+    const gridCoinsCorrectness = grid.map((cell, index) => {
+      if (!cell.coinId) return false;
+      const powerUp = powerUps[index];
+      if ((powerUp as PowerUp)?.type === 'RESTORE') {
+        return true; // RESTORE makes the cell count as correct for patterns
+      }
+      const settledCoin = settledCoins.find(sc => sc.coinId === cell.coinId);
+      return settledCoin?.isCorrect || false;
+    });
+
+    const scores: PatternScore[] = [];
+    let totalScore = 0;
+    
+    PATTERNS_4X3_MARKET.ROWS.forEach((row, i) => {
+        const correctCount = row.filter(index => gridCoinsCorrectness[index]).length;
+        if (correctCount === 4) { scores.push({name: `Row ${i+1}`, points: SCORING_4X3_MARKET.ROW_4}); totalScore += SCORING_4X3_MARKET.ROW_4; }
+        else if (correctCount === 3) { scores.push({name: `Row ${i+1}`, points: SCORING_4X3_MARKET.ROW_3}); totalScore += SCORING_4X3_MARKET.ROW_3; }
+    });
+    PATTERNS_4X3_MARKET.COLUMNS.forEach((col, i) => {
+        const correctCount = col.filter(index => gridCoinsCorrectness[index]).length;
+        if (correctCount === 3) { scores.push({name: `Column ${i+1}`, points: SCORING_4X3_MARKET.COLUMN_3}); totalScore += SCORING_4X3_MARKET.COLUMN_3; }
+    });
+
+    const powerUpScores: PowerUpScore[] = [];
+    const sortedByVolatility = [...finalChanges].sort((a, b) => Math.abs(a.finalChange) - Math.abs(b.finalChange));
+    const lowestVolatilityCoin = sortedByVolatility[0];
+    const highestVolatilityCoin = sortedByVolatility[sortedByVolatility.length - 1];
+
+    for (const [indexStr, untypedPowerUp] of Object.entries(powerUps)) {
+        const index = parseInt(indexStr, 10);
+        const powerUp = untypedPowerUp as PowerUp;
+        const coinIdOnGrid = grid[index].coinId;
+        if (!coinIdOnGrid) continue;
+
+        let success = false;
+        if (powerUp.type === 'ATTACK') { success = coinIdOnGrid === lowestVolatilityCoin.coinId; }
+        else if (powerUp.type === 'GUARD') { success = coinIdOnGrid === highestVolatilityCoin.coinId; }
+        else if (powerUp.type === 'RESTORE') {
+             const originalPredictionResult = settledCoins.find(sc => sc.coinId === coinIdOnGrid);
+             success = originalPredictionResult ? !originalPredictionResult.isCorrect : false;
+        }
+        powerUpScores.push({ type: powerUp.type, points: success ? POWER_UP_BONUS : 0, success });
+        if (success) totalScore += POWER_UP_BONUS;
+    }
+    onSettle({ gameType, gameSubtype: gameSubtype || undefined, grid, powerUps, settledCoins, scores, powerUpScores, totalScore });
+  }, [grid, powerUps, predictions, onSettle, gameType, gameSubtype, coinPool]);
+
+  const calculateCoinGridResults = useCallback(() => {
+    if (!timeRange) return;
+
+    // 1. Simulate candles
+    const settledCandles: SettledCandle[] = Array(timeRange.candles).fill(0).map((_, i) => {
+        const open = 100 + Math.random() * 10;
+        const change = (Math.random() - 0.5) * 2; // -1 to +1
+        const close = open + change;
+        const high = Math.max(open, close) + Math.random();
+        const low = Math.min(open, close) - Math.random();
+        const prediction = predictions[i] ?? null;
+        const isCorrect = (change >= 0 && prediction === 'UP') || (change < 0 && prediction === 'DOWN');
+        return { candleIndex: i, open, close, high, low, volatility: Math.abs(close - open), prediction, isCorrect };
+    });
+
+    let totalScore = 0;
+    const scores: PatternScore[] = [];
+    
+    // 2. Select patterns and scoring based on grid size
+    let patterns, scoring;
+    switch (timeRange.candles) {
+      case 24: patterns = PATTERNS_6X4; scoring = SCORING_6X4; break;
+      case 16: patterns = PATTERNS_4X4; scoring = SCORING_4X4; break;
+      case 12: patterns = PATTERNS_4X3; scoring = SCORING_4X3; break;
+      default: return; // Should not happen
+    }
+
+    // Add base score for correct guesses
+    const correctCount = settledCandles.filter(c => c.isCorrect).length;
+    if (correctCount > 0 && scoring.CORRECT_GUESS) {
+      scores.push({ name: `${correctCount} Correct Predictions`, points: correctCount * scoring.CORRECT_GUESS });
+      totalScore += correctCount * scoring.CORRECT_GUESS;
+    }
+    
+    // 3. Score patterns
+    const isCellCorrectForPattern = (index: number) => {
+        const powerUp = powerUps[index];
+        if ((powerUp as PowerUp)?.type === 'RESTORE') return true;
+        return settledCandles[index]?.isCorrect || false;
+    }
+
+    // This is a generic pattern scoring function now
+    const scorePatterns = (patternSet: number[][], name: string, pointsMap: { [key: string]: number }) => {
+        patternSet.forEach((p, i) => {
+            const correctCount = p.filter(isCellCorrectForPattern).length;
+            const requiredCount = p.length;
+            if (correctCount === requiredCount && pointsMap[`${name.toUpperCase()}_${requiredCount}`]) {
+                scores.push({ name: `${name} ${i + 1}`, points: pointsMap[`${name.toUpperCase()}_${requiredCount}`] });
+                totalScore += pointsMap[`${name.toUpperCase()}_${requiredCount}`];
+            } else if (correctCount === requiredCount - 1 && pointsMap[`${name.toUpperCase()}_${requiredCount - 1}`]) {
+                scores.push({ name: `${name} ${i + 1}`, points: pointsMap[`${name.toUpperCase()}_${requiredCount-1}`] });
+                totalScore += pointsMap[`${name.toUpperCase()}_${requiredCount-1}`];
+            }
+        });
+    };
+
+    if (patterns.ROWS) scorePatterns(patterns.ROWS, 'Row', scoring as any);
+    if (patterns.COLUMNS) scorePatterns(patterns.COLUMNS, 'Column', scoring as any);
+    if (patterns.DIAGONALS) scorePatterns(patterns.DIAGONALS, 'Diagonal', scoring as any);
+    if (patterns.SQUARES) scorePatterns(patterns.SQUARES, 'Square', scoring as any);
+    if (patterns.FOUR_CORNERS) {
+        const fourCornersCorrect = patterns.FOUR_CORNERS[0].filter(isCellCorrectForPattern).length;
+        if (fourCornersCorrect === 4 && (scoring as any).FOUR_CORNERS_4) {
+            scores.push({ name: 'Four Corners', points: (scoring as any).FOUR_CORNERS_4 });
+            totalScore += (scoring as any).FOUR_CORNERS_4;
+        }
+    }
+    
+    // 4. Score Power-Ups
+    const powerUpScores: PowerUpScore[] = [];
+    const sortedByVolatility = [...settledCandles].sort((a, b) => a.volatility - b.volatility);
+    const lowestVolatilityCandle = sortedByVolatility[0];
+    const highestVolatilityCandle = sortedByVolatility[sortedByVolatility.length - 1];
+    
+    for (const [indexStr, untypedPowerUp] of Object.entries(powerUps)) {
+        const index = parseInt(indexStr, 10);
+        const powerUp = untypedPowerUp as PowerUp;
+        let success = false;
+        if (powerUp.type === 'ATTACK') { success = index === lowestVolatilityCandle.candleIndex; }
+        else if (powerUp.type === 'GUARD') { success = index === highestVolatilityCandle.candleIndex; }
+        else if (powerUp.type === 'RESTORE') {
+            success = !settledCandles[index].isCorrect;
+        }
+        powerUpScores.push({ type: powerUp.type, points: success ? POWER_UP_BONUS : 0, success });
+        if (success) totalScore += POWER_UP_BONUS;
+    }
+    
+    onSettle({ gameType, grid, powerUps, settledCoins: [], settledCandles, selectedCoin: selectedCoin || undefined, timeRange, scores, powerUpScores, totalScore });
+
+  }, [grid, powerUps, predictions, onSettle, gameType, selectedCoin, timeRange]);
+
+  const calculateResults = useCallback(() => {
+    if (gameType === GameType.MARKET_GRID) {
+      calculateMarketGridResults();
+    } else {
+      calculateCoinGridResults();
+    }
+  }, [gameType, calculateMarketGridResults, calculateCoinGridResults]);
+
+
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      calculateResults();
+      return;
+    }
+    const timer = setInterval(() => {
+      setTimeLeft(prev => prev - 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [timeLeft, calculateResults]);
+
+  useEffect(() => {
+    if (gameType === GameType.MARKET_GRID) {
+      const priceUpdater = setInterval(() => {
+        const newPrices: {[coinId: string]: { change: number }} = {};
+        coinPool.forEach(coin => {
+          newPrices[coin.id] = { change: Math.random() * 2 - 1 };
+        });
+        setLivePrices(newPrices);
+      }, 2000);
+      return () => clearInterval(priceUpdater);
+    }
+  }, [gameType, coinPool]);
+
+  const formatTime = (seconds: number) => {
+    const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
+    const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    return `${h}:${m}:${s}`;
+  };
+
+  const getChangeTextClasses = (change: number) => change >= 0 ? 'text-sm font-semibold text-green-400' : 'text-sm font-semibold text-red-400';
+  
+  let gridColsClass = 'grid-cols-3';
+  if (gameType === GameType.COIN_GRID && timeRange) {
+    gridColsClass = `grid-cols-${timeRange.gridCols}`;
+  } else if (gameType === GameType.MARKET_GRID) {
+    gridColsClass = `grid-cols-4`;
+  }
+
+
+  return (
+    <div className="w-full max-w-4xl mx-auto flex flex-col items-center">
+      <h2 className="text-4xl font-bold text-center mb-4 font-orbitron text-cyan-400">GRID LOCKED</h2>
+      <div className="bg-slate-800/50 p-4 rounded-lg text-center mb-8">
+        <div className="text-slate-400 text-lg">TIME UNTIL SETTLEMENT</div>
+        <div className="text-5xl font-bold font-orbitron text-yellow-400 tracking-wider">{formatTime(timeLeft)}</div>
+      </div>
+      
+      <div className={`grid ${gridColsClass} gap-2 w-full max-w-4xl`}>
+        {grid.map((cell, index) => {
+          const coin = cell.coinId ? ALL_COINS.find(c => c.id === cell.coinId) : null;
+          const placedPowerUp = powerUps[index];
+          const liveData = coin ? livePrices[coin.id] : null;
+          
+          return (
+            <div key={index} className="aspect-square rounded-lg flex items-center justify-center bg-slate-800 border-2 border-slate-600 relative p-1">
+              {coin && (
+                <div className="flex flex-col items-center text-center">
+                  {gameType === GameType.COIN_GRID ? (
+                     <span className="font-bold text-lg leading-tight"># {index + 1}</span>
+                  ) : (
+                    <>
+                    {coin.icon()}
+                    <span className="font-bold text-lg leading-tight">{coin.ticker}</span>
+                    {liveData && (
+                        <span className={getChangeTextClasses(liveData.change)}>
+                            {liveData.change >= 0 ? '+' : ''}{liveData.change.toFixed(2)}%
+                        </span>
+                    )}
+                    </>
+                  )}
+                </div>
+              )}
+              {placedPowerUp && (
+                  <div className="absolute top-1 right-1 bg-slate-900/80 rounded-full p-1">
+                    <PowerUpIcon type={placedPowerUp.type} />
+                  </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+       {gameType === GameType.COIN_GRID && selectedCoin && (
+          <div className="mt-4 flex items-center gap-3 bg-slate-800/50 p-3 rounded-lg">
+              {selectedCoin.icon()}
+              <h3 className="text-2xl font-bold font-orbitron">{selectedCoin.name} ({selectedCoin.ticker}) - {timeRange?.label}</h3>
+          </div>
+       )}
+    </div>
+  );
+};
+
+export default WaitScreen;
+
+--- components/WelcomeScreen.tsx ---
+
+import React from 'react';
+import { GameType } from '../types';
+
+interface WelcomeScreenProps {
+  onStart: (gameType: GameType) => void;
+}
+
+const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onStart }) => {
+  return (
+    <div className="text-center flex flex-col items-center justify-center p-8 rounded-lg bg-slate-800/50 shadow-2xl shadow-cyan-500/10">
+      <h1 className="text-6xl md:text-8xl font-bold text-cyan-400 font-orbitron tracking-widest">GRIDLOCK</h1>
+      <p className="mt-4 text-lg md:text-xl text-slate-300 max-w-2xl">
+        Predict crypto markets. Build your grid. Outsmart the competition.
+      </p>
+      <p className="mt-2 text-sm text-slate-400 max-w-md">
+        Choose your game mode and prove your market foresight.
+      </p>
+      <div className="mt-12 flex flex-col md:flex-row gap-6">
+        <button
+          onClick={() => onStart(GameType.MARKET_GRID)}
+          className="px-10 py-4 bg-cyan-500 text-slate-900 font-bold text-lg rounded-lg shadow-lg shadow-cyan-500/20 hover:bg-cyan-400 transition-all duration-300 transform hover:scale-105 font-orbitron"
+        >
+          MARKET GRID
+        </button>
+        <button
+          onClick={() => onStart(GameType.COIN_GRID)}
+          className="px-10 py-4 bg-teal-500 text-slate-900 font-bold text-lg rounded-lg shadow-lg shadow-teal-500/20 hover:bg-teal-400 transition-all duration-300 transform hover:scale-105 font-orbitron"
+        >
+          COIN GRID
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default WelcomeScreen;
+
+--- metadata.json ---
+{
+  "name": "GRIDLOCK - Crypto Prediction Game",
+  "description": "A strategic Tic-Tac-Toe-style game where you predict the daily price movements of 12 cryptocurrencies. Place your predictions on a 3x3 grid, form patterns, and score points based on your accuracy.",
+  "requestFramePermissions": []
+}
+
+--- types.ts ---
+// Fix: Import React to provide the React namespace for React.ReactNode.
+import React from 'react';
+
+export interface Coin {
+  id: string;
+  name: string;
+  ticker: string;
+  icon: () => React.ReactNode;
+}
+
+export enum GameType {
+  MARKET_GRID = 'market_grid',
+  COIN_GRID = 'coin_grid',
+}
+
+export type GameSubtype = 'L1_CHAINS' | 'MEMES' | 'DEFI';
+
+export enum GameState {
+  WELCOME = 'welcome',
+  // Market Grid States
+  SUBTYPE_SELECTION = 'subtype_selection',
+  SETUP_GRID = 'setup_grid',
+  // Coin Grid States
+  COIN_SELECTION = 'coin_selection',
+  TIME_RANGE_SELECTION = 'time_range_selection',
+  SETUP_COIN_GRID = 'setup_coin_grid',
+  // Shared States
+  WAIT = 'wait',
+  RESULTS = 'results',
+}
+
+export interface TimeRangeOption {
+  key: '24H' | '4H' | '1H';
+  label: string;
+  description: string;
+  candles: number;
+  interval: '1h' | '15m' | '5m';
+  gridCols: number;
+}
+
+export type PredictionDirection = 'UP' | 'DOWN';
+
+export type Predictions = {
+  [key: string]: PredictionDirection | null;
+};
+
+export type PowerUpType = 'ATTACK' | 'GUARD' | 'RESTORE';
+
+export interface GridCell {
+  coinId: string | null;
+  // For coin grid, coinId is constant, but we'll use an index as key
+  candleIndex?: number;
+}
+
+export type Grid = GridCell[];
+
+export interface PowerUp {
+    type: PowerUpType;
+}
+
+// Key is grid index, value is the PowerUp object
+export type PowerUpPlacement = {
+    [gridIndex: number]: PowerUp;
+};
+
+
+export interface SettledCoin {
+    coinId: string;
+    finalChange: number;
+    rank: number; // For Market Grid
+    prediction: PredictionDirection | null;
+    isCorrect: boolean;
+}
+
+// For Coin Grid
+export interface SettledCandle {
+    candleIndex: number;
+    open: number;
+    close: number;
+    high: number;
+    low: number;
+    volatility: number; // abs(close-open)
+    prediction: PredictionDirection | null;
+    isCorrect: boolean;
+}
+
+
+export interface PatternScore {
+    name: string;
+    points: number;
+}
+
+export interface PowerUpScore {
+    type: PowerUpType;
+    points: number;
+    success: boolean;
+}
+
+export interface SettledResult {
+    gameType: GameType;
+    gameSubtype?: GameSubtype;
+    grid: Grid;
+    powerUps: PowerUpPlacement;
+    settledCoins: SettledCoin[]; // For market grid
+    settledCandles?: SettledCandle[]; // For coin grid
+    selectedCoin?: Coin; // For coin grid
+    timeRange?: TimeRangeOption; // For coin grid
+    scores: PatternScore[];
+    powerUpScores: PowerUpScore[];
+    totalScore: number;
+}
+
+--- tsconfig.json ---
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
+    "module": "ESNext",
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "skipLibCheck": true,
+    "types": [
+      "node"
+    ],
+    "moduleResolution": "bundler",
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "allowJs": true,
+    "jsx": "react-jsx",
+    "paths": {
+      "@/*": [
+        "./*"
+      ]
+    },
+    "allowImportingTsExtensions": true,
+    "noEmit": true
+  }
+}
+
+--- index.tsx ---
+
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+
+const rootElement = document.getElementById('root');
+if (!rootElement) {
+  throw new Error("Could not find root element to mount to");
+}
+
+const root = ReactDOM.createRoot(rootElement);
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+
+--- index.html ---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GRIDLOCK</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Roboto', sans-serif;
+      }
+      h1, h2, h3, h4, h5, h6, .font-orbitron {
+        font-family: 'Orbitron', sans-serif;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-slate-900 text-slate-100">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
+
+--- constants.ts ---
+import React from 'react';
+import { Coin, GameSubtype, TimeRangeOption } from './types';
+import { 
+    EnaIcon, FartcoinIcon, PumpIcon, PepeIcon,
+    BtcIcon, EthIcon, SolIcon, HypeIcon, DogeIcon, XrpIcon, UniIcon, AaveIcon,
+    ZecIcon, AvaxIcon, BnbIcon, SuiIcon, LtcIcon, AptIcon, TonIcon,
+    LinkIcon, WlfiIcon, SnxIcon, MetIcon, CrvIcon, LdoIcon, CakeIcon, JupIcon,
+    TrumpIcon, PenguIcon, WifIcon, PurrIcon, ShibIcon, PopcatIcon, MelaniaIcon, AixbtIcon, MoondengIcon
+} from './components/icons';
+
+export const COIN_CATEGORIES: { [key in GameSubtype]: Coin[] } = {
+  L1_CHAINS: [
+    { id: 'BTC', name: 'Bitcoin', ticker: 'BTC', icon: () => React.createElement(BtcIcon) },
+    { id: 'ETH', name: 'Ethereum', ticker: 'ETH', icon: () => React.createElement(EthIcon) },
+    { id: 'HYPE', name: 'Hype', ticker: 'HYPE', icon: () => React.createElement(HypeIcon) },
+    { id: 'SOL', name: 'Solana', ticker: 'SOL', icon: () => React.createElement(SolIcon) },
+    { id: 'XRP', name: 'Ripple', ticker: 'XRP', icon: () => React.createElement(XrpIcon) },
+    { id: 'ZEC', name: 'Zcash', ticker: 'ZEC', icon: () => React.createElement(ZecIcon) },
+    { id: 'AVAX', name: 'Avalanche', ticker: 'AVAX', icon: () => React.createElement(AvaxIcon) },
+    { id: 'BNB', name: 'Binance Coin', ticker: 'BNB', icon: () => React.createElement(BnbIcon) },
+    { id: 'SUI', name: 'Sui', ticker: 'SUI', icon: () => React.createElement(SuiIcon) },
+    { id: 'LTC', name: 'Litecoin', ticker: 'LTC', icon: () => React.createElement(LtcIcon) },
+    { id: 'APT', name: 'Aptos', ticker: 'APT', icon: () => React.createElement(AptIcon) },
+    { id: 'TON', name: 'Toncoin', ticker: 'TON', icon: () => React.createElement(TonIcon) },
+  ],
+  DEFI: [
+    { id: 'PUMP', name: 'Pump', ticker: 'PUMP', icon: () => React.createElement(PumpIcon) },
+    { id: 'ENA', name: 'Ethena', ticker: 'ENA', icon: () => React.createElement(EnaIcon) },
+    { id: 'LINK', name: 'Chainlink', ticker: 'LINK', icon: () => React.createElement(LinkIcon) },
+    { id: 'AAVE', name: 'Aave', ticker: 'AAVE', icon: () => React.createElement(AaveIcon) },
+    { id: 'WLFI', name: 'WLFI', ticker: 'WLFI', icon: () => React.createElement(WlfiIcon) },
+    { id: 'SNX', name: 'Synthetix', ticker: 'SNX', icon: () => React.createElement(SnxIcon) },
+    { id: 'MET', name: 'Metronome', ticker: 'MET', icon: () => React.createElement(MetIcon) },
+    { id: 'UNI', name: 'Uniswap', ticker: 'UNI', icon: () => React.createElement(UniIcon) },
+    { id: 'CRV', name: 'Curve DAO', ticker: 'CRV', icon: () => React.createElement(CrvIcon) },
+    { id: 'LDO', name: 'Lido DAO', ticker: 'LDO', icon: () => React.createElement(LdoIcon) },
+    { id: 'CAKE', name: 'PancakeSwap', ticker: 'CAKE', icon: () => React.createElement(CakeIcon) },
+    { id: 'JUP', name: 'Jupiter', ticker: 'JUP', icon: () => React.createElement(JupIcon) },
+  ],
+  MEMES: [
+    { id: 'FART', name: 'Fartcoin', ticker: 'FART', icon: () => React.createElement(FartcoinIcon) },
+    { id: 'DOGE', name: 'Dogecoin', ticker: 'DOGE', icon: () => React.createElement(DogeIcon) },
+    { id: 'PEPE', name: 'Pepe', ticker: 'PEPE', icon: () => React.createElement(PepeIcon) },
+    { id: 'TRUMP', name: 'TRUMP', ticker: 'TRUMP', icon: () => React.createElement(TrumpIcon) },
+    { id: 'PENGU', name: 'PENGU', ticker: 'PENGU', icon: () => React.createElement(PenguIcon) },
+    { id: 'WIF', name: 'dogwifhat', ticker: 'WIF', icon: () => React.createElement(WifIcon) },
+    { id: 'PURR', name: 'Purr', ticker: 'PURR', icon: () => React.createElement(PurrIcon) },
+    { id: 'SHIB', name: 'Shiba Inu', ticker: 'SHIB', icon: () => React.createElement(ShibIcon) },
+    { id: 'POPCAT', name: 'Popcat', ticker: 'POPCAT', icon: () => React.createElement(PopcatIcon) },
+    { id: 'MELANIA', name: 'Melania', ticker: 'MELANIA', icon: () => React.createElement(MelaniaIcon) },
+    { id: 'AIXBT', name: 'AIXBT', ticker: 'AIXBT', icon: () => React.createElement(AixbtIcon) },
+    { id: 'MOONDENG', name: 'MoonDeng', ticker: 'MOONDENG', icon: () => React.createElement(MoondengIcon) },
+  ]
+};
+
+// A flat array for screens that need to display all coins, like Coin Grid selection
+export const ALL_COINS: Coin[] = Object.values(COIN_CATEGORIES).flat();
+
+
+export const POWER_UPS = [
+  { type: 'ATTACK', name: 'Attack' },
+  { type: 'GUARD', name: 'Guard' },
+  { type: 'RESTORE', name: 'Restore' },
+] as const;
+
+
+// MARKET GRID (3x3 - OLD)
+export const PATTERNS = {
+    ROWS: [[0, 1, 2], [3, 4, 5], [6, 7, 8]],
+    COLUMNS: [[0, 3, 6], [1, 4, 7], [2, 5, 8]],
+    DIAGONALS: [[0, 4, 8], [2, 4, 6]],
+    FOUR_CORNERS: [[0, 2, 6, 8]],
+    CENTER_CROSS: [[1, 3, 4, 5, 7]],
+};
+export const SCORING = {
+    ROW_3: 2500, COLUMN_3: 2500, DIAGONAL_3: 4500,
+    ROW_2: 500, COLUMN_2: 500, DIAGONAL_2: 750,
+    FOUR_CORNERS_4: 2400, FOUR_CORNERS_3: 600,
+    CENTER_CROSS_5: 7000, CENTER_CROSS_4: 2000, CENTER_CROSS_3: 500,
+};
+
+// MARKET GRID (4x3 - NEW)
+export const PATTERNS_4X3_MARKET = {
+    ROWS: [[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11]],
+    COLUMNS: [[0, 4, 8], [1, 5, 9], [2, 6, 10], [3, 7, 11]],
+};
+export const SCORING_4X3_MARKET = {
+    ROW_4: 4000, ROW_3: 800,
+    COLUMN_3: 3000,
+};
+
+export const TIME_RANGE_OPTIONS: TimeRangeOption[] = [
+  { key: '24H', label: '24 Hour Grid', description: '24 x 1-hour candles', candles: 24, interval: '1h', gridCols: 6 },
+  { key: '4H', label: '4 Hour Grid', description: '16 x 15-minute candles', candles: 16, interval: '15m', gridCols: 4 },
+  { key: '1H', label: '1 Hour Grid', description: '12 x 5-minute candles', candles: 12, interval: '5m', gridCols: 4 },
+];
+
+// COIN GRID (6x4 - 24 candles)
+export const PATTERNS_6X4 = {
+    ROWS: [
+        [0, 1, 2, 3, 4, 5], [6, 7, 8, 9, 10, 11],
+        [12, 13, 14, 15, 16, 17], [18, 19, 20, 21, 22, 23]
+    ],
+    COLUMNS: [
+        [0, 6, 12, 18], [1, 7, 13, 19], [2, 8, 14, 20],
+        [3, 9, 15, 21], [4, 10, 16, 22], [5, 11, 17, 23]
+    ],
+    SQUARES: [
+      [0, 1, 6, 7], [1, 2, 7, 8], [2, 3, 8, 9], [3, 4, 9, 10], [4, 5, 10, 11],
+      [6, 7, 12, 13], [7, 8, 13, 14], [8, 9, 14, 15], [9, 10, 15, 16], [10, 11, 16, 17],
+      [12, 13, 18, 19], [13, 14, 19, 20], [14, 15, 20, 21], [15, 16, 21, 22], [16, 17, 22, 23]
+    ]
+};
+export const SCORING_6X4 = {
+    CORRECT_GUESS: 25,
+    ROW_6: 12000, ROW_5: 4000, ROW_4: 1000,
+    COLUMN_4: 6000, COLUMN_3: 1200,
+    SQUARE_4: 3500,
+};
+
+// COIN GRID (4x4 - 16 candles)
+export const PATTERNS_4X4 = {
+    ROWS: [[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15]],
+    COLUMNS: [[0, 4, 8, 12], [1, 5, 9, 13], [2, 6, 10, 14], [3, 7, 11, 15]],
+    DIAGONALS: [[0, 5, 10, 15], [3, 6, 9, 12]],
+    FOUR_CORNERS: [[0, 3, 12, 15]],
+    SQUARES: [
+      [0, 1, 4, 5], [1, 2, 5, 6], [2, 3, 6, 7],
+      [4, 5, 8, 9], [5, 6, 9, 10], [6, 7, 10, 11],
+      [8, 9, 12, 13], [9, 10, 13, 14], [10, 11, 14, 15]
+    ]
+};
+export const SCORING_4X4 = {
+    CORRECT_GUESS: 50,
+    ROW_4: 5000, ROW_3: 1000,
+    COLUMN_4: 5000, COLUMN_3: 1000,
+    DIAGONAL_4: 8000, DIAGONAL_3: 1500,
+    FOUR_CORNERS_4: 4000,
+    SQUARE_4: 3000,
+};
+
+// COIN GRID (4x3 - 12 candles)
+export const PATTERNS_4X3 = {
+    ROWS: [[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11]],
+    COLUMNS: [[0, 4, 8], [1, 5, 9], [2, 6, 10], [3, 7, 11]],
+    SQUARES: [
+        [0, 1, 4, 5], [1, 2, 5, 6], [2, 3, 6, 7],
+        [4, 5, 8, 9], [5, 6, 9, 10], [6, 7, 10, 11]
+    ]
+};
+export const SCORING_4X3 = {
+    CORRECT_GUESS: 75,
+    ROW_4: 4000, ROW_3: 800,
+    COLUMN_3: 3000,
+    SQUARE_4: 2500,
+};
+
+export const POWER_UP_BONUS = 1000;
+
+--- App.tsx ---
+import React, { useState, useCallback } from 'react';
+import { GameState, Predictions, Grid, PowerUpPlacement, SettledResult, GameType, Coin, TimeRangeOption, GameSubtype } from './types';
+import WelcomeScreen from './components/WelcomeScreen';
+import SetupGridScreen from './components/SetupGridScreen';
+import WaitScreen from './components/WaitScreen';
+import ResultsScreen from './components/ResultsScreen';
+import CoinSelectionScreen from './components/CoinSelectionScreen';
+import TimeRangeSelectionScreen from './components/TimeRangeSelectionScreen';
+import SetupCoinGridScreen from './components/SetupCoinGridScreen';
+import SubtypeSelectionScreen from './components/SubtypeSelectionScreen';
+import { COIN_CATEGORIES, ALL_COINS } from './constants';
+
+
+const App: React.FC = () => {
+  const [gameState, setGameState] = useState<GameState>(GameState.WELCOME);
+  const [gameType, setGameType] = useState<GameType | null>(null);
+  const [gameSubtype, setGameSubtype] = useState<GameSubtype | null>(null);
+  const [selectedCoin, setSelectedCoin] = useState<Coin | null>(null);
+  const [timeRange, setTimeRange] = useState<TimeRangeOption | null>(null);
+
+  const [predictions, setPredictions] = useState<Predictions>({});
+  const [grid, setGrid] = useState<Grid>([]);
+  const [powerUps, setPowerUps] = useState<PowerUpPlacement>({});
+  const [settledResult, setSettledResult] = useState<SettledResult | null>(null);
+
+  const resetGame = () => {
+    setPredictions({});
+    setGrid([]);
+    setPowerUps({});
+    setSettledResult(null);
+    setGameType(null);
+    setGameSubtype(null);
+    setSelectedCoin(null);
+    setTimeRange(null);
+  };
+  
+  const startGame = (type: GameType) => {
+    resetGame();
+    setGameType(type);
+    if (type === GameType.MARKET_GRID) {
+      setGameState(GameState.SUBTYPE_SELECTION);
+    } else if (type === GameType.COIN_GRID) {
+      setGameState(GameState.COIN_SELECTION);
+    }
+  };
+
+  const handleSubtypeSelected = (subtype: GameSubtype) => {
+    setGameSubtype(subtype);
+    setGrid(Array(12).fill({ coinId: null }));
+    setGameState(GameState.SETUP_GRID);
+  };
+
+  const handleCoinSelected = (coin: Coin) => {
+    setSelectedCoin(coin);
+    setGameState(GameState.TIME_RANGE_SELECTION);
+  };
+
+  const handleTimeRangeSelected = (range: TimeRangeOption) => {
+    setTimeRange(range);
+    setGrid(Array(range.candles).fill({ coinId: selectedCoin!.id, candleIndex: 0 }).map((cell, i) => ({...cell, candleIndex: i})));
+    setGameState(GameState.SETUP_COIN_GRID);
+  };
+
+  const handleSetupComplete = (data: { grid: Grid, predictions: Predictions, powerUps: PowerUpPlacement }) => {
+    setGrid(data.grid);
+    setPredictions(data.predictions);
+    setPowerUps(data.powerUps);
+    setGameState(GameState.WAIT);
+  };
+
+  const handleGameSettled = (result: SettledResult) => {
+    setSettledResult(result);
+    setGameState(GameState.RESULTS);
+  };
+
+  const playAgain = () => {
+    resetGame();
+    setGameState(GameState.WELCOME);
+  };
+
+  const goBack = useCallback(() => {
+    switch (gameState) {
+      case GameState.SUBTYPE_SELECTION:
+      case GameState.COIN_SELECTION:
+        playAgain();
+        break;
+      case GameState.SETUP_GRID:
+        setGameState(GameState.SUBTYPE_SELECTION);
+        setGameSubtype(null);
+        setGrid([]);
+        setPredictions({});
+        setPowerUps({});
+        break;
+      case GameState.TIME_RANGE_SELECTION:
+        setGameState(GameState.COIN_SELECTION);
+        setSelectedCoin(null);
+        break;
+      case GameState.SETUP_COIN_GRID:
+        setGameState(GameState.TIME_RANGE_SELECTION);
+        setTimeRange(null);
+        setGrid([]);
+        setPredictions({});
+        setPowerUps({});
+        break;
+      default:
+        break;
+    }
+  }, [gameState]);
+
+  const renderScreen = () => {
+    switch (gameState) {
+      case GameState.WELCOME:
+        return <WelcomeScreen onStart={startGame} />;
+      
+      // Market Grid Flow
+      case GameState.SUBTYPE_SELECTION:
+        return <SubtypeSelectionScreen onSelect={handleSubtypeSelected} onBack={goBack} />;
+      case GameState.SETUP_GRID:
+        return gameSubtype && <SetupGridScreen coinPool={COIN_CATEGORIES[gameSubtype]} onComplete={handleSetupComplete} onBack={goBack} />;
+
+      // Coin Grid Flow
+      case GameState.COIN_SELECTION:
+        return <CoinSelectionScreen onSelect={handleCoinSelected} onBack={goBack} />;
+      case GameState.TIME_RANGE_SELECTION:
+        return selectedCoin && <TimeRangeSelectionScreen coin={selectedCoin} onSelect={handleTimeRangeSelected} onBack={goBack} />;
+      case GameState.SETUP_COIN_GRID:
+        return selectedCoin && timeRange && <SetupCoinGridScreen coin={selectedCoin} timeRange={timeRange} onComplete={handleSetupComplete} onBack={goBack} />;
+
+      // Shared Flow
+      case GameState.WAIT:
+        return <WaitScreen 
+                  gameType={gameType!} 
+                  gameSubtype={gameSubtype}
+                  coinPool={gameType === GameType.MARKET_GRID && gameSubtype ? COIN_CATEGORIES[gameSubtype] : ALL_COINS}
+                  grid={grid} 
+                  powerUps={powerUps} 
+                  predictions={predictions} 
+                  onSettle={handleGameSettled}
+                  selectedCoin={selectedCoin}
+                  timeRange={timeRange}
+                />;
+      case GameState.RESULTS:
+        return settledResult && <ResultsScreen result={settledResult} onPlayAgain={playAgain} />;
+      default:
+        return <WelcomeScreen onStart={startGame} />;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-900 text-slate-100 p-4 sm:p-6 md:p-8 flex flex-col items-center w-full">
+      {gameState !== GameState.WELCOME && (
+        <header className="w-full max-w-6xl flex justify-between items-center mb-8">
+          <h1 
+            className="text-3xl md:text-4xl font-bold text-cyan-400 font-orbitron cursor-pointer transition-colors hover:text-cyan-300"
+            onClick={playAgain}
+          >
+            GRIDLOCK
+          </h1>
+          <button 
+            onClick={playAgain} 
+            className="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold transition-colors"
+          >
+            Home
+          </button>
+        </header>
+      )}
+      <main className="w-full flex-grow flex flex-col items-center justify-center">
+        {renderScreen()}
+      </main>
+    </div>
+  );
+};
+
+export default App;
+
+--- components/WelcomeScreen.tsx ---
+
+import React from 'react';
+import { GameType } from '../types';
+
+interface WelcomeScreenProps {
+  onStart: (gameType: GameType) => void;
+}
+
+const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onStart }) => {
+  return (
+    <div className="text-center flex flex-col items-center justify-center p-8 rounded-lg bg-slate-800/50 shadow-2xl shadow-cyan-500/10">
+      <h1 className="text-6xl md:text-8xl font-bold text-cyan-400 font-orbitron tracking-widest">GRIDLOCK</h1>
+      <p className="mt-4 text-lg md:text-xl text-slate-300 max-w-2xl">
+        Predict crypto markets. Build your grid. Outsmart the competition.
+      </p>
+      <p className="mt-2 text-sm text-slate-400 max-w-md">
+        Choose your game mode and prove your market foresight.
+      </p>
+      <div className="mt-12 flex flex-col md:flex-row gap-6">
+        <button
+          onClick={() => onStart(GameType.MARKET_GRID)}
+          className="px-10 py-4 bg-cyan-500 text-slate-900 font-bold text-lg rounded-lg shadow-lg shadow-cyan-500/20 hover:bg-cyan-400 transition-all duration-300 transform hover:scale-105 font-orbitron"
+        >
+          MARKET GRID
+        </button>
+        <button
+          onClick={() => onStart(GameType.COIN_GRID)}
+          className="px-10 py-4 bg-teal-500 text-slate-900 font-bold text-lg rounded-lg shadow-lg shadow-teal-500/20 hover:bg-teal-400 transition-all duration-300 transform hover:scale-105 font-orbitron"
+        >
+          COIN GRID
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default WelcomeScreen;
+
+--- README.md ---
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+</div>
+
+# Run and deploy your AI Studio app
+
+This contains everything you need to run your app locally.
+
+View your app in AI Studio: https://ai.studio/apps/drive/19EUcj7LTrNW8tJvMSHZ4Wsi1LU4hWgGe
+
+## Run Locally
+
+**Prerequisites:**  Node.js
+
+
+1. Install dependencies:
+   `npm install`
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Run the app:
+   `npm run dev`
+
+
+--- package.json ---
+{
+  "name": "gridlock---crypto-prediction-game",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react-dom": "^19.2.0",
+    "react": "^19.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.0"
+  }
+}
+
+
