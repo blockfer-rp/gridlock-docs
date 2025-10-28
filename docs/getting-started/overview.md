@@ -126,15 +126,15 @@ TOTAL SCORE:                     13,100 points
 Ready to play? Follow this learning path:
 
 ### For Complete Beginners
-1. [How to Play](how-to-play) - Step-by-step walkthrough
-2. [Market Grid Mode](../game-modes/market-grid) - Start here (easier to learn)
-3. [Glossary](glossary) - Reference for game terms
+1. [How to Play](/getting-started/how-to-play) - Step-by-step walkthrough
+2. [Market Grid Mode](/game-modes/market-grid) - Start here (easier to learn)
+3. [Glossary](/getting-started/glossary) - Reference for game terms
 
 ### For Strategy Optimization
-4. [Coin Grid Mode](../game-modes/coin-grid) - Advanced directional predictions
-5. [Power-Ups Guide](../features/power-ups) - Strategic deployment tactics
-6. [Pattern Reference](../features/patterns) - Complete pattern catalog
-7. [Scoring Details](../features/scoring) - Comprehensive point calculations
+4. [Coin Grid Mode](/game-modes/coin-grid) - Advanced directional predictions
+5. [Power-Ups Guide](/features/power-ups) - Strategic deployment tactics
+6. [Pattern Reference](/features/patterns) - Complete pattern catalog
+7. [Scoring Details](/features/scoring) - Comprehensive point calculations
 
 ## Key Success Principles
 
@@ -156,9 +156,9 @@ Play during active trading hours (market opens, major news) for more predictable
 ## Next Steps
 
 Choose your starting point:
-- **New Players**: [How to Play Guide](how-to-play)
-- **Visual Learners**: [Game Modes Overview](../game-modes/market-grid)
-- **Strategy Seekers**: [Pattern Strategy Guide](../features/patterns)
+- **New Players**: [How to Play Guide](/getting-started/how-to-play)
+- **Visual Learners**: [Game Modes Overview](/game-modes/market-grid)
+- **Strategy Seekers**: [Pattern Strategy Guide](/features/patterns)
 
 ---
 
