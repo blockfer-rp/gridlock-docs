@@ -582,13 +582,13 @@ Dogecoin (DOGE), Pepe (PEPE), Shiba Inu (SHIB), dogwifhat (WIF), Fartcoin (FART)
 
 ## Related Documentation
 
-- [Overview](/getting-started/overview) - Game introduction
-- [How to Play](/getting-started/how-to-play) - Step-by-step guide
-- [Market Grid Rules](/game-modes/market-grid) - Detailed Market Grid mechanics
-- [Coin Grid Rules](/game-modes/coin-grid) - Detailed Coin Grid mechanics
-- [Pattern Guide](/features/patterns) - Complete pattern catalog
-- [Power-Up Strategy](/features/power-ups) - Advanced power-up tactics
-- [Scoring Reference](/features/scoring) - Complete scoring calculations
+- [Overview](/) - Game introduction
+- [How to Play](how-to-play) - Step-by-step guide
+- [Market Grid Rules](../game-modes/market-grid) - Detailed Market Grid mechanics
+- [Coin Grid Rules](../game-modes/coin-grid) - Detailed Coin Grid mechanics
+- [Pattern Guide](../features/patterns) - Complete pattern catalog
+- [Power-Up Strategy](../features/power-ups) - Advanced power-up tactics
+- [Scoring Reference](../features/scoring) - Complete scoring calculations
 
 ---
 

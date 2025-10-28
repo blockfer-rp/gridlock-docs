@@ -464,14 +464,14 @@ When your game settles, the Results Screen displays:
 ## Next Steps
 
 ### Deepen Your Understanding
-- [Market Grid Detailed Rules](/game-modes/market-grid) - Complete Market Grid reference
-- [Coin Grid Detailed Rules](/game-modes/coin-grid) - Full Coin Grid mechanics
-- [Pattern Catalog](/features/patterns) - All patterns with scoring tables
-- [Power-Up Strategy](/features/power-ups) - Advanced power-up tactics
+- [Market Grid Detailed Rules](../game-modes/market-grid) - Complete Market Grid reference
+- [Coin Grid Detailed Rules](../game-modes/coin-grid) - Full Coin Grid mechanics
+- [Pattern Catalog](../features/patterns) - All patterns with scoring tables
+- [Power-Up Strategy](../features/power-ups) - Advanced power-up tactics
 
 ### Quick Reference
-- [Glossary](/getting-started/glossary) - Game terminology reference
-- [Scoring Guide](/features/scoring) - Complete point calculations
+- [Glossary](glossary) - Game terminology reference
+- [Scoring Guide](../features/scoring) - Complete point calculations
 
 ---
 
