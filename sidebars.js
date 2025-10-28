@@ -18,7 +18,7 @@ const sidebars = {
     {
       type: 'category',
       label: 'Getting Started',
-      items: ['getting-started/overview', 'getting-started/how-to-play'],
+      items: ['getting-started/overview', 'getting-started/how-to-play', 'getting-started/glossary'],
     },
     {
       type: 'category',
