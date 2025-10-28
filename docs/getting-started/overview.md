@@ -57,11 +57,11 @@ Your final score is calculated from:
 
 Ready to play? Here's what you need to know:
 
-1. [How to Play](/docs/getting-started/how-to-play) - Step-by-step guide
-2. [Market Grid Mode](/docs/game-modes/market-grid) - Detailed rules
-3. [Coin Grid Mode](/docs/game-modes/coin-grid) - Detailed rules
-4. [Power-Ups](/docs/features/power-ups) - Strategic abilities
-5. [Patterns](/docs/features/patterns) - Pattern types and bonuses
+1. [How to Play](/getting-started/how-to-play) - Step-by-step guide
+2. [Market Grid Mode](/game-modes/market-grid) - Detailed rules
+3. [Coin Grid Mode](/game-modes/coin-grid) - Detailed rules
+4. [Power-Ups](/features/power-ups) - Strategic abilities
+5. [Patterns](/features/patterns) - Pattern types and bonuses
 
 ## Key Insight
 

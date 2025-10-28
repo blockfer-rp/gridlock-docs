@@ -130,7 +130,7 @@ When the game completes:
 
 ## Next Steps
 
-- [Market Grid Detailed Rules](/docs/game-modes/market-grid)
-- [Coin Grid Detailed Rules](/docs/game-modes/coin-grid)
-- [Power-Up Strategy Guide](/docs/features/power-ups)
-- [Pattern Scoring Reference](/docs/features/patterns)
+- [Market Grid Detailed Rules](/game-modes/market-grid)
+- [Coin Grid Detailed Rules](/game-modes/coin-grid)
+- [Power-Up Strategy Guide](/features/power-ups)
+- [Pattern Scoring Reference](/features/patterns)
