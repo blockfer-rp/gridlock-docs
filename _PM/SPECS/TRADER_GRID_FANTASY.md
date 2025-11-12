@@ -25,8 +25,14 @@
 
 **Revenue Model:**
 - Entry fees: $10-$100 per competition (90% to prize pool, 5% to platform, 5% to jackpot pool)
-- Builder fees: 3 bps on all trade volume (collected by Hyperliquid, shared with platform)
+- Builder code fees: Up to 10 bps (0.1%) on perpetual trade volume (user-approved, claimable via Hyperliquid referral system)
 - Target: $100K-$500K monthly recurring revenue (Year 1)
+
+**Builder Code Integration:**
+- ✅ Platform registers as Hyperliquid builder (requires 100 USDC minimum account balance)
+- ✅ Users approve builder fee (one-time ApproveBuilderFee action, signed by main wallet)
+- ✅ All competition trades tagged with platform builder code (fee collected per-order on-chain)
+- ✅ Fees claimed through Hyperliquid referral reward process (tracked via referral state API)
 
 **Regulatory Note:**
 - ⚠️ **USA BLOCKED** until legal clarity is established
@@ -40,16 +46,16 @@
 ### 1.1 Three-Phase Competition Structure
 
 ```
-Phase 1: PRE-GAME (Roster Building) - 15 minutes before start
+Phase 1: PRE-GAME (Roster Building) - Anytime before competition start
     ↓
-Phase 2: LIVE TRADING - 1hr, 4hr, or 24hr duration
+Phase 2: LIVE TRADING - 1hr, 4hr, or 8hr duration
     ↓
 Phase 3: SETTLEMENT & RESULTS - Instant calculation
 ```
 
 ### 1.2 Phase 1: Pre-Game (Roster Building)
 
-**Duration:** 15 minutes before competition start  
+**Duration:** Continuous roster building on rotation (lock anytime before game starts)
 **Player Actions:**
 
 1. **View Coin Pool**
@@ -117,7 +123,7 @@ Phase 3: SETTLEMENT & RESULTS - Instant calculation
 **Eligibility Requirements for Coin Pool:**
 - ✅ **ONLY coins listed on Hyperliquid DEX**
 - ✅ Minimum 24hr trading volume: $10M (on Hyperliquid)
-- ✅ Minimum market cap: $100M
+- ✅ Minimum market cap: $10M+ (still debatable)
 - ✅ Sufficient liquidity for leverage trading (up to 20x)
 - ❌ No stablecoins (USDT, USDC, etc.)
 - ❌ No halted/delisted coins
@@ -134,7 +140,7 @@ Phase 3: SETTLEMENT & RESULTS - Instant calculation
 - ✅ **Entry Fee ($10-$100)**: Separate payment for prize pool, NOT used for trading
 - ✅ **Trading Capital ($1,000 USDC)**: Standardized margin provided per player
 - ✅ **Profits/Losses**: Kept by player (winners get trading PnL + prize pool winnings)
-- ✅ **Settlement**: All positions auto-closed at competition end, PnL calculated
+- ✅ **Settlement**: Scoring based on unrealized PnL at competition end (positions NOT auto-closed, liquid markets ensure accurate pricing)
 
 **Trading Mechanics:**
 - ✅ Can ONLY trade the 9 coins in your roster (server-enforced via Hyperliquid agent wallet)
@@ -163,7 +169,7 @@ Phase 3: SETTLEMENT & RESULTS - Instant calculation
 - ✅ All trades executed via platform-controlled agent wallet (see `_PM/PLANS/HYPERLIQUID_SDK.md`)
 - ✅ **ONLY trades with platform builder code count** (external trades = disqualification)
 - ✅ Server validates: rostered coins, leverage limits, position sizes
-- ✅ Positions auto-close at settlement (no manual intervention required)
+- ✅ Settlement uses unrealized PnL from mark prices (positions remain open, no forced liquidation)
 
 **Strategic Approaches:**
 
@@ -173,23 +179,23 @@ Roster: Pick volatile coins
 Predictions: Don't care much about accuracy
 Live Trading: Active scalping, 20+ trades
 Focus: Maximize trading PnL
-Target Prize: Trading Prize (70% pool)
+Target Prize: Top 3 Trading Prize (90% pool)
 ```
 
-**Strategy B: Pure Analyst**
+**Strategy B: Pure Analyst (Jackpot Hunter)**
 ```
 Roster: Perfect ranking + direction predictions
-Live Trading: Minimal (hold positions)
-Focus: Maximize prediction accuracy
-Target Prize: Prediction Prize (20% pool)
+Live Trading: Strategic positions to match predictions
+Focus: Maximize grid score (captain, directions, ranking)
+Target Prize: Pattern Jackpot (highest score) or Perfect Grid Jackpot (exact match)
 ```
 
 **Strategy C: Balanced**
 ```
 Roster: Strong predictions
 Live Trading: Strategic entries/exits
-Focus: Win both prizes
-Target Prize: Trading + Prediction (90% pool)
+Focus: Win both trading prize AND jackpot
+Target Prize: Trading Prize + Pattern/Perfect Grid Jackpot
 Risk: Hardest to execute perfectly
 ```
 
@@ -235,7 +241,7 @@ Trading Results:
 Prediction Results:
 - Direction: 3/3 correct (SOL UP, HYPE DOWN, BTC UP)
 - Ranking: Captain (SOL) was #2 market performer (close!)
-- Captain Jackpot: Did HYPE (my #2 pick) finish in top 3? YES!
+- Grid Score: 1,850 XP (high score, competing for Pattern Jackpot)
 ```
 
 **Real-Time UI During Competition:**
@@ -285,10 +291,11 @@ Prediction Results:
 - ✅ **Authoritative Source**: Hyperliquid DEX market data (single source of truth)
 - ✅ **Ranking Calculation**: Based on absolute % change (|final - baseline| / baseline × 100)
 
-**Step 1: Close All Open Positions**
-- All OPEN positions auto-close at Hyperliquid mark price (competition end timestamp)
+**Step 1: Calculate Final PnL (Positions Remain Open)**
+- Score calculated using unrealized PnL at Hyperliquid mark price (competition end timestamp)
 - Calculate final realized + unrealized PnL for each player
-- Total PnL = Sum(all realized PnL) + Sum(all unrealized PnL at close)
+- Total PnL = Sum(all realized PnL) + Sum(all unrealized PnL)
+- **Note**: Positions NOT auto-closed; liquid markets ensure accurate mark pricing for fair settlement
 
 **Step 2: Calculate Trading Prize (90% of wager pool)**
 ```typescript
@@ -390,40 +397,40 @@ patternWinner.winnings += patternPrize;
 ┌─────────────────────────────────────────────────────┐
 │  COMPETITION RESULTS - L1 Chains 4hr                │
 │  Competition ID: #12847  |  127 Players             │
-│  Total Prize Pool: $6,350                           │
+│  Total Prize Pool: $6,350 ($5,715 Trading + $635 Jackpot) │
 ├─────────────────────────────────────────────────────┤
 │  YOUR PERFORMANCE                                    │
 │                                                      │
-│  🏆 TRADING PRIZE - Rank: #3                        │
-│  Total PnL: +$480                                   │
-│  Prize: $445 (7% of pool)                           │
+│  🏆 TRADING PRIZE - Rank: #3 / 127                  │
+│  Total PnL: +$480 (from $1,000 capital)             │
+│  Prize: $571 (10% of trading pool)                  │
 │                                                      │
-│  🎯 PREDICTION SCORE: 2,100 / 2,600                 │
-│  Direction Accuracy: 8/9 (89%)                      │
-│  Ranking Accuracy: 6/9 perfect, 2/9 close           │
-│  Captain Bonus: ✅ (+300 points)                    │
-│  Rank: #8 (no prize)                                │
+│  🎯 GRID SCORE: 2,100 XP                            │
+│  Direction Accuracy: 8/9 correct (89%)              │
+│  Ranking Match: 6/9 exact, 2/9 within 2 spots       │
+│  Captain Bonus: ✅ SOL in position #2 (+300 XP)     │
+│  Patterns Matched: ROW_3 (800 XP), COL_2 (800 XP)  │
+│  Score Rank: #4 / 127                               │
 │                                                      │
-│  🎰 CAPTAIN JACKPOT                                 │
-│  Your Captain: SOL (finished #2 performer)          │
-│  Status: ✅ IN TOP 3                                │
-│  Jackpot Winners: 7 players                         │
-│  Your Share: $91 ($635 jackpot ÷ 7)                │
+│  🎰 JACKPOTS                                        │
+│  Perfect Grid: ❌ Not exact match (1 rolled over)   │
+│  Pattern Jackpot: ❌ PatternMaster won (2,350 XP)   │
 │                                                      │
-│  💰 TOTAL WINNINGS: $536                            │
+│  💰 TOTAL WINNINGS: $1,051                          │
+│  (Trading Prize: $571 + Trading PnL: +$480)         │
 ├─────────────────────────────────────────────────────┤
 │  FINAL LEADERBOARD (Top 10)                         │
 │                                                      │
-│  1. CryptoKing      +$1,240  →  $3,115 🥇          │
-│  2. DiamondHands    +$890   →  $889 🥈             │
-│  3. YOU             +$480   →  $536 🥉             │
-│  4. MoonBoy         +$425   →  $0                  │
-│  5. HODLer          +$380   →  $0                  │
-│  6. TraderJoe       +$340   →  $91 (jackpot)       │
-│  7. PatternMaster   +$295   →  $0                  │
-│  8. SwingKing       +$280   →  $91 (jackpot)       │
-│  9. Strategist      +$260   →  $1,270 (prediction) │
-│  10. Analyst        +$245   →  $91 (jackpot)       │
+│  1. CryptoKing      +$1,240  →  $4,481 🥇 (Trading 1st)│
+│  2. DiamondHands    +$890   →  $2,033 🥈 (Trading 2nd)│
+│  3. YOU             +$480   →  $1,051 🥉 (Trading 3rd)│
+│  4. PatternMaster   +$425   →  $742 (Pattern Jackpot)│
+│  5. HODLer          +$380   →  $380                 │
+│  6. TraderJoe       +$340   →  $340                 │
+│  7. SwingKing       +$295   →  $295                 │
+│  8. MoonBoy         +$280   →  $280                 │
+│  9. Strategist      +$260   →  $260                 │
+│  10. Analyst        +$245   →  $245                 │
 │                                                      │
 │  [View Full Roster Breakdown] [Play Again]          │
 └─────────────────────────────────────────────────────┘
@@ -451,7 +458,7 @@ Entry Fees Collected: 100%
 │  NOTE: Winners ALSO keep their trading PnL profits (separate)
 │
 ├─ Platform Fee (5%):
-│  └─ Platform operations + builder fees shared with Hyperliquid
+│  └─ Platform operations (builder code fees collected separately via Hyperliquid)
 │
 └─ Jackpot Pool (5%):
    ├─ Perfect Grid Jackpot (50% of jackpot pool):
@@ -489,21 +496,33 @@ TOTAL: $4,200 from $50 entry
 ### 2.2 Economic Model
 
 **Revenue Streams:**
-1. **Platform Rake (5%)**: $250 per 100-player competition
-2. **Builder Fees (3 bps)**: 0.03% on all trade volume
-3. **Referral Fees (0.432 bps)**: On referred trading volume
+1. **Platform Rake (5%)**: From entry fee prize pools
+2. **Builder Code Fees (up to 10 bps)**: From perpetual trade volume (Hyperliquid on-chain)
+3. **Referral Fees**: Optional program via Hyperliquid referral system (future)
+
+**Builder Code Fee Details:**
+- **Maximum Rate**: 10 basis points (0.1%) per trade on perpetual futures
+- **User Authorization**: One-time ApproveBuilderFee action (signed by main wallet)
+- **Collection**: Per-order on-chain (Hyperliquid fee logic)
+- **Claiming**: Via Hyperliquid referral reward system
+- **Platform Requirement**: Maintain 100 USDC minimum in perps account
 
 **Example Monthly Revenue (Conservative):**
 ```
-Competitions per day: 24 (hourly 1hr + 6x 4hr)
-Average players per competition: 50
-Average entry fee: $50
-Daily gross: $60,000
-Monthly gross: $1,800,000
+Entry Fee Revenue:
+├─ Competitions per day: 24 (hourly 1hr + 6x 4hr)
+├─ Average players per competition: 50
+├─ Average entry fee: $50
+├─ Daily gross wagers: $60,000
+└─ Platform rake (5%): $90,000/month
 
-Platform rake (5%): $90,000/month
-Builder fees (avg $500K daily volume): $10,000/month
-Total: $100,000/month recurring revenue
+Builder Code Revenue:
+├─ Average daily trade volume: $500,000
+├─ Builder code fee rate: 5 bps (0.05%)
+├─ Daily builder fees: $250
+└─ Monthly builder fees: $7,500/month
+
+Total Monthly Revenue: $97,500
 ```
 
 ### 2.3 Trading Capital Management
@@ -521,10 +540,11 @@ Total: $100,000/month recurring revenue
 - Mitigation: Leverage limits, position size caps, anti-kamikaze rules
 
 **Settlement Process:**
-1. All positions auto-close at competition end
-2. PnL calculated: final_capital - 1000
+1. Scoring based on unrealized PnL at competition end (positions remain open)
+2. PnL calculated from mark prices: (realized_pnl + unrealized_pnl)
 3. Winners get: prize_pool_winnings + trading_pnl
 4. Losers lose: trading_pnl (up to $1,000 max)
+5. Players can close positions manually after competition or keep them open
 
 ---
 
@@ -558,7 +578,7 @@ Total: $100,000/month recurring revenue
    - Coins: BTC, ETH, SOL, AVAX, BNB, ADA, DOT, ATOM, NEAR, etc. (Hyperliquid-listed only)
    - Characteristics: Lower volatility, higher liquidity
    - Strategy: Fundamental analysis matters
-   - Eligibility: Must meet $10M+ volume, $100M+ market cap on Hyperliquid
+   - Eligibility: Must meet $10M+ volume, $10M+ market cap on Hyperliquid (still debatable)
 
 2. **Meme Coins Arena**
    - Coins: DOGE, SHIB, PEPE, WIF, BONK, FLOKI, etc. (Hyperliquid-listed only)
@@ -609,7 +629,7 @@ Total: $100,000/month recurring revenue
 - New components:
   - RosterBuilder.tsx (drag-and-drop interface)
   - LiveCompetitionScreen.tsx (combines prediction grid + trading panel)
-  - ResultsBreakdown.tsx (three-prize display)
+  - ResultsBreakdown.tsx (trading prizes + dual jackpot display)
 
 **Backend Requirements:**
 - Competition management system
@@ -719,11 +739,12 @@ From **Trade Grid:**
 2. **Prediction Scoring Algorithm**
    - Direction accuracy calculation
    - Ranking accuracy with partial credit
-   - Captain bonus logic
-   - Top 3 detection for jackpot
+   - Captain bonus logic (300 XP max for captain position)
+   - Pattern detection for grid scoring (rows, columns, diagonals)
 
-3. **Three-Prize Distribution System**
-   - Separate calculations for Trading, Prediction, Jackpot
+3. **Dual Prize Distribution System**
+   - Trading Prize Pool (90% of entry fees): Top 3 PnL winners
+   - Jackpot Pool (5% of entry fees): Perfect Grid + Pattern Jackpot
    - Split logic for multiple jackpot winners
    - Results breakdown UI
 
@@ -741,10 +762,35 @@ From **Trade Grid:**
 
 **First-Time User Journey:**
 
-**Step 1: Account Creation**
-- Email/wallet connection
+**Step 1: Account Creation & Builder Code Approval**
+- Email/wallet connection (Hyperliquid wallet required)
+- **Builder Code Approval** (one-time setup):
+  - Platform prompts: "Approve platform builder code (up to 10 bps fee on trades)"
+  - User signs ApproveBuilderFee action with main wallet
+  - Required before first real-money competition entry
 - Profile setup (username, avatar)
 - Tutorial prompt: "Learn how to play?"
+
+**Builder Code Approval Flow:**
+```
+1. User connects Hyperliquid wallet
+2. Platform checks: Has user approved builder code?
+   ├─ YES: Proceed to competition registration
+   └─ NO: Show approval modal
+       ↓
+3. Modal explains:
+   "To participate in competitions, approve a small fee (up to 0.1%)
+    on your trades. This helps us maintain the platform and ensure
+    fair play through trade verification."
+   ↓
+4. User clicks "Approve Builder Code"
+   ↓
+5. Wallet prompts ApproveBuilderFee signature (main wallet)
+   ↓
+6. Approval confirmed on-chain
+   ↓
+7. User can now enter competitions
+```
 
 **Step 2: Interactive Tutorial** (Optional)
 ```
@@ -765,8 +811,8 @@ Tutorial Competition (Fake Money):
    → Guide: Open LONG SOL position
    
 6. "Competition ends! See results"
-   → Show three-prize breakdown
-   → Highlight: "You won $45 trading prize!"
+   → Show trading prizes (top 3) + jackpot winners
+   → Highlight: "You won $45 trading prize + $25 Pattern Jackpot!"
 ```
 
 **Step 3: First Real Competition**
@@ -807,7 +853,7 @@ Tutorial Competition (Fake Money):
 - Push notifications:
   - "Competition starting in 5 minutes"
   - "You're in 1st place!"
-  - "Your captain is in top 3!"
+  - "You have the highest grid score! (Pattern Jackpot leader)"
 
 **Mobile-First Features:**
 - One-tap roster presets
@@ -835,10 +881,10 @@ Tutorial Competition (Fake Money):
 - ✅ Live leaderboard updates
 
 **Phase 3: Scoring & Settlement (Week 5-6)**
-- ✅ Prediction score calculation (direction + ranking)
+- ✅ Grid score calculation (captain position + direction accuracy + ranking accuracy)
 - ✅ Trading PnL ranking
-- ✅ Captain jackpot detection (top 3 check)
-- ✅ Three-prize distribution
+- ✅ Dual jackpot detection (perfect grid match + highest score)
+- ✅ Prize distribution (trading pool + jackpot pool)
 - ✅ Results breakdown screen
 
 **Phase 4: Polish & Testing (Week 7-8)**
@@ -910,25 +956,26 @@ Tutorial Competition (Fake Money):
 **Risk #4: Prediction Difficulty**
 - **Problem:** Crypto is random, hard to rank accurately
 - **Mitigation:**
-  - Prediction Prize is only 20% of pool (not primary goal)
-  - Partial credit for close rankings (within 2 positions)
+  - Jackpot pool is only 5% of entry fees (trading prize is primary)
+  - Pattern Jackpot rewards highest score (relative, not absolute perfection)
+  - Perfect Grid Jackpot is bonus for extreme accuracy (can roll over)
   - Focus marketing on Trading Prize as main attraction
 
 ### 7.2 Technical Edge Cases
 
-**Edge Case #1: Tie in Prediction Score**
+**Edge Case #1: Tie in Grid Score**
 ```
-Scenario: Two players have exact same prediction score (2,400 points)
-Resolution: Split Prediction Prize evenly ($950 → $475 each)
+Scenario: Two players have exact same grid score (2,400 XP)
+Resolution: Split Pattern Jackpot evenly (50% of jackpot pool split between tied players)
 ```
 
 **Edge Case #2: No Trading Activity**
 ```
 Scenario: Player locks roster but never opens any trades
-Resolution: 
+Resolution:
 - Trading PnL: $0 (ranks based on 0)
-- Prediction Score: Still calculated normally
-- Can still win Prediction Prize or Captain Jackpot
+- Grid Score: Still calculated normally based on predictions vs market
+- Can still win Pattern Jackpot (highest score) or Perfect Grid Jackpot (exact match)
 ```
 
 **Edge Case #3: All Negative PnL**
@@ -941,12 +988,13 @@ Resolution:
 - 3rd place: -$200
 ```
 
-**Edge Case #4: Captain Not in Top 3**
+**Edge Case #4: No Perfect Grid Match**
 ```
-Scenario: No player's captain finishes in top 3 performers
-Resolution: 
-- Captain Jackpot (10% pool) rolls over to next competition
-- Announced: "No jackpot winner this round! Rolls to next game"
+Scenario: No player's roster ranking exactly matches market's final ranking
+Resolution:
+- Perfect Grid Jackpot (50% of jackpot pool) rolls over to next competition
+- Pattern Jackpot (50% of jackpot pool) still awarded to highest scorer
+- Announced: "No Perfect Grid winner! $XXX rolls to next competition's jackpot"
 ```
 
 **Edge Case #5: Insufficient Players**
@@ -1010,15 +1058,16 @@ Resolution:
 
 **Monetization:**
 - Total prize pool volume: Target $100K/day by Month 3
-- Platform rake revenue: Target $5K/day by Month 3
-- Builder fees revenue: Target $2K/day by Month 3
+- Platform rake revenue: Target $5K/day by Month 3 (5% of wagers)
+- Builder code fees revenue: Target $500/day by Month 3 (5 bps on $1M daily volume)
 - Average revenue per user (ARPU): Target $50/month
 
 **Game Balance:**
-- Average prediction score: 1,200-1,400 points (out of 2,600 max)
-- Captain jackpot win rate: 5-10% of competitions have winners
+- Average grid score: 1,200-1,400 XP (out of 2,600 max with perfect patterns)
+- Perfect Grid Jackpot win rate: <1% of competitions (extremely rare, most roll over)
+- Pattern Jackpot: Always awarded (100% of competitions)
 - Trading prize concentration: Top 10% players shouldn't win >50% of prizes
-- Prediction prize diversity: Should see different winners than trading winners
+- Prize diversity: Different winners for trading prizes vs jackpots expected
 
 ### 8.2 Analytics Events to Track
 
@@ -1077,7 +1126,7 @@ Resolution:
    - Influencer partnerships
    - Competition highlights (big wins)
    - Educational content (how to play)
-   - Viral moments (crazy captain jackpots)
+   - Viral moments (perfect grid jackpots, huge trading wins)
 
 3. **Discord Communities**
    - Trading servers (partnerships)
@@ -1145,8 +1194,9 @@ Resolution:
 - **Option B:** Live updates (adds engagement)
 - **Recommendation:** Option A (maintains fairness, reduces distraction)
 
-**Question #3: How to handle ties in captain jackpot?**
-- **Current:** Split evenly among all winners
+**Question #3: How to handle ties in jackpots?**
+- **Perfect Grid Jackpot:** Split evenly among all players with exact match
+- **Pattern Jackpot:** Split evenly among all players tied for highest XP score
 - **Alternative:** First-come-first-served (roster lock-in time)
 - **Recommendation:** Keep split evenly (most fair)
 
@@ -1295,20 +1345,23 @@ const totalScore = directionScore + rankingScore + captainBonus;
 
 **Roster:** The 9 selected coins that make up a player's grid for a competition
 
-**Prediction Score:** Points earned from roster accuracy (direction + ranking + captain bonus)
-- Maximum: 2,600 points
-- Determines Prediction Prize winner
+**Grid Score (XP):** Points earned from pattern matching (direction accuracy + ranking accuracy + pattern bonuses)
+- Based on matching grid patterns to market outcomes (rows, columns, diagonals)
+- Similar to Market Grid scoring system (see `_PM/SPECS/GAME_DESIGN_V1.md`)
+- Maximum: ~2,600 XP with perfect pattern matches
+- Determines Pattern Jackpot winner (highest score) and Perfect Grid Jackpot eligibility (exact match)
 
 **Trading PnL:** Profit/Loss from live trading during competition
 - Realized PnL: Closed positions
 - Unrealized PnL: Open positions at settlement
 - Determines Trading Prize winner
 
-**Captain Jackpot:** Bonus prize awarded when captain finishes in top 3 absolute % movers
-- 10% of total prize pool
-- Can have multiple winners (split evenly)
+**Jackpot Pool:** 5% of all entry fees, split into two jackpots:
+- **Perfect Grid Jackpot (50%)**: Awarded when roster ranking EXACTLY matches market's final ranking (can roll over if no winner)
+- **Pattern Jackpot (50%)**: Awarded to player with highest grid score in competition (always awarded)
+- Jackpot grows linearly per entry ($0.50 per $10 entry, $2.50 per $50 entry, $5 per $100 entry)
 
-**Lock-In:** The moment when roster selections become final (15 minutes before competition start)
+**Lock-In:** The moment when roster selections become final (anytime before competition start)
 
 **Settlement:** Competition end process that calculates final scores and distributes prizes
 
@@ -1319,10 +1372,10 @@ const totalScore = directionScore + rankingScore + captainBonus;
 ### 12.1 Summary of Key Decisions
 
 **✅ APPROVED DESIGN:**
-1. **Three-Prize System**
-   - Trading Prize (70%): PnL-based leaderboard
-   - Prediction Prize (20%): Roster accuracy score
-   - Captain Jackpot (10%): Captain in top 3 performers
+1. **Dual Prize System**
+   - Trading Prize Pool (90% of entry fees): Top 3 PnL winners split 70%/20%/10%
+   - Jackpot Pool (5% of entry fees): Split 50/50 between Perfect Grid Jackpot (exact match, can roll over) and Pattern Jackpot (highest grid score, always awarded)
+   - Platform Fee (5% of entry fees): Operations + builder code fees
 
 2. **Simplified MVP Scope**
    - No salary cap initially
@@ -1356,10 +1409,10 @@ const totalScore = directionScore + rankingScore + captainBonus;
 - Real-time PnL tracking
 
 **Phase 3 (Weeks 5-6): Scoring & Settlement**
-- Prediction score algorithm
-- Three-prize distribution
+- Grid score algorithm (pattern matching like Market Grid)
+- Dual prize distribution (trading pool + jackpot pool)
 - Results breakdown UI
-- Jackpot detection
+- Dual jackpot detection (perfect grid + highest score)
 
 **Phase 4 (Weeks 7-8): Launch Prep**
 - Beta testing with 50 users
@@ -1370,9 +1423,9 @@ const totalScore = directionScore + rankingScore + captainBonus;
 ### 12.3 Open Items for Review
 
 **Decision Required:**
-1. ✅ Approve three-prize distribution model
+1. ✅ Approve dual prize distribution model (90% trading pool + 5% jackpot pool + 5% platform)
 2. ✅ Confirm 5% platform rake
-3. ✅ Set guaranteed prize pool limits
+3. ✅ No guaranteed prize pools (100% participation-based)
 4. ✅ Define minimum players per competition (recommendation: 10)
 
 **Next Actions:**
@@ -1424,7 +1477,7 @@ const totalScore = directionScore + rankingScore + captainBonus;
 
 **6. Competition Coin Pool Curation** ✅ CLARIFIED
 - **Source**: ONLY coins listed on Hyperliquid DEX
-- **Requirements**: $10M+ volume, $100M+ market cap, sufficient leverage liquidity
+- **Requirements**: $10M+ volume, $10M+ market cap (still debatable), sufficient leverage liquidity
 - **Coin Index**: Platform maintains curated index, refreshed daily
 - **No Manual Curation**: Automated based on Hyperliquid listings + volume/cap filters
 
