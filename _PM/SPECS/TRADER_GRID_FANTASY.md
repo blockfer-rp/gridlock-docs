@@ -8,20 +8,30 @@
 
 ## EXECUTIVE SUMMARY
 
-**Trader Grid Fantasy** is a competitive fantasy sports game for cryptocurrency markets that combines roster-building prediction skills with live trading execution. Players select and rank 9 cryptocurrencies before each competition, predict their directional movements, then actively trade those coins during 1-4 hour live sessions to compete for three separate prize pools.
+**Trader Grid Fantasy** is a competitive fantasy sports game for cryptocurrency markets that combines roster-building prediction skills with **real money trading execution** via Hyperliquid DEX. Players select and rank 9 cryptocurrencies before each competition, predict their directional movements, then actively trade those coins with $1,000 USDC capital during 1-4 hour live sessions to compete for prize pools based on trading PnL and pattern scoring.
 
-**Core Innovation:** Decoupled scoring system that rewards both prediction accuracy AND trading profitability through separate prize pools, solving the traditional "hold vs trade" paradox.
+**Core Innovation:** Triple scoring system that rewards trading profitability (PnL-based prizes), prediction accuracy (XP-based pattern scoring), and perfect market alignment (jackpot mechanics), solving the traditional "hold vs trade" paradox.
 
-**Target Market:** 
+**Critical Architecture:**
+- ✅ **REAL MONEY TRADING** via Hyperliquid SDK integration (see `_PM/PLANS/HYPERLIQUID_SDK.md`)
+- ✅ **$1,000 USDC Trading Capital** per player per competition (standardized, separate from entry fees)
+- ✅ **Server-enforced trading restrictions** (only builder-code tagged trades count)
+- ✅ **Hyperliquid candle-based settlement** (authoritative price source)
+
+**Target Market:**
 - DraftKings/FanDuel fantasy sports players (60M+ users)
-- Active cryptocurrency traders (estimated 50M+ globally)
+- Active cryptocurrency traders (estimated 50M+ globally, excluding USA)
 - Market prediction/analysis enthusiasts
 
 **Revenue Model:**
-- Entry fees: $10-$100 per competition
-- 5% platform rake from prize pools
-- Builder fees: 3 bps on all trade volume
+- Entry fees: $10-$100 per competition (90% to prize pool, 5% to platform, 5% to jackpot pool)
+- Builder fees: 3 bps on all trade volume (collected by Hyperliquid, shared with platform)
 - Target: $100K-$500K monthly recurring revenue (Year 1)
+
+**Regulatory Note:**
+- ⚠️ **USA BLOCKED** until legal clarity is established
+- Platform follows Hyperliquid's geo-blocking policies
+- KYC/AML compliance delegated to Hyperliquid DEX
 
 ---
 
@@ -43,10 +53,10 @@ Phase 3: SETTLEMENT & RESULTS - Instant calculation
 **Player Actions:**
 
 1. **View Coin Pool**
-   - 50 eligible coins displayed
+   - 50 eligible coins displayed (Hyperliquid-listed assets only)
    - Sorted by: 24hr %, Market Cap, Volume, Category
    - Filtering: L1 Chains, DeFi, Memes, etc.
-   - Real-time data: Current price, 24hr change, volume
+   - Real-time data: Current price, 24hr change, volume from Hyperliquid API
 
 2. **Select 9 Coins**
    - Drag coins into 3x3 grid
@@ -68,6 +78,7 @@ Phase 3: SETTLEMENT & RESULTS - Instant calculation
 5. **Lock In Roster**
    - Review full roster
    - Confirm predictions
+   - Approve agent wallet transaction (one-time setup per competition)
    - Wait for competition start
 
 **UI Example:**
@@ -75,6 +86,7 @@ Phase 3: SETTLEMENT & RESULTS - Instant calculation
 ┌─────────────────────────────────────────────────────┐
 │  ROSTER BUILDER - L1 Chains 4hr Competition         │
 │  Start Time: 12:00 PM EST | Entry Fee: $50          │
+│  Trading Capital: $1,000 USDC (standardized)        │
 ├─────────────────────────────────────────────────────┤
 │  YOUR ROSTER (Drag to rank)                         │
 │                                                      │
@@ -98,44 +110,60 @@ Phase 3: SETTLEMENT & RESULTS - Instant calculation
 │  │  [UP ▼] │ [DOWN▼] │  [UP ▼] │                   │
 │  └─────────┴─────────┴─────────┘                   │
 │                                                      │
-│  [Lock In Roster & Enter Competition]               │
+│  [Lock In Roster & Pay Entry Fee]                   │
 └─────────────────────────────────────────────────────┘
 ```
 
 **Eligibility Requirements for Coin Pool:**
-- Minimum 24hr trading volume: $10M
-- Listed on major exchanges (Binance, Coinbase, etc.)
-- Sufficient liquidity for leverage trading
-- No stablecoins (USDT, USDC, etc.)
-- Active market data (no halted/delisted coins)
+- ✅ **ONLY coins listed on Hyperliquid DEX**
+- ✅ Minimum 24hr trading volume: $10M (on Hyperliquid)
+- ✅ Minimum market cap: $100M
+- ✅ Sufficient liquidity for leverage trading (up to 20x)
+- ❌ No stablecoins (USDT, USDC, etc.)
+- ❌ No halted/delisted coins
+- **Coin Index**: Platform maintains a curated index of eligible Hyperliquid assets, refreshed daily
 
 ---
 
 ### 1.3 Phase 2: Live Trading
 
-**Duration:** 1hr, 4hr, or 24hr (competition-specific)  
-**Player Capabilities:**
+**Duration:** 1hr, 4hr, or 24hr (competition-specific)
+**Trading Capital:** $1,000 USDC per player (standardized, competition-managed)
+
+**Capital Structure:**
+- ✅ **Entry Fee ($10-$100)**: Separate payment for prize pool, NOT used for trading
+- ✅ **Trading Capital ($1,000 USDC)**: Standardized margin provided per player
+- ✅ **Profits/Losses**: Kept by player (winners get trading PnL + prize pool winnings)
+- ✅ **Settlement**: All positions auto-closed at competition end, PnL calculated
 
 **Trading Mechanics:**
-- ✅ Can ONLY trade the 9 coins in your roster
+- ✅ Can ONLY trade the 9 coins in your roster (server-enforced via Hyperliquid agent wallet)
 - ✅ LONG or SHORT any of your 9 coins
 - ✅ Open multiple positions on same coin (DCA strategy)
-- ✅ Use leverage: 3x, 5x, 10x, 20x
+- ✅ Use leverage: 3x, 5x, 10x, 20x (with restrictions below)
 - ✅ Close positions anytime (partial or full)
 - ✅ Add to existing positions
-- ✅ Set stop-loss/take-profit (optional)
+- ✅ Set stop-loss/take-profit (optional, managed by Hyperliquid)
 
-**Leverage Rules:**
-- Captain (position 0): Can use up to 20x leverage
-- Positions 1-8: Max 10x leverage
-- Rationale: Captain gets bonus privileges to encourage strategic ranking
+**Leverage Rules (Anti-Kamikaze Protection):**
+- **Captain (position 0):** Max 20x leverage
+- **Positions 1-8:** Max 10x leverage
+- **Max Notional Exposure:** $10,000 per coin (prevents all-in 20x hedging abuse)
+- **Total Portfolio Exposure:** Max $50,000 notional (prevents hedge-all-coins strategy)
+- **Rationale:** Prevents players from maxing leverage on all 9 coins to hedge opponents' trades
 
 **Position Management:**
 - Unlimited trades during competition
 - No minimum trade requirement
 - Can hold positions or actively scalp
-- Real-time PnL tracking for all open positions
-- Live leaderboard updates every 5 seconds
+- Real-time PnL tracking for all open positions (calculated client-side from market ticks)
+- Live leaderboard updates every 5 seconds (shows XP score + trading PnL)
+
+**Trading Enforcement (Hyperliquid SDK Integration):**
+- ✅ All trades executed via platform-controlled agent wallet (see `_PM/PLANS/HYPERLIQUID_SDK.md`)
+- ✅ **ONLY trades with platform builder code count** (external trades = disqualification)
+- ✅ Server validates: rostered coins, leverage limits, position sizes
+- ✅ Positions auto-close at settlement (no manual intervention required)
 
 **Strategic Approaches:**
 
@@ -250,116 +278,111 @@ Prediction Results:
 
 **Instant Calculation at Competition End:**
 
-**Step 1: Close All Open Positions**
-- All OPEN positions auto-close at final market price
-- Calculate final realized + unrealized PnL for each player
+**Settlement Price Source (Hyperliquid Candles):**
+- ✅ **Baseline Prices**: Captured at competition start (from Hyperliquid API)
+- ✅ **Final Prices**: Captured from Hyperliquid candle close (1hr, 4hr, or 24hr candle)
+- ✅ **Example (4hr competition)**: Start at 08:00 UTC → Settle using 08:00-12:00 4hr candle close price
+- ✅ **Authoritative Source**: Hyperliquid DEX market data (single source of truth)
+- ✅ **Ranking Calculation**: Based on absolute % change (|final - baseline| / baseline × 100)
 
-**Step 2: Calculate Trading Prize (70% of pool)**
+**Step 1: Close All Open Positions**
+- All OPEN positions auto-close at Hyperliquid mark price (competition end timestamp)
+- Calculate final realized + unrealized PnL for each player
+- Total PnL = Sum(all realized PnL) + Sum(all unrealized PnL at close)
+
+**Step 2: Calculate Trading Prize (90% of wager pool)**
 ```typescript
+// Entry fees collected: 90% to trading pool, 5% to platform, 5% to jackpot pool
+const wagersCollected = playerCount × entryFee;
+const tradingPrizePool = wagersCollected × 0.90;
+const platformFee = wagersCollected × 0.05;
+const jackpotPool = wagersCollected × 0.05;
+
 // Rank all players by Total PnL
 players.sort((a, b) => b.totalPnL - a.totalPnL);
 
-// Distribute Trading Prize
-tradingPrize = totalPrizePool * 0.70;
-prizes.first = tradingPrize * 0.70;  // 49% of total pool
-prizes.second = tradingPrize * 0.20; // 14% of total pool
-prizes.third = tradingPrize * 0.10;  // 7% of total pool
+// Distribute Trading Prize (top 3 winners)
+prizes.first = tradingPrizePool × 0.70;  // 63% of total wagers
+prizes.second = tradingPrizePool × 0.20; // 18% of total wagers
+prizes.third = tradingPrizePool × 0.10;  // 9% of total wagers
+
+// NOTE: Winners ALSO keep their trading PnL profits (separate from prize pool)
 ```
 
-**Step 3: Calculate Prediction Score**
+**Step 3: Calculate XP Score (Pattern-Based, like Market Grid)**
 ```typescript
-function calculatePredictionScore(player, marketData) {
+// Uses existing Market Grid pattern detection (see _PM/SPECS/GAME_DESIGN_V1.md)
+function calculateXPScore(player, marketData) {
   let score = 0;
-  
-  // 1. Direction Accuracy (900 points possible)
+
+  // 1. Direction Accuracy (base XP)
   for (let i = 0; i < 9; i++) {
     const coin = player.roster[i];
     const actualChange = marketData[coin.id].percentChange;
     const predictedUp = coin.prediction === 'UP';
     const actualUp = actualChange > 0;
-    
+
     if (predictedUp === actualUp) {
-      score += 100; // Correct direction
+      score += 100; // Correct direction = 100 XP per cell
     }
   }
-  
-  // 2. Ranking Accuracy (1400 points possible)
-  const rankingWeights = [500, 300, 200, 150, 100, 75, 50, 25, 10];
-  
-  // Get actual market rankings (by absolute % change)
-  const actualRankings = marketData
-    .sort((a, b) => Math.abs(b.percentChange) - Math.abs(a.percentChange))
-    .map(coin => coin.id);
-  
-  for (let i = 0; i < 9; i++) {
-    const coin = player.roster[i];
-    const predictedRank = i; // Position in player's roster
-    const actualRank = actualRankings.indexOf(coin.id);
-    
-    if (predictedRank === actualRank) {
-      score += rankingWeights[i]; // Perfect ranking
-    } else {
-      // Partial credit for being close
-      const rankDiff = Math.abs(predictedRank - actualRank);
-      if (rankDiff <= 2) {
-        score += rankingWeights[i] * 0.5; // Half points
-      }
-    }
-  }
-  
-  // 3. Captain Bonus (300 points possible)
-  const captain = player.roster[0];
-  const captainActualChange = marketData[captain.id].percentChange;
-  const captainPredictedUp = captain.prediction === 'UP';
-  const captainActualUp = captainActualChange > 0;
-  
-  if (captainPredictedUp === captainActualUp) {
-    score += 300; // Captain direction bonus
-  }
-  
-  return score; // Max: 2600 points
+
+  // 2. Pattern Detection (rows, columns, diagonals like Market Grid)
+  const patterns = detectPatterns(player.predictions, marketData);
+  patterns.forEach(pattern => {
+    score += pattern.points; // ROW_3_MATCH = 800 XP, ROW_4_MATCH = 4000 XP, etc.
+  });
+
+  // 3. Jackpot Detection (complete row + complete column)
+  const hasJackpot = detectJackpot(patterns);
+
+  return {
+    totalXP: score,
+    patterns: patterns,
+    isJackpot: hasJackpot
+  };
 }
+
+// XP is used for:
+// - Leaderboard ranking (separate from PnL)
+// - Pattern jackpot eligibility (see Step 4)
+// - Player progression system (future)
 ```
 
-**Step 4: Award Prediction Prize (20% of pool)**
+**Step 4: Jackpot Distribution (Dual System)**
 ```typescript
-// Find player with highest prediction score
-const predictionWinner = players.reduce((max, p) => 
-  p.predictionScore > max.predictionScore ? p : max
-);
+// Jackpot Pool = 5% of all entry fees collected
+const jackpotPool = wagersCollected × 0.05;
 
-predictionPrize = totalPrizePool * 0.20;
-predictionWinner.winnings += predictionPrize;
-```
+// PART A: Perfect Grid Jackpot (50% of jackpot pool)
+// Player's roster ranking EXACTLY matches market's final ranking
+const perfectGridWinners = players.filter(p => {
+  const playerRanking = p.roster.map(c => c.id); // [SOL, HYPE, BTC, ...]
+  const marketRanking = getMarketRanking(marketData); // [HYPE, SOL, BTC, ...]
+  return arraysEqual(playerRanking, marketRanking); // Perfect alignment
+});
 
-**Step 5: Check Captain Jackpot (10% of pool)**
-```typescript
-// Get top 3 absolute % movers across ALL players' rosters
-const allCoins = new Set();
-players.forEach(p => p.roster.forEach(c => allCoins.add(c.id)));
-
-const top3Performers = Array.from(allCoins)
-  .map(coinId => ({
-    id: coinId,
-    absChange: Math.abs(marketData[coinId].percentChange)
-  }))
-  .sort((a, b) => b.absChange - a.absChange)
-  .slice(0, 3)
-  .map(c => c.id);
-
-// Find players whose captain is in top 3
-const jackpotWinners = players.filter(p => 
-  top3Performers.includes(p.roster[0].id)
-);
-
-if (jackpotWinners.length > 0) {
-  const jackpotPrize = totalPrizePool * 0.10;
-  const prizePerWinner = jackpotPrize / jackpotWinners.length;
-  
-  jackpotWinners.forEach(winner => {
+if (perfectGridWinners.length > 0) {
+  const perfectGridPrize = jackpotPool × 0.50;
+  const prizePerWinner = perfectGridPrize / perfectGridWinners.length;
+  perfectGridWinners.forEach(winner => {
     winner.winnings += prizePerWinner;
   });
+} else {
+  // NO WINNER: 50% rolls over to next competition's jackpot pool
+  nextCompetition.jackpotPool += jackpotPool × 0.50;
 }
+
+// PART B: Pattern Jackpot (50% of jackpot pool)
+// Player with highest XP score from patterns (always awarded)
+const patternWinner = players.reduce((max, p) =>
+  p.xpScore.totalXP > max.xpScore.totalXP ? p : max
+);
+
+const patternPrize = jackpotPool × 0.50;
+patternWinner.winnings += patternPrize;
+
+// NOTE: Same player can win BOTH jackpots if they have perfect grid + highest XP
 ```
 
 **Results Screen Example:**
@@ -410,48 +433,57 @@ if (jackpotWinners.length > 0) {
 
 ## 2. PRIZE STRUCTURE & ECONOMICS
 
-### 2.1 Prize Pool Distribution
+### 2.1 Prize Pool Distribution (CORRECTED)
 
 **Standard Competition:**
 - Entry Fee: $10, $25, $50, or $100 (tier-specific)
-- Platform Rake: 5% (deducted from total pool)
-- Prize Distribution: 95% of total pool
+- Trading Capital: $1,000 USDC (standardized, separate from entry fee)
+- Entry Fee Split: 90% to trading pool, 5% to platform, 5% to jackpot pool
 
 **Prize Split:**
 ```
-Total Prize Pool (after 5% rake): 100%
+Entry Fees Collected: 100%
 
-├─ Trading Prize (70%):
-│  ├─ 1st Place: 70% of trading pool (49% of total)
-│  ├─ 2nd Place: 20% of trading pool (14% of total)
-│  └─ 3rd Place: 10% of trading pool (7% of total)
+├─ Trading Prize Pool (90%):
+│  ├─ 1st Place: 70% of trading pool (63% of total wagers)
+│  ├─ 2nd Place: 20% of trading pool (18% of total wagers)
+│  └─ 3rd Place: 10% of trading pool (9% of total wagers)
+│  NOTE: Winners ALSO keep their trading PnL profits (separate)
 │
-├─ Prediction Prize (20%):
-│  └─ Highest Prediction Score: 100% (20% of total)
+├─ Platform Fee (5%):
+│  └─ Platform operations + builder fees shared with Hyperliquid
 │
-└─ Captain Jackpot (10%):
-   └─ All players whose captain finished in top 3
-       (split evenly if multiple winners)
+└─ Jackpot Pool (5%):
+   ├─ Perfect Grid Jackpot (50% of jackpot pool):
+   │  └─ Split among players with EXACT market ranking match (can roll over)
+   │
+   └─ Pattern Jackpot (50% of jackpot pool):
+      └─ Player with highest XP score (always awarded each game)
 ```
 
 **Example: 100-Player Competition @ $50 Entry**
 ```
-Gross Prize Pool: $5,000
-Platform Rake (5%): $250
-Net Prize Pool: $4,750
+Gross Wagers Collected: $5,000
+Entry Fee Allocation:
+├─ Trading Prize Pool: $4,500 (90%)
+├─ Platform Fee: $250 (5%)
+└─ Jackpot Pool: $250 (5%)
 
-Trading Prize ($3,325):
-├─ 1st Place: $2,328
-├─ 2nd Place: $665
-└─ 3rd Place: $332
+Trading Prize Pool Distribution ($4,500):
+├─ 1st Place PnL Winner: $3,150 (70% of $4,500)
+├─ 2nd Place PnL Winner: $900 (20% of $4,500)
+└─ 3rd Place PnL Winner: $450 (10% of $4,500)
 
-Prediction Prize ($950):
-└─ Best Prediction: $950
+Jackpot Pool Distribution ($250):
+├─ Perfect Grid Winners: $125 (50% of $250, split if multiple/rollover if none)
+└─ Highest XP Player: $125 (50% of $250, always awarded)
 
-Captain Jackpot ($475):
-├─ Scenario A: 1 winner → $475
-├─ Scenario B: 3 winners → $158 each
-└─ Scenario C: 10 winners → $48 each
+Example Total Winnings (1st Place Winner):
+- Trading Prize: $3,150
+- Trading PnL: +$800 (kept from $1,000 capital)
+- Pattern Jackpot: $125 (highest XP)
+- Perfect Grid Jackpot: $125 (if perfect alignment)
+TOTAL: $4,200 from $50 entry
 ```
 
 ### 2.2 Economic Model
@@ -474,20 +506,25 @@ Builder fees (avg $500K daily volume): $10,000/month
 Total: $100,000/month recurring revenue
 ```
 
-### 2.3 Guaranteed Prize Pools
+### 2.3 Trading Capital Management
 
-**Bootstrap Strategy (Months 1-6):**
-- Platform seeds prize pools if insufficient players
-- Minimum guaranteed: 50% of advertised prize
-- Reduces player acquisition friction
-- Builds trust and reputation
+**Capital Provision:**
+- ✅ Platform provides $1,000 USDC per player per competition
+- ✅ Capital is managed via Hyperliquid agent wallets (see `_PM/PLANS/HYPERLIQUID_SDK.md`)
+- ✅ Players cannot withdraw capital during competition
+- ✅ Players keep PnL profits/losses after settlement
 
-**Example:**
-```
-Advertised: "$5,000 Prize Pool"
-Actual entries: 40 players × $50 = $2,000
-Platform adds: $3,000 to reach guaranteed minimum
-```
+**Capital Risk Management:**
+- Max drawdown per player: -$1,000 (100% loss)
+- Platform exposure: $1,000 × player_count per competition
+- Example: 100-player competition = $100,000 capital at risk
+- Mitigation: Leverage limits, position size caps, anti-kamikaze rules
+
+**Settlement Process:**
+1. All positions auto-close at competition end
+2. PnL calculated: final_capital - 1000
+3. Winners get: prize_pool_winnings + trading_pnl
+4. Losers lose: trading_pnl (up to $1,000 max)
 
 ---
 
@@ -515,26 +552,33 @@ Platform adds: $3,000 to reach guaranteed minimum
 
 ### 3.2 Category-Specific Competitions
 
-**By Market Sector:**
+**By Market Sector (All coins sourced from Hyperliquid DEX):**
+
 1. **L1 Chains Arena**
-   - Coins: BTC, ETH, SOL, AVAX, BNB, ADA, DOT, ATOM, NEAR, etc.
+   - Coins: BTC, ETH, SOL, AVAX, BNB, ADA, DOT, ATOM, NEAR, etc. (Hyperliquid-listed only)
    - Characteristics: Lower volatility, higher liquidity
    - Strategy: Fundamental analysis matters
+   - Eligibility: Must meet $10M+ volume, $100M+ market cap on Hyperliquid
 
 2. **Meme Coins Arena**
-   - Coins: DOGE, SHIB, PEPE, WIF, BONK, FLOKI, etc.
+   - Coins: DOGE, SHIB, PEPE, WIF, BONK, FLOKI, etc. (Hyperliquid-listed only)
    - Characteristics: Extreme volatility, sentiment-driven
    - Strategy: Social media monitoring, momentum trading
+   - Note: Only meme coins with sufficient Hyperliquid liquidity included
 
 3. **DeFi Arena**
-   - Coins: UNI, AAVE, MKR, SNX, CRV, COMP, etc.
+   - Coins: UNI, AAVE, MKR, SNX, CRV, COMP, etc. (Hyperliquid-listed only)
    - Characteristics: Moderate volatility, protocol-driven
    - Strategy: TVL analysis, protocol events
+   - Note: DeFi tokens must have active Hyperliquid perpetual futures markets
 
 4. **AI/Gaming Arena**
-   - Coins: FET, RNDR, SAND, AXS, IMX, etc.
+   - Coins: FET, RNDR, SAND, AXS, IMX, etc. (Hyperliquid-listed only)
    - Characteristics: Narrative-driven, sector rotation
    - Strategy: Trend identification
+   - Note: Category availability depends on Hyperliquid listing AI/Gaming perpetuals
+
+**Important:** All categories limited to coins actively traded on Hyperliquid DEX. If a coin is delisted or trading halted on Hyperliquid during a competition, it becomes ineligible for future competitions.
 
 ### 3.3 Special Event Competitions
 
@@ -923,18 +967,27 @@ Resolution:
    - Transparent audit logs
 
 2. **Price Data Integrity**
-   - Use authoritative price sources (Binance, Coinbase)
-   - Store price snapshots at competition start/end
-   - Multiple data source validation
+   - ✅ **Single authoritative source: Hyperliquid DEX**
+   - ✅ All settlement prices from Hyperliquid candles (1hr, 4hr, 24hr)
+   - ✅ Price snapshots stored on-chain (Hyperliquid blockchain)
+   - ✅ No price manipulation possible (DEX orderbook is source of truth)
 
-3. **Anti-Collusion**
-   - Limit friends in same competition (max 10% of players)
-   - Monitor suspicious patterns (same rosters, coordinated trading)
-   - Manual review for large prize competitions
+3. **External Trading Detection (PRIMARY ANTI-CHEAT)**
+   - ✅ **ONLY trades with platform builder code count** (server-enforced)
+   - ✅ All trades tracked on-chain via Hyperliquid API
+   - ✅ External trades (without builder code) = instant disqualification
+   - ✅ Players cannot trade rostered coins outside platform during competition
+   - ✅ Detection method: Builder code verification on all fills (see `_PM/PLANS/HYPERLIQUID_SDK.md`)
 
-4. **Rate Limiting**
+4. **Sybil Attack Resistance**
+   - ❌ No artificial limits on same IP/device entries
+   - ✅ Each entry requires separate $10-$100 payment
+   - ✅ Market randomness makes multi-account abuse unprofitable
+   - ✅ Future: KYC requirements if regulatory concerns arise
+
+5. **Rate Limiting**
    - Max 20 trades per minute (prevents spam)
-   - Max 100 total trades per competition
+   - Max 100 total trades per competition (prevents API abuse)
    - Cooldown between position opens (1 second)
 
 ---
@@ -1108,11 +1161,14 @@ Resolution:
 - **Current:** 10 minimum
 - **Alternative:** 20 minimum (better prize pools)
 - **Recommendation:** 10 minimum (easier to fill)
+- **Note:** No guaranteed prize pools - 100% based on participation
 
-**Question #6: Guaranteed prize pool limits?**
-- **Current:** No hard limit
-- **Alternative:** Max $50K platform contribution per competition
-- **Recommendation:** Set limit to manage risk
+**Question #6: Trading Capital Risk Management?**
+- **Current:** $1,000 USDC per player
+- **Risk:** Platform exposure = $1,000 × player_count
+- **Mitigation:** Leverage limits, position size caps, anti-kamikaze rules
+- **Question:** Should capital scale with entry fee tier? ($500 for $10 entry, $2,000 for $100 entry?)
+- **Recommendation:** Keep standardized at $1,000 for MVP (simplicity)
 
 ### 10.3 Technical Decisions
 
@@ -1327,10 +1383,76 @@ const totalScore = directionScore + rankingScore + captainBonus;
 
 ---
 
-**DOCUMENT STATUS:** ✅ Ready for Stakeholder Approval  
-**ESTIMATED LAUNCH DATE:** January 2026 (8-week sprint)  
+**DOCUMENT STATUS:** ✅ CLARIFIED - All ambiguities resolved (November 12, 2025)
+**ESTIMATED LAUNCH DATE:** January 2026 (8-week sprint)
 **CONFIDENCE LEVEL:** 🟢 HIGH - Clear scope, validated design, reuses proven components
 
 ---
 
-*End of Product Specifications - Trader Grid Fantasy v1.0*
+## 13. CLARIFICATION LOG (November 12, 2025)
+
+### Critical Ambiguities Resolved
+
+**1. Real Money Trading vs Paper Trading** ✅ CLARIFIED
+- **RESOLUTION**: This is **REAL MONEY TRADING** via Hyperliquid SDK integration
+- **Capital**: $1,000 USDC per player (standardized, separate from entry fees)
+- **Integration**: See `_PM/PLANS/HYPERLIQUID_SDK.md` for technical implementation
+
+**2. Trading Capital & Position Sizing** ✅ CLARIFIED
+- **Starting Balance**: $1,000 USDC per player (standardized)
+- **Entry Fees**: $10-$100 (paid to prize pool, NOT used for trading)
+- **Capital Source**: Platform-provided via Hyperliquid agent wallets
+- **PnL Ownership**: Players keep profits/losses from trading (separate from prize pool)
+
+**3. Prize Structure vs Trading PnL** ✅ CLARIFIED
+- **Entry Fees**: 90% to trading prize pool, 5% to platform, 5% to jackpot pool
+- **Trading Prizes**: Top 3 PnL winners split 90% pool (63%, 18%, 9% of total wagers)
+- **Jackpot Pool**: 5% of wagers, split 50/50 between perfect grid and pattern winner
+- **Critical Distinction**: Prize pool winnings are SEPARATE from trading PnL profits
+
+**4. Settlement Price Integrity** ✅ CLARIFIED
+- **Authoritative Source**: Hyperliquid DEX candles (1hr, 4hr, or 24hr)
+- **Baseline Prices**: Captured at competition start from Hyperliquid API
+- **Final Prices**: Hyperliquid candle close price (e.g., 08:00-12:00 4hr candle for 4hr game)
+- **Ranking Calculation**: Absolute % change from baseline to final (|final - baseline| / baseline × 100)
+
+**5. Captain Jackpot Scope** ✅ CLARIFIED (REPLACED WITH NEW SYSTEM)
+- **OLD CONCEPT**: Top 3 from selected coins only (removed)
+- **NEW SYSTEM**: Dual jackpot mechanics
+  - **Perfect Grid (50% of jackpot pool)**: Exact market ranking match (can roll over)
+  - **Pattern Winner (50% of jackpot pool)**: Highest XP score (always awarded)
+
+**6. Competition Coin Pool Curation** ✅ CLARIFIED
+- **Source**: ONLY coins listed on Hyperliquid DEX
+- **Requirements**: $10M+ volume, $100M+ market cap, sufficient leverage liquidity
+- **Coin Index**: Platform maintains curated index, refreshed daily
+- **No Manual Curation**: Automated based on Hyperliquid listings + volume/cap filters
+
+**7. Leaderboard Real-Time Ranking** ✅ CLARIFIED
+- **Dual Leaderboard**: XP score (pattern-based) + PnL (trading-based)
+- **Prediction Score Visibility**: Hidden until settlement (prevents gaming)
+- **Live Rankings**: Based on unrealized PnL (updates every 5 seconds)
+- **Computational Load**: Batched approach (every 5 seconds) confirmed sufficient
+
+**8. Anti-Cheating Enforcement** ✅ CLARIFIED
+- **Primary Mechanism**: Builder code verification (ONLY platform trades count)
+- **External Trades**: Instant disqualification if trades without builder code
+- **Friend Limits**: REMOVED (no artificial restrictions)
+- **Sybil Attacks**: Not prevented (each entry requires payment, market randomness prevents abuse)
+- **Future Feature**: Private hosted matches with player-selected participants
+
+**9. Regulatory & Compliance** ✅ CLARIFIED
+- **USA**: 100% BLOCKED until legal clarity established
+- **Geo-Blocking**: Follow Hyperliquid's policies
+- **KYC/AML**: Delegated to Hyperliquid DEX
+- **Future**: Scale internationally before addressing USA compliance
+
+**10. Guaranteed Prize Pool Risk Management** ✅ CLARIFIED (REMOVED)
+- **RESOLUTION**: NO guaranteed prize pools
+- **Prize Pools**: 100% based on participation
+- **Platform Risk**: Limited to trading capital provision ($1,000 × player_count)
+- **Future**: May add guaranteed pools for regulatory/marketing reasons
+
+---
+
+*End of Product Specifications - Trader Grid Fantasy v1.0 (Clarified)*
