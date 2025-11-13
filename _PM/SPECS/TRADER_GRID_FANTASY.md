@@ -1,14 +1,14 @@
-# TRADER GRID FANTASY - PRODUCT SPECIFICATIONS
-**Version:** 1.0  
-**Date:** November 12, 2025  
-**Status:** MVP Design - Ready for Development  
+# BATTLE GRID - PRODUCT SPECIFICATIONS
+**Version:** 1.0
+**Date:** November 12, 2025
+**Status:** MVP Design - Ready for Development
 **Product Type:** Fantasy Sports + Live Crypto Trading Hybrid
 
 ---
 
 ## EXECUTIVE SUMMARY
 
-**Trader Grid Fantasy** is a competitive fantasy sports game for cryptocurrency markets that combines roster-building prediction skills with **real money trading execution** via Hyperliquid DEX. Players select and rank 9 cryptocurrencies before each competition, predict their directional movements, then actively trade those coins with $1,000 USDC capital during 1-4 hour live sessions to compete for prize pools based on trading PnL and pattern scoring.
+**Battle Grid** is a competitive fantasy sports game for cryptocurrency markets that combines roster-building prediction skills with **real money trading execution** via Hyperliquid DEX. Players select and rank 9 cryptocurrencies before each competition, predict their directional movements, then actively trade those coins with $1,000 USDC capital during 1-4 hour live sessions to compete for prize pools based on trading PnL and pattern scoring.
 
 **Core Innovation:** Triple scoring system that rewards trading profitability (PnL-based prizes), prediction accuracy (XP-based pattern scoring), and perfect market alignment (jackpot mechanics), solving the traditional "hold vs trade" paradox.
 
@@ -316,13 +316,13 @@ prizes.third = tradingPrizePool × 0.10;  // 9% of total wagers
 // NOTE: Winners ALSO keep their trading PnL profits (separate from prize pool)
 ```
 
-**Step 3: Calculate XP Score (Pattern-Based, like Market Grid)**
+**Step 3: Calculate XP Score (Simple Binary System)**
 ```typescript
-// Uses existing Market Grid pattern detection (see _PM/SPECS/GAME_DESIGN_V1.md)
+// KISS Principle: Either correct or wrong, no partial credit
 function calculateXPScore(player, marketData) {
   let score = 0;
 
-  // 1. Direction Accuracy (base XP)
+  // 1. Direction Accuracy (100 XP per correct prediction)
   for (let i = 0; i < 9; i++) {
     const coin = player.roster[i];
     const actualChange = marketData[coin.id].percentChange;
@@ -330,30 +330,36 @@ function calculateXPScore(player, marketData) {
     const actualUp = actualChange > 0;
 
     if (predictedUp === actualUp) {
-      score += 100; // Correct direction = 100 XP per cell
+      score += 100; // Correct direction = 100 XP (binary: right or wrong)
     }
   }
 
-  // 2. Pattern Detection (rows, columns, diagonals like Market Grid)
-  const patterns = detectPatterns(player.predictions, marketData);
-  patterns.forEach(pattern => {
-    score += pattern.points; // ROW_3_MATCH = 800 XP, ROW_4_MATCH = 4000 XP, etc.
-  });
+  // 2. Ranking Accuracy (exact position match only, no partial credit)
+  for (let i = 0; i < 9; i++) {
+    const coin = player.roster[i];
+    const actualRank = marketData[coin.id].rank - 1; // 0-indexed
 
-  // 3. Jackpot Detection (complete row + complete column)
-  const hasJackpot = detectJackpot(patterns);
+    if (i === actualRank) {
+      // Exact rank match
+      if (i === 0) {
+        score += 300; // Captain position worth more
+      } else {
+        score += 100; // Regular positions
+      }
+    }
+  }
+
+  // Maximum possible score: 900 (direction) + 1100 (ranking) = 2000 XP
 
   return {
     totalXP: score,
-    patterns: patterns,
-    isJackpot: hasJackpot
+    maxPossibleScore: 2000
   };
 }
 
 // XP is used for:
+// - Pattern Jackpot winner (highest score)
 // - Leaderboard ranking (separate from PnL)
-// - Pattern jackpot eligibility (see Step 4)
-// - Player progression system (future)
 ```
 
 **Step 4: Jackpot Distribution (Dual System)**
@@ -737,10 +743,9 @@ From **Trade Grid:**
    - Lock-in confirmation
 
 2. **Prediction Scoring Algorithm**
-   - Direction accuracy calculation
-   - Ranking accuracy with partial credit
-   - Captain bonus logic (300 XP max for captain position)
-   - Pattern detection for grid scoring (rows, columns, diagonals)
+   - Direction accuracy calculation (binary: 100 XP or 0)
+   - Ranking accuracy (binary: 300 XP for captain exact match, 100 XP for others, or 0)
+   - No partial credit system (KISS principle: either right or wrong)
 
 3. **Dual Prize Distribution System**
    - Trading Prize Pool (90% of entry fees): Top 3 PnL winners
@@ -897,7 +902,7 @@ Tutorial Competition (Fake Money):
 - ❌ Salary cap system
 - ❌ Category requirements (2 L1s, 2 DeFi, etc.)
 - ❌ XP progression system
-- ❌ Grid pattern bonuses (rows/columns)
+- ❌ Complex pattern bonuses (keeping it simple for MVP)
 - ❌ Multiple category competitions (only L1 Chains)
 - ❌ Social features (chat, friends, groups)
 - ❌ Advanced analytics (win rate, prediction history)
@@ -1063,9 +1068,10 @@ Resolution:
 - Average revenue per user (ARPU): Target $50/month
 
 **Game Balance:**
-- Average grid score: 1,200-1,400 XP (out of 2,600 max with perfect patterns)
+- Average grid score: 600-800 XP (out of 2,000 max)
+- Expected breakdown: ~70% from direction accuracy, ~10-30% from ranking accuracy
 - Perfect Grid Jackpot win rate: <1% of competitions (extremely rare, most roll over)
-- Pattern Jackpot: Always awarded (100% of competitions)
+- Pattern Jackpot: Always awarded to highest scorer (100% of competitions)
 - Trading prize concentration: Top 10% players shouldn't win >50% of prizes
 - Prize diversity: Different winners for trading prizes vs jackpots expected
 
@@ -1236,10 +1242,10 @@ Resolution:
 
 ## 11. APPENDICES
 
-### Appendix A: Prediction Score Calculation Example
+### Appendix A: Prediction Score Calculation Example (SIMPLIFIED)
 
 ```typescript
-// Full worked example
+// KISS Principle: Binary scoring - either correct or wrong
 const player = {
   roster: [
     { position: 0, coin_id: 'SOL', prediction: 'UP' },   // Captain
@@ -1266,13 +1272,15 @@ const marketData = {
   'ADA': { percentChange: 3.5, absChange: 3.5, rank: 8 }      // Actual #8
 };
 
-// STEP 1: Direction Accuracy (900 points max)
+// STEP 1: Direction Accuracy (100 XP per correct, max 900)
 let directionScore = 0;
 player.roster.forEach(coin => {
   const actual = marketData[coin.coin_id];
   const predictedUp = coin.prediction === 'UP';
   const actualUp = actual.percentChange > 0;
-  if (predictedUp === actualUp) directionScore += 100;
+  if (predictedUp === actualUp) {
+    directionScore += 100; // Binary: correct = 100, wrong = 0
+  }
 });
 // Results:
 // SOL: UP predicted, +18.2% actual → ✅ +100
@@ -1284,60 +1292,50 @@ player.roster.forEach(coin => {
 // MATIC: UP predicted, +4.8% actual → ✅ +100
 // DOT: DOWN predicted, -3.2% actual → ✅ +100
 // ADA: UP predicted, +3.5% actual → ✅ +100
-// Total: 900 points (perfect direction accuracy!)
+// Total: 900 XP (perfect direction accuracy!)
 
-// STEP 2: Ranking Accuracy (1400 points max)
-const rankingWeights = [500, 300, 200, 150, 100, 75, 50, 25, 10];
+// STEP 2: Ranking Accuracy (EXACT MATCH ONLY, no partial credit)
 let rankingScore = 0;
 
 player.roster.forEach((coin, predictedRank) => {
   const actual = marketData[coin.coin_id];
   const actualRank = actual.rank - 1; // Convert to 0-indexed
-  const rankDiff = Math.abs(predictedRank - actualRank);
-  
+
   if (predictedRank === actualRank) {
-    rankingScore += rankingWeights[predictedRank];
-  } else if (rankDiff <= 2) {
-    rankingScore += rankingWeights[predictedRank] * 0.5;
+    // EXACT match only
+    if (predictedRank === 0) {
+      rankingScore += 300; // Captain position
+    } else {
+      rankingScore += 100; // Regular positions
+    }
   }
+  // NO partial credit - either right or wrong
 });
 
 // Results:
-// Position 0 (Captain): SOL predicted, SOL actual #2 (rank 1) → OFF BY 1 → +250 (50% of 500)
-// Position 1: HYPE predicted, HYPE actual #1 (rank 0) → OFF BY 1 → +150 (50% of 300)
-// Position 2: BTC predicted, BTC actual #3 (rank 2) → PERFECT → +200 (100%)
-// Position 3: ETH predicted, ETH actual #5 (rank 4) → OFF BY 1 → +75 (50% of 150)
-// Position 4: AVAX predicted, AVAX actual #4 (rank 3) → OFF BY 1 → +50 (50% of 100)
-// Position 5: BNB predicted, BNB actual #6 (rank 5) → PERFECT → +75 (100%)
-// Position 6: MATIC predicted, MATIC actual #7 (rank 6) → PERFECT → +50 (100%)
-// Position 7: DOT predicted, DOT actual #9 (rank 8) → OFF BY 1 → +12.5 (50% of 25)
-// Position 8: ADA predicted, ADA actual #8 (rank 7) → OFF BY 1 → +5 (50% of 10)
-// Total: 867.5 points (strong ranking accuracy!)
-
-// STEP 3: Captain Bonus (300 points max)
-let captainBonus = 0;
-const captain = player.roster[0];
-const captainData = marketData[captain.coin_id];
-const captainPredictedUp = captain.prediction === 'UP';
-const captainActualUp = captainData.percentChange > 0;
-
-if (captainPredictedUp === captainActualUp) {
-  captainBonus = 300;
-}
-// SOL captain: UP predicted, +18.2% actual → ✅ +300
+// Position 0 (Captain): SOL predicted, actual rank #2 → ❌ +0 (not exact)
+// Position 1: HYPE predicted, actual rank #1 → ❌ +0 (off by 1)
+// Position 2: BTC predicted, actual rank #3 → ❌ +0 (off by 1)
+// Position 3: ETH predicted, actual rank #5 → ❌ +0 (off by 2)
+// Position 4: AVAX predicted, actual rank #4 → ❌ +0 (off by 1)
+// Position 5: BNB predicted, actual rank #6 → ❌ +0 (off by 1)
+// Position 6: MATIC predicted, actual rank #7 → ❌ +0 (off by 1)
+// Position 7: DOT predicted, actual rank #9 → ❌ +0 (off by 2)
+// Position 8: ADA predicted, actual rank #8 → ❌ +0 (off by 1)
+// Total: 0 XP (no exact ranking matches - this is intentionally hard!)
 
 // TOTAL PREDICTION SCORE
-const totalScore = directionScore + rankingScore + captainBonus;
-// 900 + 867.5 + 300 = 2,067.5 points (out of 2,600 max)
-// Rank: Likely top 10% (strong prediction performance)
+const totalScore = directionScore + rankingScore;
+// 900 + 0 = 900 XP (out of 2000 max)
+// Result: Great direction accuracy, but ranking is HARD (as intended)
 ```
 
 ### Appendix B: Glossary of Terms
 
 **Captain:** The coin placed in position 0 (top-left of grid). Has special bonuses:
 - Can use 20x leverage (vs 10x for others)
-- Worth +300 points if direction predicted correctly
-- Eligible for jackpot if finishes in top 3 absolute % movers
+- Worth 300 XP if exact ranking match (vs 100 XP for other positions)
+- Highest risk/reward position (hardest to predict perfectly)
 
 **Absolute % Change:** The percentage price movement regardless of direction. Used for ranking coins.
 - Example: +18% and -18% both have 18% absolute change
@@ -1345,10 +1343,11 @@ const totalScore = directionScore + rankingScore + captainBonus;
 
 **Roster:** The 9 selected coins that make up a player's grid for a competition
 
-**Grid Score (XP):** Points earned from pattern matching (direction accuracy + ranking accuracy + pattern bonuses)
-- Based on matching grid patterns to market outcomes (rows, columns, diagonals)
-- Similar to Market Grid scoring system (see `_PM/SPECS/GAME_DESIGN_V1.md`)
-- Maximum: ~2,600 XP with perfect pattern matches
+**Grid Score (XP):** Points earned from prediction accuracy (direction + ranking, binary scoring)
+- **Direction Score**: 100 XP per correct UP/DOWN prediction (max 900 XP)
+- **Ranking Score**: 300 XP for exact captain match, 100 XP for exact position matches (max 1,100 XP)
+- **No partial credit** - either correct or wrong (KISS principle)
+- Maximum: 2,000 XP with perfect predictions
 - Determines Pattern Jackpot winner (highest score) and Perfect Grid Jackpot eligibility (exact match)
 
 **Trading PnL:** Profit/Loss from live trading during competition
@@ -1532,4 +1531,4 @@ const totalScore = directionScore + rankingScore + captainBonus;
 
 ---
 
-*End of Product Specifications - Trader Grid Fantasy v1.0 (Clarified)*
+*End of Product Specifications - Battle Grid v1.0 (Clarified)*
