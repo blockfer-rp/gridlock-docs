@@ -34,10 +34,12 @@
 - ✅ All competition trades tagged with platform builder code (fee collected per-order on-chain)
 - ✅ Fees claimed through Hyperliquid referral reward process (tracked via referral state API)
 
-**Regulatory Note:**
-- ⚠️ **USA BLOCKED** until legal clarity is established
-- Platform follows Hyperliquid's geo-blocking policies
-- KYC/AML compliance delegated to Hyperliquid DEX
+**Product Classification:**
+- ✅ **Skill-Based Competition** (like DraftKings Pick6, esports tournaments)
+- ✅ **Entry Fee**: Payment for competition eligibility (not wagering on random outcomes)
+- ✅ **Winners Determined By**: Trading skill (PnL) + prediction accuracy (grid scoring)
+- ⚠️ **Geo-Restrictions**: Platform follows Hyperliquid's geo-blocking policies
+- ✅ **KYC/AML**: Delegated to Hyperliquid DEX (trading infrastructure)
 
 ---
 
@@ -134,13 +136,14 @@ Phase 3: SETTLEMENT & RESULTS - Instant calculation
 ### 1.3 Phase 2: Live Trading
 
 **Duration:** 1hr, 4hr, or 24hr (competition-specific)
-**Trading Capital:** $1,000 USDC per player (standardized, competition-managed)
+**Trading Capital:** Players trade with THEIR OWN capital on Hyperliquid
 
 **Capital Structure:**
-- ✅ **Entry Fee ($10-$100)**: Separate payment for prize pool, NOT used for trading
-- ✅ **Trading Capital ($1,000 USDC)**: Standardized margin provided per player
-- ✅ **Profits/Losses**: Kept by player (winners get trading PnL + prize pool winnings)
-- ✅ **Settlement**: Scoring based on unrealized PnL at competition end (positions NOT auto-closed, liquid markets ensure accurate pricing)
+- ✅ **Entry Fee ($10-$100)**: Payment for prize pool eligibility (skill-based competition entry)
+- ✅ **Trading Capital**: Players use their own Hyperliquid account balance
+- ✅ **Profits/Losses**: Players keep ALL trading PnL (separate from prize pool)
+- ✅ **Settlement**: Trading Prize based on PnL SNAPSHOT at candle close (when competition ends)
+- ✅ **Post-Competition**: Players can monitor and close positions after competition ends
 
 **Trading Mechanics:**
 - ✅ Can ONLY trade the 9 coins in your roster (server-enforced via Hyperliquid agent wallet)
@@ -151,12 +154,12 @@ Phase 3: SETTLEMENT & RESULTS - Instant calculation
 - ✅ Add to existing positions
 - ✅ Set stop-loss/take-profit (optional, managed by Hyperliquid)
 
-**Leverage Rules (Anti-Kamikaze Protection):**
-- **Captain (position 0):** Max 20x leverage
-- **Positions 1-8:** Max 10x leverage
-- **Max Notional Exposure:** $10,000 per coin (prevents all-in 20x hedging abuse)
-- **Total Portfolio Exposure:** Max $50,000 notional (prevents hedge-all-coins strategy)
-- **Rationale:** Prevents players from maxing leverage on all 9 coins to hedge opponents' trades
+**Leverage Rules (Competition Balance):**
+- **Captain (position 0):** Max 20x leverage (highest risk/reward position)
+- **Positions 1-8:** Max 10x leverage (standard positions)
+- **Max Notional Exposure:** $10,000 per coin (position size limit per asset)
+- **Total Portfolio Exposure:** Max $50,000 notional (overall risk management)
+- **Rationale:** Maintains fair competition dynamics and prevents extreme position concentration
 
 **Position Management:**
 - Unlimited trades during competition
@@ -316,11 +319,60 @@ prizes.third = tradingPrizePool × 0.10;  // 9% of total wagers
 // NOTE: Winners ALSO keep their trading PnL profits (separate from prize pool)
 ```
 
-**Step 3: Calculate XP Score (Simple Binary System)**
+**Step 3: Calculate XP Score (Binary + Complete Pattern System)**
+
+**Simplified Explanation** (Think: Call of Duty End-of-Match Screen or Slots Machine):
+
+The scoring system rewards you like a **slots machine jackpot** with escalating bonuses:
+
+1. **Base Hits** 💰 (900 XP max)
+   - Get UP/DOWN right? +100 XP per coin (like hitting matching symbols)
+   - 9 coins × 100 XP = 900 XP if all correct
+
+2. **Exact Matches** 🎯 (1,100 XP max)
+   - Did your #1 coin finish as market's #1? +300 XP (Captain bonus!)
+   - Did your #4 coin finish as market's #4? +100 XP
+   - Like getting exact multipliers in a slot machine
+
+3. **Pattern Jackpots** 🎰 (7,800 XP max - the BIG MONEY)
+   - **Complete a ROW** (3 correct in a line): +800 XP
+   - **Complete a COLUMN** (3 correct vertically): +800 XP
+   - **Complete a DIAGONAL** (3 correct diagonally): +1,500 XP (HARDEST!)
+   - Get ALL patterns? You just hit the **MEGA JACKPOT** 🚀
+
+**Example End Screen**:
+```
+┌────────────────────────────────────────────┐
+│  🏆 COMPETITION COMPLETE - YOUR SCORE      │
+├────────────────────────────────────────────┤
+│  ✓ Direction Hits: 8/9         +800 XP    │
+│  ✓ Exact Matches: 2 coins      +400 XP    │
+│  🎰 PATTERN BONUSES:                       │
+│     ✓ Row 0 Complete!          +800 XP    │
+│     ✓ Row 1 Complete!          +800 XP    │
+│     ✓ Column 0 Complete!       +800 XP    │
+│     ✓ JACKPOT BADGE: Row + Column! 💰     │
+│                                            │
+│  🎯 TOTAL SCORE: 3,600 XP (#2/127)        │
+│  💸 Trading PnL: +$480 (#3/127)           │
+│  🏅 PRIZE: $571 (3rd Place Trading)       │
+└────────────────────────────────────────────┘
+```
+
+**Why It's Simple**:
+- You see your grid light up with ✓ marks (like slot machine symbols aligning)
+- Patterns trigger cascading bonuses (like combo multipliers in Call of Duty)
+- Clear visual feedback: Green = correct, Red = wrong, Gold = pattern bonus
+
+---
+
+**Technical Implementation:**
+
 ```typescript
-// KISS Principle: Either correct or wrong, no partial credit
+// KISS Principle: Either correct or wrong + complete 3-match patterns only
 function calculateXPScore(player, marketData) {
   let score = 0;
+  const correctness = [];
 
   // 1. Direction Accuracy (100 XP per correct prediction)
   for (let i = 0; i < 9; i++) {
@@ -328,8 +380,10 @@ function calculateXPScore(player, marketData) {
     const actualChange = marketData[coin.id].percentChange;
     const predictedUp = coin.prediction === 'UP';
     const actualUp = actualChange > 0;
+    const isCorrect = predictedUp === actualUp;
 
-    if (predictedUp === actualUp) {
+    correctness.push(isCorrect);
+    if (isCorrect) {
       score += 100; // Correct direction = 100 XP (binary: right or wrong)
     }
   }
@@ -349,11 +403,45 @@ function calculateXPScore(player, marketData) {
     }
   }
 
-  // Maximum possible score: 900 (direction) + 1100 (ranking) = 2000 XP
+  // 3. Pattern Bonuses (COMPLETE 3-matches only, no partial credit)
+
+  // ROWS (3x3 grid: positions 0-2, 3-5, 6-8)
+  const rows = [[0, 1, 2], [3, 4, 5], [6, 7, 8]];
+  rows.forEach(row => {
+    if (row.every(pos => correctness[pos])) {
+      score += 800; // Complete row = 800 XP
+    }
+  });
+
+  // COLUMNS (3x3 grid: positions 0-3-6, 1-4-7, 2-5-8)
+  const columns = [[0, 3, 6], [1, 4, 7], [2, 5, 8]];
+  columns.forEach(col => {
+    if (col.every(pos => correctness[pos])) {
+      score += 800; // Complete column = 800 XP
+    }
+  });
+
+  // DIAGONALS (3x3 grid: positions 0-4-8, 2-4-6)
+  const diagonals = [[0, 4, 8], [2, 4, 6]];
+  diagonals.forEach(diag => {
+    if (diag.every(pos => correctness[pos])) {
+      score += 1500; // Complete diagonal = 1500 XP (harder to achieve)
+    }
+  });
+
+  // Maximum possible score:
+  // Base: 900 (direction) + 1100 (ranking) = 2000 XP
+  // Patterns: 2400 (rows) + 2400 (columns) + 3000 (diagonals) = 7800 XP
+  // Total Max: 9800 XP (if all predictions perfect)
 
   return {
     totalXP: score,
-    maxPossibleScore: 2000
+    maxPossibleScore: 9800,
+    patterns: {
+      rows: rows.filter(row => row.every(pos => correctness[pos])).length,
+      columns: columns.filter(col => col.every(pos => correctness[pos])).length,
+      diagonals: diagonals.filter(diag => diag.every(pos => correctness[pos])).length
+    }
   };
 }
 
@@ -387,7 +475,7 @@ if (perfectGridWinners.length > 0) {
 }
 
 // PART B: Pattern Jackpot (50% of jackpot pool)
-// Player with highest XP score from patterns (always awarded)
+// Player with highest XP score (including pattern bonuses) - always awarded
 const patternWinner = players.reduce((max, p) =>
   p.xpScore.totalXP > max.xpScore.totalXP ? p : max
 );
@@ -395,8 +483,123 @@ const patternWinner = players.reduce((max, p) =>
 const patternPrize = jackpotPool × 0.50;
 patternWinner.winnings += patternPrize;
 
+// BONUS DETECTION: Complete Row + Complete Column
+// If player completes at least one full row AND one full column, they get jackpot badge
+players.forEach(player => {
+  const correctness = player.roster.map((coin, i) => {
+    const predictedUp = coin.prediction === 'UP';
+    const actualUp = marketData[coin.id].percentChange > 0;
+    return predictedUp === actualUp;
+  });
+
+  const rows = [[0, 1, 2], [3, 4, 5], [6, 7, 8]];
+  const columns = [[0, 3, 6], [1, 4, 7], [2, 5, 8]];
+
+  const hasCompleteRow = rows.some(row => row.every(pos => correctness[pos]));
+  const hasCompleteColumn = columns.some(col => col.every(pos => correctness[pos]));
+
+  if (hasCompleteRow && hasCompleteColumn) {
+    player.isJackpot = true; // Visual badge (row + column completion)
+  }
+});
+
 // NOTE: Same player can win BOTH jackpots if they have perfect grid + highest XP
 ```
+
+---
+
+**🎰 JACKPOT ROLLOVER STRATEGY (Marketing Tool)**
+
+The Perfect Grid Jackpot rollover mechanism is a **powerful viral marketing driver** similar to lottery jackpots or progressive slots:
+
+**How It Works**:
+1. **2.5% of EVERY entry fee** goes into Perfect Grid Jackpot pool (50% of 5% jackpot allocation)
+2. **If no one hits Perfect Grid** (roster exactly matches market ranking): Jackpot ROLLS OVER to next competition
+3. **Jackpot accumulates** across competitions until someone wins
+
+**Marketing Mechanics**:
+
+**Example Rollover Growth**:
+```
+Competition #1 (100 players @ $50): Jackpot = $125 → NO WINNER → Rolls over
+Competition #2 (100 players @ $50): Jackpot = $125 + $125 = $250 → NO WINNER → Rolls over
+Competition #3 (120 players @ $50): Jackpot = $250 + $150 = $400 → NO WINNER → Rolls over
+...
+Competition #20 (100 players avg): Jackpot = $2,500+ 🔥
+Competition #50 (100 players avg): Jackpot = $6,250+ 🚀
+Competition #100 (100 players avg): Jackpot = $12,500+ 💰
+```
+
+**Viral Marketing Triggers**:
+
+1. **Homepage Banner**:
+   ```
+   🎰 PERFECT GRID JACKPOT: $12,847 🎰
+   NO WINNER IN 47 COMPETITIONS - BE THE FIRST!
+   ```
+
+2. **Competition Lobby**:
+   ```
+   ┌────────────────────────────────────────────────┐
+   │  🔥 L1 Chains 4hr Competition                 │
+   │  Entry: $50 | Players: 87/200                 │
+   │                                                │
+   │  💰 PERFECT GRID JACKPOT: $12,847 💰          │
+   │  ⚡ Last won: NEVER (47 competitions ago)     │
+   │  📊 Your odds: See if you can crack it!       │
+   │                                                │
+   │  [Enter Competition →]                         │
+   └────────────────────────────────────────────────┘
+   ```
+
+3. **Social Media Hooks**:
+   - "🎰 $15K Perfect Grid Jackpot! 50 competitions, ZERO winners. Think you can predict the EXACT market ranking?"
+   - "Someone JUST won the $8,429 Perfect Grid Jackpot! 🔥 First winner in 38 competitions. Next jackpot starts at $125..."
+   - "The Perfect Grid Jackpot has rolled over 100 TIMES. It's now $25,000. Will YOU be the one?"
+
+4. **Post-Competition Announcements**:
+   ```
+   COMPETITION #127 RESULTS:
+   ✓ Trading Winner: @CryptoKing (+$1,240)
+   ✓ Pattern Jackpot: @PatternMaster (4,850 XP)
+   ❌ Perfect Grid: NO WINNER
+
+   💰 JACKPOT ROLLS OVER: $12,847 → $12,972 💰
+   Next competition in 10 minutes!
+   ```
+
+**Psychological Drivers**:
+
+1. **FOMO (Fear of Missing Out)**:
+   - "What if the next competition is the one?"
+   - "Jackpot is growing every hour..."
+
+2. **Skill Challenge**:
+   - "Are you good enough to crack it?"
+   - Not random luck - requires SKILL + prediction accuracy
+
+3. **Near-Miss Marketing**:
+   - "Player @Analyst had 8/9 coins correct (missed by 1 position!)"
+   - "This was the CLOSEST anyone has gotten!"
+
+4. **Milestone Celebrations**:
+   - First $10K jackpot milestone: Platform-wide announcement
+   - First $50K jackpot: Featured on Crypto Twitter
+   - First $100K jackpot: Press releases, influencer campaigns
+
+**Key Differentiator from Traditional Lotteries**:
+- **NOT random**: Requires skill (market analysis + prediction accuracy)
+- **Transparent odds**: Players can calculate probability based on index size (see [SYBIL_ATTACK_PROBABILITY.md](_PM/SPECS/SYBIL_ATTACK_PROBABILITY.md))
+- **Daily opportunities**: Multiple competitions per day (unlike weekly lottery draws)
+- **Skill-based**: Better analysts have SIGNIFICANTLY higher chances
+
+**Revenue Impact**:
+- Larger jackpots → More entries → More rake revenue
+- Viral sharing → Organic user acquisition
+- Jackpot winners → Testimonial content ("I won $25K!")
+- No platform risk (pool is self-funded by entry fees)
+
+---
 
 **Results Screen Example:**
 ```
@@ -411,12 +614,15 @@ patternWinner.winnings += patternPrize;
 │  Total PnL: +$480 (from $1,000 capital)             │
 │  Prize: $571 (10% of trading pool)                  │
 │                                                      │
-│  🎯 GRID SCORE: 2,100 XP                            │
-│  Direction Accuracy: 8/9 correct (89%)              │
-│  Ranking Match: 6/9 exact, 2/9 within 2 spots       │
-│  Captain Bonus: ✅ SOL in position #2 (+300 XP)     │
-│  Patterns Matched: ROW_3 (800 XP), COL_2 (800 XP)  │
-│  Score Rank: #4 / 127                               │
+│  🎯 GRID SCORE: 3,700 XP                            │
+│  Direction Accuracy: 8/9 correct (800 XP)           │
+│  Ranking Match: 2/9 exact (500 XP)                  │
+│  Pattern Bonuses:                                   │
+│    - Row 0 Complete: +800 XP ✅                     │
+│    - Row 1 Complete: +800 XP ✅                     │
+│    - Column 0 Complete: +800 XP ✅                  │
+│  Jackpot Badge: ✅ Row + Column! 🎰                 │
+│  Score Rank: #2 / 127                               │
 │                                                      │
 │  🎰 JACKPOTS                                        │
 │  Perfect Grid: ❌ Not exact match (1 rolled over)   │
@@ -531,26 +737,49 @@ Builder Code Revenue:
 Total Monthly Revenue: $97,500
 ```
 
-### 2.3 Trading Capital Management
+### 2.3 Trading Capital Model
 
-**Capital Provision:**
-- ✅ Platform provides $1,000 USDC per player per competition
-- ✅ Capital is managed via Hyperliquid agent wallets (see `_PM/PLANS/HYPERLIQUID_SDK.md`)
-- ✅ Players cannot withdraw capital during competition
-- ✅ Players keep PnL profits/losses after settlement
+**Player-Funded Trading (Non-Custodial):**
+- ✅ Players trade with THEIR OWN capital on Hyperliquid DEX
+- ✅ Agent wallets managed via platform (see `_PM/PLANS/HYPERLIQUID_SDK.md`)
+- ✅ Players maintain full control of funds (can withdraw after competition)
+- ✅ Platform NEVER holds player trading capital
 
-**Capital Risk Management:**
-- Max drawdown per player: -$1,000 (100% loss)
-- Platform exposure: $1,000 × player_count per competition
-- Example: 100-player competition = $100,000 capital at risk
-- Mitigation: Leverage limits, position size caps, anti-kamikaze rules
+**Platform Risk Profile:**
+- ❌ **NO trading capital risk** (players use their own funds)
+- ✅ Platform revenue from entry fees (5% rake) + builder code fees (up to 10 bps)
+- ✅ Zero capital requirements for platform operations
+- ✅ Scalable to unlimited players (no capital constraints)
 
-**Settlement Process:**
-1. Scoring based on unrealized PnL at competition end (positions remain open)
-2. PnL calculated from mark prices: (realized_pnl + unrealized_pnl)
-3. Winners get: prize_pool_winnings + trading_pnl
-4. Losers lose: trading_pnl (up to $1,000 max)
-5. Players can close positions manually after competition or keep them open
+**Competition Settlement Process:**
+1. **Candle Close Timestamp**: When competition duration ends (e.g., 4hr candle closes)
+2. **PnL Snapshot**: System captures all players' unrealized PnL at that exact moment
+3. **Trading Prize**: Top 3 players by PnL snapshot win prize pool shares
+4. **Grid Score**: All players' predictions scored against final market ranking
+5. **Jackpot Awards**: Perfect Grid + Pattern Jackpot distributed
+6. **Post-Competition**: Players can monitor/close positions (not forced to close)
+
+**Example Settlement (Competition End: 12:00 PM UTC)**:
+```
+Player A:
+- Open positions: LONG BTC (3x), SHORT ETH (5x)
+- Unrealized PnL at 12:00 PM: +$450
+- Trading Prize: 1st place (highest PnL)
+- Grid Score: 2,800 XP
+- Total Winnings: $3,150 (trading prize) + $450 (trading PnL) + $125 (pattern jackpot)
+
+Player B:
+- Open positions: LONG SOL (10x)
+- Unrealized PnL at 12:00 PM: +$320
+- Trading Prize: 2nd place
+- Grid Score: 3,100 XP (highest!)
+- Total Winnings: $900 (trading prize) + $320 (trading PnL) + $125 (pattern jackpot)
+
+Post-Competition (12:05 PM):
+- Player A closes BTC position for +$460 (price moved slightly)
+- Player B holds SOL position (continues trading outside competition)
+- Settlement used 12:00 PM snapshot (post-competition price changes don't affect prizes)
+```
 
 ---
 
@@ -575,6 +804,37 @@ Total Monthly Revenue: $97,500
 - Entry fee: $50-$100
 - Target audience: Long-term strategists
 - Volatility focus: Daily/swing traders
+
+---
+
+**⚠️ COMPETITION ENTRY RESTRICTIONS (MVP)**
+
+**One Competition at a Time:**
+- Players can only enter ONE active competition at a time
+- Cannot register for second competition until first one completes
+- **Rationale**: Simplifies trade isolation and agent wallet management
+- **Future**: Multiple concurrent entries enabled with hyperEVM smart contracts
+
+**Example**:
+```
+12:00 PM: Player enters L1 Chains 4hr Competition (ends 4:00 PM)
+12:30 PM: Player tries to enter Meme Coins 1hr Competition
+          → BLOCKED: "You are already competing in L1 Chains 4hr (ends at 4:00 PM)"
+4:00 PM:  L1 Chains competition ends
+4:01 PM:  Player can now enter new competitions
+```
+
+**Technical Reason**:
+- Agent wallets currently support one competition context at a time
+- Prevents position conflicts (same coin in multiple competitions)
+- Ensures clean PnL isolation for settlement
+
+**Post-MVP Enhancement**:
+- With hyperEVM smart contracts: Separate agent wallet per competition
+- Enable multi-competition entry with isolated capital allocation
+- Advanced traders can run multiple strategies simultaneously
+
+---
 
 ### 3.2 Category-Specific Competitions
 
@@ -745,7 +1005,12 @@ From **Trade Grid:**
 2. **Prediction Scoring Algorithm**
    - Direction accuracy calculation (binary: 100 XP or 0)
    - Ranking accuracy (binary: 300 XP for captain exact match, 100 XP for others, or 0)
-   - No partial credit system (KISS principle: either right or wrong)
+   - Pattern detection (complete 3-matches only):
+     - Complete row: 800 XP
+     - Complete column: 800 XP
+     - Complete diagonal: 1500 XP
+   - Jackpot badge detection: Row + Column complete
+   - No partial credit system (KISS principle: complete patterns only)
 
 3. **Dual Prize Distribution System**
    - Trading Prize Pool (90% of entry fees): Top 3 PnL winners
@@ -1011,6 +1276,29 @@ Resolution:
 - Notify: "Competition cancelled due to insufficient players"
 ```
 
+**Edge Case #6: Player Liquidation**
+```
+Scenario: Player gets liquidated during competition (position reaches liquidation price)
+Resolution:
+- Player's PnL at liquidation = final trading score (typically -100% of margin)
+- Player ranks based on their liquidation PnL
+- Example: Liquidated at -$500 → Trading PnL = -$500 (ranks accordingly)
+- Grid Score still calculated normally (predictions vs market)
+- Can still win Pattern/Perfect Grid Jackpot if predictions were accurate
+```
+
+**Edge Case #7: Coin Delisting Mid-Competition**
+```
+Scenario: Hyperliquid halts trading or delists a coin during active competition
+Resolution:
+- Competition becomes VOID immediately
+- All entry fees refunded to all participants
+- All trades reversed or settled at last traded price (Hyperliquid policy)
+- Next competition uses updated coin index (delisted coin removed)
+- Announcement: "Competition #12847 cancelled due to [COIN] trading halt. All entry fees refunded."
+- Note: This is rare but ensures fair play (no incomplete data)
+```
+
 ### 7.3 Fairness & Anti-Cheating
 
 **Measures:**
@@ -1032,11 +1320,13 @@ Resolution:
    - ✅ Players cannot trade rostered coins outside platform during competition
    - ✅ Detection method: Builder code verification on all fills (see `_PM/PLANS/HYPERLIQUID_SDK.md`)
 
-4. **Sybil Attack Resistance**
-   - ❌ No artificial limits on same IP/device entries
-   - ✅ Each entry requires separate $10-$100 payment
-   - ✅ Market randomness makes multi-account abuse unprofitable
-   - ✅ Future: KYC requirements if regulatory concerns arise
+4. **Sybil Attack Resistance** (See [SYBIL_ATTACK_PROBABILITY.md](_PM/SPECS/SYBIL_ATTACK_PROBABILITY.md) for full analysis)
+   - ✅ **Index restriction**: Players select 9 coins from curated 20-30 coin index
+   - ✅ **Perfect Grid Jackpot**: Economically impossible to game (1 in 60+ billion chance with 20-coin index)
+   - ✅ **Pattern Jackpot**: Skill-based (skilled analysis scores 4-5x higher than random entries)
+   - ✅ **Entry cost**: Each account requires $10-$100 payment (volume attacks unprofitable)
+   - ✅ **Competition limit (MVP)**: Players can only enter ONE competition at a time (prevents multi-account abuse)
+   - ⚠️ **Future enhancements**: Minimum trade requirements, behavioral analysis, KYC for high-stake entries
 
 5. **Rate Limiting**
    - Max 20 trades per minute (prevents spam)
@@ -1068,10 +1358,11 @@ Resolution:
 - Average revenue per user (ARPU): Target $50/month
 
 **Game Balance:**
-- Average grid score: 600-800 XP (out of 2,000 max)
-- Expected breakdown: ~70% from direction accuracy, ~10-30% from ranking accuracy
+- Average grid score: 1,500-2,500 XP (out of 9,800 max)
+- Expected breakdown: ~35% from direction accuracy, ~5% from ranking accuracy, ~60% from pattern bonuses
 - Perfect Grid Jackpot win rate: <1% of competitions (extremely rare, most roll over)
 - Pattern Jackpot: Always awarded to highest scorer (100% of competitions)
+- Complete row + column jackpot badge: ~10-15% of games (achievable but challenging)
 - Trading prize concentration: Top 10% players shouldn't win >50% of prizes
 - Prize diversity: Different winners for trading prizes vs jackpots expected
 
@@ -1242,10 +1533,10 @@ Resolution:
 
 ## 11. APPENDICES
 
-### Appendix A: Prediction Score Calculation Example (SIMPLIFIED)
+### Appendix A: Prediction Score Calculation Example (WITH PATTERN SCORING)
 
 ```typescript
-// KISS Principle: Binary scoring - either correct or wrong
+// KISS Principle: Binary scoring + complete 3-match patterns only
 const player = {
   roster: [
     { position: 0, coin_id: 'SOL', prediction: 'UP' },   // Captain
@@ -1274,11 +1565,14 @@ const marketData = {
 
 // STEP 1: Direction Accuracy (100 XP per correct, max 900)
 let directionScore = 0;
+const correctness = [];
 player.roster.forEach(coin => {
   const actual = marketData[coin.coin_id];
   const predictedUp = coin.prediction === 'UP';
   const actualUp = actual.percentChange > 0;
-  if (predictedUp === actualUp) {
+  const isCorrect = predictedUp === actualUp;
+  correctness.push(isCorrect);
+  if (isCorrect) {
     directionScore += 100; // Binary: correct = 100, wrong = 0
   }
 });
@@ -1324,10 +1618,73 @@ player.roster.forEach((coin, predictedRank) => {
 // Position 8: ADA predicted, actual rank #8 → ❌ +0 (off by 1)
 // Total: 0 XP (no exact ranking matches - this is intentionally hard!)
 
+// STEP 3: Pattern Bonuses (COMPLETE 3-matches only)
+let patternScore = 0;
+
+// Grid visualization (all predictions correct):
+// ┌─────┬─────┬─────┐
+// │ SOL │HYPE │ BTC │  ← Row 0: ✓✓✓ = COMPLETE (+800 XP)
+// │  ✓  │  ✓  │  ✓  │
+// ├─────┼─────┼─────┤
+// │ ETH │AVAX │ BNB │  ← Row 1: ✓✓✓ = COMPLETE (+800 XP)
+// │  ✓  │  ✓  │  ✓  │
+// ├─────┼─────┼─────┤
+// │MATIC│ DOT │ ADA │  ← Row 2: ✓✓✓ = COMPLETE (+800 XP)
+// │  ✓  │  ✓  │  ✓  │
+// └─────┴─────┴─────┘
+//   ✓     ✓     ✓
+//  Col0  Col1  Col2 = ALL 3 COLUMNS COMPLETE (+2400 XP)
+//
+// Diagonals:
+// Main (0→4→8): SOL, AVAX, ADA = ✓✓✓ = COMPLETE (+1500 XP)
+// Anti (2→4→6): BTC, AVAX, MATIC = ✓✓✓ = COMPLETE (+1500 XP)
+
+// ROWS (positions 0-2, 3-5, 6-8)
+const rows = [[0, 1, 2], [3, 4, 5], [6, 7, 8]];
+rows.forEach(row => {
+  if (row.every(pos => correctness[pos])) {
+    patternScore += 800;
+  }
+});
+// Row 0: ✅ ALL CORRECT → +800 XP
+// Row 1: ✅ ALL CORRECT → +800 XP
+// Row 2: ✅ ALL CORRECT → +800 XP
+// Total: 2400 XP from rows
+
+// COLUMNS (positions 0-3-6, 1-4-7, 2-5-8)
+const columns = [[0, 3, 6], [1, 4, 7], [2, 5, 8]];
+columns.forEach(col => {
+  if (col.every(pos => correctness[pos])) {
+    patternScore += 800;
+  }
+});
+// Column 0 [SOL, ETH, MATIC]: ✅ ALL CORRECT → +800 XP
+// Column 1 [HYPE, AVAX, DOT]: ✅ ALL CORRECT → +800 XP
+// Column 2 [BTC, BNB, ADA]: ✅ ALL CORRECT → +800 XP
+// Total: 2400 XP from columns
+
+// DIAGONALS (positions 0-4-8, 2-4-6)
+const diagonals = [[0, 4, 8], [2, 4, 6]];
+diagonals.forEach(diag => {
+  if (diag.every(pos => correctness[pos])) {
+    patternScore += 1500;
+  }
+});
+// Main Diagonal [SOL, AVAX, ADA]: ✅ ALL CORRECT → +1500 XP
+// Anti Diagonal [BTC, AVAX, MATIC]: ✅ ALL CORRECT → +1500 XP
+// Total: 3000 XP from diagonals
+
+// Pattern Score Total: 2400 + 2400 + 3000 = 7800 XP
+
 // TOTAL PREDICTION SCORE
-const totalScore = directionScore + rankingScore;
-// 900 + 0 = 900 XP (out of 2000 max)
-// Result: Great direction accuracy, but ranking is HARD (as intended)
+const totalScore = directionScore + rankingScore + patternScore;
+// 900 + 0 + 7800 = 8700 XP (out of 9800 max)
+// Result: PERFECT PATTERN GRID! 🎰 (Row + Column jackpot badge earned)
+
+// JACKPOT DETECTION
+const hasCompleteRow = rows.some(row => row.every(pos => correctness[pos])); // ✅ TRUE
+const hasCompleteColumn = columns.some(col => col.every(pos => correctness[pos])); // ✅ TRUE
+const isJackpot = hasCompleteRow && hasCompleteColumn; // ✅ JACKPOT BADGE!
 ```
 
 ### Appendix B: Glossary of Terms
@@ -1335,6 +1692,7 @@ const totalScore = directionScore + rankingScore;
 **Captain:** The coin placed in position 0 (top-left of grid). Has special bonuses:
 - Can use 20x leverage (vs 10x for others)
 - Worth 300 XP if exact ranking match (vs 100 XP for other positions)
+- Part of Row 0, Column 0, and main diagonal (pattern scoring multiplier effect)
 - Highest risk/reward position (hardest to predict perfectly)
 
 **Absolute % Change:** The percentage price movement regardless of direction. Used for ranking coins.
@@ -1343,12 +1701,13 @@ const totalScore = directionScore + rankingScore;
 
 **Roster:** The 9 selected coins that make up a player's grid for a competition
 
-**Grid Score (XP):** Points earned from prediction accuracy (direction + ranking, binary scoring)
+**Grid Score (XP):** Points earned from prediction accuracy (direction + ranking + patterns)
 - **Direction Score**: 100 XP per correct UP/DOWN prediction (max 900 XP)
 - **Ranking Score**: 300 XP for exact captain match, 100 XP for exact position matches (max 1,100 XP)
-- **No partial credit** - either correct or wrong (KISS principle)
-- Maximum: 2,000 XP with perfect predictions
-- Determines Pattern Jackpot winner (highest score) and Perfect Grid Jackpot eligibility (exact match)
+- **Pattern Bonuses**: Complete rows/columns (800 XP each), complete diagonals (1500 XP each)
+- **No partial credit** - 3-match complete patterns only (KISS principle)
+- Maximum: ~9,800 XP with perfect grid (900 + 1100 + 7800)
+- Determines Pattern Jackpot winner (highest score) and jackpot badge (row + column complete)
 
 **Trading PnL:** Profit/Loss from live trading during competition
 - Realized PnL: Closed positions
@@ -1390,8 +1749,9 @@ const totalScore = directionScore + rankingScore;
 4. **Captain Mechanics**
    - Position 0 = Captain = special privileges
    - 20x leverage (vs 10x for others)
-   - +300 prediction bonus
-   - Jackpot eligibility (top 3 finish)
+   - +300 XP for exact ranking match (vs 100 XP for other positions)
+   - Part of Row 0, Column 0, and main diagonal (pattern scoring multiplier effect)
+   - Strategic importance: Highest risk/reward position
 
 ### 12.2 Implementation Priority
 
