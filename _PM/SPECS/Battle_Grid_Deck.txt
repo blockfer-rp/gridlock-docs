@@ -1,0 +1,248 @@
+Hypergrid is a skill-based PvP platform that combines prediction market mechanics with decentralized perps trading — creating the first gamified competitive arena where players go head-to-head on forecasting accuracy AND trading performance.
+
+
+
+INVESTMENT OVERVIEW
+Where draft kings meets decentralised trading 
+
+CEO & Founder 
+Ramon Perez
+
+Biz Dev & co-Founder 
+Christian D. Few
+
+Smart Contract Eng. 
+Kasper K.
+The team combines deep expertise across protocol development, web2/web3 applications, and real-world business operations — bringing over 15 years of collective experience in the crypto industry.
+Core_team
+
+Crypto trading behaviour has fundamentally shifted:
+
+
+
+
+
+The meme-coin era created a generation that values speed over patience, competition over isolation, and skill over luck. They don't want to hold — they want to compete.
+The explosive rise of competitive trading and prediction market formats reflects this shift — serving an audience that demands instant feedback, head-to-head competition, and the rush of proving their edge in real time.
+
+
+
+
+
+The_new_player_mindset
+
+Hypergrid sits at the convergence of three explosive markets. We turn prediction markets and perps trading into head-to-head competitions where players wager on their forecasting and trading skill.
+
+
+
+$81.4B GGR in 2024 (5x since 2022)
+17M+ daily active users, 70% QoQ growth
+
+
+PREDICTION MARKETS: ~$3B monthly volume (40% of $7.4B total) 18x YoY growth in crypto betting category
+
+</Market_data_highlights >
+The_opportunity
+DECENTRALIZED PERPS TRADING: $2.6T annual volume (2024) 600K+ active users, 138% YoY growth
+
+Phase 1 – Competitive Forecasting Arenas
+</MarketGrid >
+MarketGrid is where players prove their market intuition. Predict which tokens will outperform within categories, arrange them strategically on a 3×3 grid, and compete for the pot, XP, and jackpot by forming winning patterns.
+Power-ups add strategic depth: HIGH_VOLATILITY targets explosive movers, LOW_VOLATILITY captures stable performers — amplifying points when you read the market correctly.
+Every game builds your public track record. Win rates, pattern completions, and forecasting accuracy establish credibility for sponsors, trading competitions, and TradeGrid advancement.
+Prove market intuition here → Compete with leverage there.
+
+
+Introducing_HYPERGRID
+
+Phase 1 – Competitive Forecasting Arenas
+</CandleGrid >
+CandleGrid tests directional momentum over time. Players select one asset (SOL, ETH, or BTC) and predict whether each sequential candle closes higher or lower across 12–24 time periods. Compete for the pot, XP, and jackpot by accurately forecasting trend continuation, reversals, and volatility windows.
+
+Power-ups target timing precision: HIGH_VOLATILITY identifies explosive price swings within your sequence, LOW_VOLATILITY captures tight-range candles — both amplifying points when you correctly anticipate market behavior.
+
+Players who master temporal forecasting — predicting when trends form, persist, or reverse — build the sequential decision-making skills essential for TradeGrid’s fast-paced leveraged trading.
+
+Forecast momentum sequences here → Execute timed entries there.
+Introducing_HYPERGRID.cont.
+
+Phase 2 — MVP
+</Tradegrid >
+Tradegrid is the centerpiece of the Hypergrid ecosystem — a decentralized PvP trading platform where players compete in timed trading sessions for a winner-takes-all reward. As the ecosystem evolves, weekly elimination tournaments, team battles, and player-hosted matches will launch — with hosts earning 5% of the action
+
+
+
+
+
+Introducing_HYPERGRID.cont.
+
+</Unified_economy >
+
+All game modes operate under one ecosystem — XP, in-game credits, and rewards sync across every Hypergrid experience, creating a continuous progression system that ties gameplay directly to real market engagement.
+
+
+
+
+
+PLAYER
+ALL GAME MODES
+REFERRAL 
+WIN POT
+WIN JACKPOT
+EARN XP
+</LEADERBOARD >
+IN-GAME CREDITS
+- Prizes
+- Exclusive
+  tournaments
+- Airdrop
+Introducing_HYPERGRID.cont.
+
+Core Revenue Driver
+Hypergrid earns a 5% rake on every wagered PvP match — a scalable, volume-based model directly tied to player activity and engagement.
+
+Supplementary Streams
+Additional revenue comes from builder and referral fees, with a portion redistributed back into the economy as in-game credits to reward ongoing participation.
+
+Bonus Upside
+Through active builder and referral participation, Hypergrid is well positioned to capture future airdrop rewards from the HYPE ecosystem.
+
+
+
+
+
+
+
+Business_model
+
+Financial_projections
+Key Metrics:
+Bottom Line: At 1,000 players/day wagering $100 each with 5% rake, Hypergrid generates $1.8M in annual game rake revenue. 
+
+</Overview >
+PVP.trade is a Telegram-based trading bot built within Hyperliquid’s ecosystem. According to DeFiLlama analytics, PVP.trade has generated over $6.17 million in fees in 2025, with a cumulative $2.6 billion+ in trading volume.
+
+Performance Highlights
+At its peak between May and June 2025, PVP.trade generated between $573 million and $796 million in monthly perpetual trading volume.
+
+
+
+
+
+
+Case_study_pvp.trade
+
+</From Stagnation to Opportunity >
+PVP.trade’s growth plateaued mainly because it never advanced beyond its Telegram interface. The community has been waiting for meaningful progression for months, yet no new features or engagement layers were introduced. There were no incentives to keep players locked in — no XP farming, no rewards, no jackpots, just a static leaderboard. For the high builder fees users were paying, there was no sense of value or progression tied to their activity.
+Hypergrid was built to fix exactly that — refining PVP.trade’s product–market fit and evolving it into a circular, player-first economy where every match, trade, and referral fuels jackpots, free credits, and rewards — ensuring value constantly flows back to the players, not away from them.
+
+
+
+
+
+Case_study_pvp.trade.cont.
+
+
+
+
+
+
+
+Case_study_LEGEND
+
+
+
+
+
+
+
+Case_study_POLYMARKET
+
+Hypergrid is raising $250,000 at a $2.5M valuation cap (pre-seed) to secure 12 months of operational runway. This raise establishes the foundation for scaling Hypergrid from MVP/Beta to a fully deployable product ecosystem.
+
+Core Development
+
+Specialized Outsourcing
+
+Funding_requirements
+
+Investors can participate through one of two models:
+
+Post-Money SAFE
+Hypergrid is offering up to 10% equity through a Post-Money SAFE at a $2.5M valuation cap, enabling investors to participate in the company’s long-term growth potential.
+Equity holders will also be eligible for quarterly dividends once sustainable operational cash flow is achieved.
+
+Revenue-Backed Note
+Lenders receive 15% APR, with repayment sourced directly from future operating profits and prioritized before dividends.
+
+
+Should Hypergrid conduct a Token Generation Event (TGE), both equity holders and loan participants will be entitled to a token allocation proportionate to their contribution amount.
+Investor_structure
+
+Entity Formation & Compliance: Establishing company structure, banking, and legal groundwork.
+
+Core Development: Finalizing the Hypergrid platform, improving in-game systems, and conducting smart contract audits.
+
+Specialized Outsourcing: Hiring external professionals and studios to fast-track UI/UX polish, feature stability, and full launch readiness.
+
+Marketing & Community Growth: Creating visibility through KOL partnerships, content campaigns, and large-scale jackpot events to draw attention and boost engagement.
+
+
+
+
+
+
+
+
+
+
+
+Funds will be allocated across the following pillars:
+
+Use_of_funds
+
+Roadmap
+Q4
+Q1
+Q2
+Q3
+</Raise pre-seed capital
+
+</Entity Formation & Compliance
+
+</Finalize Phase 1 builds
+
+</ Smart contract audit by Certik
+
+</Conduct focus groups and testing sessions
+
+</Launch MarketGrid and CandleGrid
+
+</Finalize and test the TradeGrid build through focus groups ahead of its full launch
+
+</Ramp up marketing and community growth
+
+</Onboard KOL partnerships to support the full TradeGrid launch
+</Advance two new Arena games from MVP/Beta to full launch
+
+</ Refine UX and competition format
+
+</Launch new trading game modes to expand player engagement and variety
+
+</Expand KOL partnerships and community content programs
+
+</Begin regional rollout — targeting new user bases in Asia and Europe
+
+Thank you for your attention.
+
+Should you have any questions please contact us at invest@hypergrid.fun
+
+
+
+
+
+
+
+
+
+Let’s_connect
