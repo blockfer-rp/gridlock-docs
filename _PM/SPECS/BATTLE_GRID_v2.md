@@ -611,137 +611,150 @@ Reward: Maximum total winnings possible from single $100 entry
 
 **STEP 1: Calculate Final Market Rankings**
 
-```typescript
-// Calculate absolute % change for all coins in pool
-coins.forEach(coin => {
-  const baselinePrice = coin.priceAtStart; // From Hyperliquid API
-  const finalPrice = coin.priceAtCandleClose; // From 4hr candle close
-  
-  coin.absoluteChange = Math.abs((finalPrice - baselinePrice) / baselinePrice * 100);
-});
+**Mathematical Formula:**
 
-// Rank coins by absolute % change (highest = #1)
-const marketRanking = coins.sort((a, b) => b.absoluteChange - a.absoluteChange);
+For each coin *i* in the competition pool:
 
-// Example results:
-// #1: HYPE (-22.4% down) = 22.4% absolute change
-// #2: SOL (+18.2% up) = 18.2% absolute change  
-// #3: BTC (+12.1% up) = 12.1% absolute change
-// ...
 ```
+Absolute % Change = |P_final - P_baseline| / P_baseline × 100
+```
+
+Where:
+- `P_baseline` = Price at competition start (from Hyperliquid API)
+- `P_final` = Price at candle close (1hr, 4hr, or 24hr candle)
+- `|x|` = Absolute value function
+
+**Ranking Logic:**
+```
+Rank coins by Absolute % Change (descending order)
+Highest absolute change → Rank #1
+```
+
+**Example Results:**
+
+| Rank | Coin | Price Movement | Absolute Change |
+|------|------|----------------|-----------------|
+| #1 | HYPE | -22.4% (down) | 22.4% |
+| #2 | SOL | +18.2% (up) | 18.2% |
+| #3 | BTC | +12.1% (up) | 12.1% |
+| ... | ... | ... | ... |
 
 **STEP 2: Calculate Pattern Prize Pool (All 100 Players Compete)**
 
-```typescript
-// Pattern Prize Pool: 80% of passive entry fees
-const passiveEntries = entries.filter(e => e.tier === 'PASSIVE');
-const patternPrizePool = passiveEntries.length × 25 × 0.80;
+**Prize Pool Calculation:**
 
-// Example: 70 passive players × $25 × 80% = $1,400
-
-// Rank ALL 100 players by Grid Score (XP)
-const allPlayers = [...passiveEntries, ...activeEntries];
-const patternRankings = allPlayers.sort((a, b) => b.gridScore - a.gridScore);
-
-// Distribute to top 3 (ANY tier can win)
-const prizes = {
-  pattern: {
-    first: patternPrizePool × 0.70,  // $980
-    second: patternPrizePool × 0.20, // $280
-    third: patternPrizePool × 0.10   // $140
-  }
-};
-
-// Winners can be passive OR active players
-await distributePrize({
-  winners: [
-    { userId: patternRankings[0].userId, amount: prizes.pattern.first, rank: 1 },
-    { userId: patternRankings[1].userId, amount: prizes.pattern.second, rank: 2 },
-    { userId: patternRankings[2].userId, amount: prizes.pattern.third, rank: 3 }
-  ],
-  prizeType: 'PATTERN'
-});
 ```
+Pattern Prize Pool = N_passive × $25 × 0.80
+```
+
+Where:
+- `N_passive` = Number of passive tier entries
+
+**Example:** 70 passive players × $25 × 80% = **$1,400**
+
+**Prize Distribution Formula:**
+
+| Place | Formula | Example Amount |
+|-------|---------|----------------|
+| 1st | Pool × 70% | $980 |
+| 2nd | Pool × 20% | $280 |
+| 3rd | Pool × 10% | $140 |
+
+**Ranking Method:**
+```
+1. Combine all 100 players (passive + active)
+2. Sort by Grid Score (XP) descending
+3. Award prizes to top 3 (ANY tier eligible)
+```
+
+**Eligibility:** All 100 players compete (both passive AND active tiers)
 
 **STEP 3: Calculate Trading Prize Pool (Only 30 Active Players Compete)**
 
-```typescript
-// Trading Prize Pool: 80% of active entry fees
-const activeEntries = entries.filter(e => e.tier === 'ACTIVE');
-const tradingPrizePool = activeEntries.length × 100 × 0.80;
+**Prize Pool Calculation:**
 
-// Example: 30 active players × $100 × 80% = $2,400
-
-// Rank ONLY active players by Trading PnL
-const tradingRankings = activeEntries.sort((a, b) => b.tradingPnL - a.tradingPnL);
-
-// Distribute to top 3 (active only)
-const prizes = {
-  trading: {
-    first: tradingPrizePool × 0.70,  // $1,680
-    second: tradingPrizePool × 0.20, // $480
-    third: tradingPrizePool × 0.10   // $240
-  }
-};
-
-// NOTE: Winners ALSO keep their trading PnL profits (separate)
-await distributePrize({
-  winners: [
-    { userId: tradingRankings[0].userId, amount: prizes.trading.first, rank: 1 },
-    { userId: tradingRankings[1].userId, amount: prizes.trading.second, rank: 2 },
-    { userId: tradingRankings[2].userId, amount: prizes.trading.third, rank: 3 }
-  ],
-  prizeType: 'TRADING'
-});
 ```
+Trading Prize Pool = N_active × $100 × 0.80
+```
+
+Where:
+- `N_active` = Number of active tier entries
+
+**Example:** 30 active players × $100 × 80% = **$2,400**
+
+**Prize Distribution Formula:**
+
+| Place | Formula | Example Amount |
+|-------|---------|----------------|
+| 1st | Pool × 70% | $1,680 |
+| 2nd | Pool × 20% | $480 |
+| 3rd | Pool × 10% | $240 |
+
+**Ranking Method:**
+```
+1. Filter to ONLY active tier players
+2. Sort by Trading PnL descending
+3. Award prizes to top 3 (active tier only)
+```
+
+**Important:** Winners ALSO keep their trading PnL profits (separate from prize pool)
+
+**Eligibility:** Only 30 active players compete (passive tier NOT eligible)
 
 **STEP 4: Calculate Jackpot Pool (All 100 Players Eligible)**
 
-```typescript
-// Jackpot Pool: 10% of ALL entry fees (combined passive + active)
-const jackpotPool = (passiveEntries.length × 2.50) + (activeEntries.length × 10);
+**Total Jackpot Pool Calculation:**
 
-// Example: (70 × $2.50) + (30 × $10) = $475
-
-// PART A: Perfect Grid Jackpot (50% of jackpot pool)
-const perfectGridPrize = jackpotPool × 0.50; // $237.50
-
-// Check if any player's roster exactly matches market ranking
-const perfectGridWinners = allPlayers.filter(p => 
-  p.rosterRanking.every((coin, idx) => coin.actualRank === idx)
-);
-
-if (perfectGridWinners.length > 0) {
-  // Split among winners (ANY tier eligible)
-  const prizePerWinner = perfectGridPrize / perfectGridWinners.length;
-  perfectGridWinners.forEach(winner => {
-    await distributePrize({
-      userId: winner.userId,
-      amount: prizePerWinner,
-      prizeType: 'PERFECT_GRID'
-    });
-  });
-} else {
-  // NO WINNER: Roll over to next competition
-  await rolloverJackpot(perfectGridPrize);
-}
-
-// PART B: Pattern Bonus Jackpot (50% of jackpot pool)
-const patternBonusPrize = jackpotPool × 0.50; // $237.50
-
-// Player with highest XP score (ANY tier eligible)
-const patternBonusWinner = allPlayers.reduce((max, p) =>
-  p.gridScore > max.gridScore ? p : max
-);
-
-// Always awarded (never rolls over)
-// NOTE: Active players are FULLY eligible with their $100 entry
-await distributePrize({
-  userId: patternBonusWinner.userId,
-  amount: patternBonusPrize,
-  prizeType: 'PATTERN_BONUS'
-});
 ```
+Jackpot Pool = (N_passive × $2.50) + (N_active × $10)
+```
+
+**Example:** (70 × $2.50) + (30 × $10) = **$475**
+
+---
+
+**PART A: Perfect Grid Jackpot (50% of pool)**
+
+```
+Perfect Grid Prize = Jackpot Pool × 0.50
+```
+
+**Decision Flow:**
+```
+┌─────────────────────────────────────┐
+│ Check for Perfect Grid Winners     │
+│ (Roster exactly matches ranking)   │
+└────────────┬────────────────────────┘
+             │
+      ┌──────┴──────┐
+      │             │
+   Winners?      No Winners?
+      │             │
+      ▼             ▼
+  Split Prize    Roll Over
+  Among All      To Next
+  Winners        Competition
+```
+
+**Eligibility:** All 100 players (any tier)
+
+---
+
+**PART B: Pattern Bonus Jackpot (50% of pool)**
+
+```
+Pattern Bonus Prize = Jackpot Pool × 0.50
+```
+
+**Award Logic:**
+```
+Winner = Player with MAX(Grid Score) across all 100 players
+```
+
+**Rules:**
+- ✅ Always awarded (NEVER rolls over)
+- ✅ All 100 players eligible (passive + active)
+- ✅ Active players FULLY eligible with $100 entry
 
 #### Grid Score Calculation (XP System)
 
@@ -766,74 +779,69 @@ The scoring system rewards like a **slot machine** with escalating bonuses:
 
 **Maximum Possible Score:** 9,800 XP (perfect predictions + all patterns)
 
-**Technical Implementation:**
+**Mathematical Formula:**
 
-```typescript
-function calculateGridScore(player, marketData) {
-  let score = 0;
-  const correctness = [];
+**Total Grid Score:**
+```
+Total XP = Direction_Score + Ranking_Score + Pattern_Bonuses
+```
 
-  // 1. Direction Accuracy (100 XP per correct prediction)
-  for (let i = 0; i < 9; i++) {
-    const coin = player.roster[i];
-    const actualChange = marketData[coin.id].percentChange;
-    const predictedUp = coin.prediction === 'UP';
-    const actualUp = actualChange > 0;
-    const isCorrect = predictedUp === actualUp;
+**1. Direction Score:**
+```
+Direction_Score = Σ(i=0 to 8) { 100 if Prediction_i matches Actual_i, else 0 }
 
-    correctness.push(isCorrect);
-    if (isCorrect) {
-      score += 100; // Binary: correct = 100, wrong = 0
-    }
-  }
+Where:
+Prediction_i ∈ {UP, DOWN}
+Actual_i = {UP if %Change > 0, DOWN if %Change ≤ 0}
+Match = TRUE if (Prediction_i = UP AND Actual_i = UP) OR (Prediction_i = DOWN AND Actual_i = DOWN)
 
-  // 2. Ranking Accuracy (exact position match only)
-  for (let i = 0; i < 9; i++) {
-    const coin = player.roster[i];
-    const actualRank = marketData[coin.id].rank - 1; // 0-indexed
+Maximum: 900 XP (9 coins × 100 XP)
+```
 
-    if (i === actualRank) {
-      // Exact rank match
-      if (i === 0) {
-        score += 300; // Captain position
-      } else {
-        score += 100; // Regular positions
-      }
-    }
-  }
-
-  // 3. Pattern Bonuses (COMPLETE 3-matches only)
-
-  // ROWS (positions 0-2, 3-5, 6-8)
-  const rows = [[0, 1, 2], [3, 4, 5], [6, 7, 8]];
-  rows.forEach(row => {
-    if (row.every(pos => correctness[pos])) {
-      score += 800; // Complete row
-    }
-  });
-
-  // COLUMNS (positions 0-3-6, 1-4-7, 2-5-8)
-  const columns = [[0, 3, 6], [1, 4, 7], [2, 5, 8]];
-  columns.forEach(col => {
-    if (col.every(pos => correctness[pos])) {
-      score += 800; // Complete column
-    }
-  });
-
-  // DIAGONALS (positions 0-4-8, 2-4-6)
-  const diagonals = [[0, 4, 8], [2, 4, 6]];
-  diagonals.forEach(diag => {
-    if (diag.every(pos => correctness[pos])) {
-      score += 1500; // Complete diagonal (harder)
-    }
-  });
-
-  return {
-    totalXP: score,
-    maxPossibleScore: 9800,
-    correctness: correctness
-  };
+**2. Ranking Score:**
+```
+Ranking_Score = Σ(i=0 to 8) {
+  300 XP  if i = 0 AND Player_Rank_i = Market_Rank_i  (Captain exact match)
+  100 XP  if i > 0 AND Player_Rank_i = Market_Rank_i  (Regular exact match)
+  0 XP    otherwise
 }
+
+Maximum: 1,100 XP (Captain 300 + 8 positions × 100)
+```
+
+**3. Pattern Bonuses:**
+```
+Rows = {[0,1,2], [3,4,5], [6,7,8]}
+Columns = {[0,3,6], [1,4,7], [2,5,8]}
+Diagonals = {[0,4,8], [2,4,6]}
+
+Pattern_Bonus =
+  (Σ Complete_Rows × 800 XP) +
+  (Σ Complete_Columns × 800 XP) +
+  (Σ Complete_Diagonals × 1500 XP)
+
+Where Complete = ALL 3 positions predicted correctly
+
+Maximum: 7,800 XP
+- 3 rows × 800 = 2,400
+- 3 columns × 800 = 2,400
+- 2 diagonals × 1500 = 3,000
+```
+
+**Grid Layout for Pattern Detection:**
+```
+Position indices:
+┌───┬───┬───┐
+│ 0 │ 1 │ 2 │  Row 0
+├───┼───┼───┤
+│ 3 │ 4 │ 5 │  Row 1
+├───┼───┼───┤
+│ 6 │ 7 │ 8 │  Row 2
+└───┴───┴───┘
+  ↓   ↓   ↓
+ C0  C1  C2
+
+Diagonals: [0,4,8] and [2,4,6]
 ```
 
 #### Settlement Example
@@ -1700,38 +1708,55 @@ Rationale:
 • Both tiers required = Full product experience (spectator feature needs active traders)
 ```
 
-**Cancellation Process:**
+**Cancellation Process Flowchart:**
 
-```typescript
-async function checkCompetitionViability(competitionId: string) {
-  const competition = await getCompetition(competitionId);
-  const passiveCount = competition.entries.filter(e => e.tier === 'PASSIVE').length;
-  const activeCount = competition.entries.filter(e => e.tier === 'ACTIVE').length;
-  const totalCount = passiveCount + activeCount;
-  
-  const canStart = 
-    totalCount >= 20 &&
-    passiveCount >= 5 &&
-    activeCount >= 5;
-  
-  if (!canStart && minutesUntilStart <= 5) {
-    // Cancel competition
-    await cancelCompetition(competitionId, {
-      reason: 'INSUFFICIENT_PLAYERS',
-      details: { total: totalCount, passive: passiveCount, active: activeCount }
-    });
-    
-    // Refund all entry fees
-    await refundAllEntries(competitionId);
-    
-    // Notify participants
-    await notifyParticipants(competitionId, {
-      message: 'Competition cancelled - insufficient players. Your entry fee has been refunded.'
-    });
-  }
-  
-  return { canStart, passiveCount, activeCount, totalCount };
-}
+```
+┌──────────────────────────────────────┐
+│  5 Minutes Before Start Time         │
+│  Check Competition Viability          │
+└────────────┬─────────────────────────┘
+             │
+             ▼
+    ┌────────────────────┐
+    │ Count Entries:     │
+    │ • Passive = P      │
+    │ • Active = A       │
+    │ • Total = T        │
+    └────────┬───────────┘
+             │
+             ▼
+    ┌────────────────────────┐
+    │ Check ALL Conditions:  │
+    │ T ≥ 20?                │
+    │ P ≥ 5?                 │
+    │ A ≥ 5?                 │
+    └────┬─────────────┬─────┘
+         │             │
+      ALL YES?      ANY NO?
+         │             │
+         ▼             ▼
+   ┌─────────┐   ┌──────────────────┐
+   │ START   │   │ CANCEL           │
+   │ COMP    │   │ Competition      │
+   └─────────┘   └────────┬─────────┘
+                          │
+                 ┌────────┴──────────┐
+                 │                   │
+                 ▼                   ▼
+         ┌───────────────┐   ┌──────────────┐
+         │ Refund ALL    │   │ Notify ALL   │
+         │ Entry Fees    │   │ Participants │
+         └───────────────┘   └──────────────┘
+```
+
+**Decision Logic:**
+```
+CAN_START = (Total ≥ 20) AND (Passive ≥ 5) AND (Active ≥ 5)
+
+If CAN_START = FALSE at 5 minutes before start:
+  1. Cancel competition
+  2. Refund all entry fees
+  3. Send notifications
 ```
 
 **Grace Period Notifications:**
