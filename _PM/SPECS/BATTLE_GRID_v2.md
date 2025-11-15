@@ -1315,388 +1315,9 @@ Margin: 52%
 
 ---
 
-## 4. TECHNICAL SPECIFICATIONS
+## 4. USER EXPERIENCE FLOWS
 
-### 4.1 Architecture Overview
-
-**Frontend (React/TypeScript):**
-- Tier selection UI (passive vs active)
-- Roster builder (drag-and-drop 3x3 grid)
-- Live competition screens:
-  - Passive: Spectator view + pattern leaderboard
-  - Active: Trading panel + dual leaderboards
-- Results breakdown (tier-specific templates)
-
-**Backend Requirements:**
-- Competition management system
-- Player registration/tier selection
-- Real-time price feed integration (Hyperliquid WebSocket)
-- PnL calculation engine (for active tier)
-- Grid scoring algorithm (pattern detection)
-- Dual prize distribution logic
-- Dual leaderboard system (pattern + trading)
-- Spectator feed (aggregated trader data)
-
-### 4.2 Database Schema
-
-```sql
--- Competitions table
-CREATE TABLE fantasy_competitions (
-  id UUID PRIMARY KEY,
-  category VARCHAR(50), -- L1_CHAINS, MEMES, DEFI
-  duration INTEGER, -- 60, 240, 1440 minutes
-  start_time TIMESTAMP,
-  end_time TIMESTAMP,
-  
-  -- Dual-track specific
-  passive_entry_fee DECIMAL(10,2), -- $25
-  active_entry_fee DECIMAL(10,2), -- $100
-  passive_slots INTEGER, -- Max 100
-  active_slots INTEGER, -- Max 30
-  passive_filled INTEGER, -- Current passive count
-  active_filled INTEGER, -- Current active count
-  
-  total_prize_pool DECIMAL(10,2),
-  status VARCHAR(20), -- REGISTRATION, LIVE, SETTLED
-  total_player_count INTEGER, -- passive + active
-  created_at TIMESTAMP
-);
-
--- Player entries table
-CREATE TABLE fantasy_rosters (
-  id UUID PRIMARY KEY,
-  competition_id UUID REFERENCES fantasy_competitions(id),
-  user_id UUID REFERENCES users(id),
-  
-  -- Tier information
-  tier VARCHAR(10) CHECK (tier IN ('PASSIVE', 'ACTIVE')),
-  entry_fee DECIMAL(10,2), -- $25 or $100
-  trading_capital DECIMAL(10,2), -- $0 for passive, $1000 for active
-  agent_wallet_address VARCHAR(66), -- NULL for passive
-  
-  -- Roster data
-  roster_data JSONB, -- Array of 9 coin selections with predictions
-  locked_at TIMESTAMP,
-  
-  -- Scoring
-  prediction_score INTEGER, -- XP score
-  pattern_rank INTEGER, -- Rank in pattern leaderboard (vs 100)
-  final_pnl DECIMAL(10,2), -- Trading PnL (NULL for passive)
-  trading_rank INTEGER, -- Rank in trading leaderboard (NULL for passive)
-  
-  -- Prizes
-  pattern_prize DECIMAL(10,2), -- Can be won by any tier
-  trading_prize DECIMAL(10,2), -- Only for active tier
-  jackpot_winnings DECIMAL(10,2), -- Can be won by any tier
-  total_winnings DECIMAL(10,2),
-  
-  created_at TIMESTAMP
-);
-
--- Prize pools table
-CREATE TABLE prize_pools (
-  id UUID PRIMARY KEY,
-  competition_id UUID REFERENCES fantasy_competitions(id),
-  pool_type VARCHAR(20), -- 'PATTERN', 'TRADING', 'JACKPOT'
-  total_amount DECIMAL(10,2),
-  source_tier VARCHAR(10), -- 'PASSIVE', 'ACTIVE', 'COMBINED'
-  
-  -- Prize distribution
-  first_place DECIMAL(10,2),
-  second_place DECIMAL(10,2),
-  third_place DECIMAL(10,2),
-  
-  -- Jackpot specific
-  perfect_grid_amount DECIMAL(10,2),
-  pattern_bonus_amount DECIMAL(10,2),
-  rollover_amount DECIMAL(10,2), -- Perfect Grid rollover
-  
-  created_at TIMESTAMP
-);
-
--- Prize distributions table
-CREATE TABLE prize_distributions (
-  id UUID PRIMARY KEY,
-  competition_id UUID REFERENCES fantasy_competitions(id),
-  user_id UUID REFERENCES users(id),
-  prize_type VARCHAR(20), -- 'PATTERN', 'TRADING', 'PERFECT_GRID', 'PATTERN_BONUS'
-  amount DECIMAL(10,2),
-  rank INTEGER,
-  tier VARCHAR(10), -- 'PASSIVE' or 'ACTIVE'
-  paid_at TIMESTAMP
-);
-```
-
-### 4.3 Dual Leaderboard System
-
-**Real-Time Leaderboard Updates:**
-
-```typescript
-interface LeaderboardUpdate {
-  pattern: {
-    // ALL 100 players (passive + active)
-    rankings: Array<{
-      rank: number,
-      userId: string,
-      username: string,
-      gridScore: number, // XP score
-      tier: 'PASSIVE' | 'ACTIVE',
-      isJackpotEligible: boolean, // Row + column complete
-      avatar: string
-    }>,
-    yourRank: number,
-    totalPlayers: 100,
-    prizePool: {
-      first: number, // $980 example
-      second: number, // $280
-      third: number // $140
-    }
-  },
-  trading: {
-    // ONLY 30 active players
-    rankings: Array<{
-      rank: number,
-      userId: string,
-      username: string,
-      tradingPnL: number,
-      positionCount: number,
-      winRate: number,
-      avatar: string
-    }>,
-    yourRank: number | null, // null if passive tier
-    totalPlayers: 30,
-    prizePool: {
-      first: number, // $1,680 example
-      second: number, // $480
-      third: number // $240
-    },
-    isEligible: boolean // false for passive, true for active
-  },
-  timestamp: Date
-}
-
-// WebSocket endpoint: Update every 5 seconds
-wsClient.on('leaderboard_update', (data: LeaderboardUpdate) => {
-  updatePatternLeaderboard(data.pattern);
-  updateTradingLeaderboard(data.trading);
-});
-```
-
-**Leaderboard UI Components:**
-
-```
-┌──────────────────────────────────────────────────┐
-│ [Pattern Leaderboard] [Trading Leaderboard]      │
-├──────────────────────────────────────────────────┤
-│ Pattern Leaderboard (All 100 Players)            │
-│                                                  │
-│ Prize Pool: $1,400 (Top 3: $980/$280/$140)      │
-│                                                  │
-│ Rank | Player          | Grid Score | Tier      │
-│──────|─────────────────|────────────|───────────│
-│ 🥇   | @AnalystPro     | 4,850 XP   | Passive  │
-│ 🥈   | @PatternKing    | 4,200 XP   | Active   │
-│ 🥉   | @PredictMaster  | 3,950 XP   | Passive  │
-│ 4    | @CryptoGuru     | 3,700 XP   | Active   │
-│ 5    | @TraderJoe      | 3,500 XP   | Passive  │
-│ ...  | ...             | ...        | ...      │
-│                                                  │
-│ Your Rank: #12 (3,100 XP) - PASSIVE TIER        │
-│ Prize: Not in top 3 (need 850+ more XP)         │
-└──────────────────────────────────────────────────┘
-```
-
-### 4.4 Spectator Feed System
-
-**Data Transmission:**
-
-```typescript
-interface SpectatorUpdate {
-  topTraders: Array<{
-    userId: string,
-    username: string,
-    avatar: string,
-    rank: number, // In trading leaderboard
-    totalPnL: number, // Aggregate across all positions
-    winRate: number, // % profitable closed positions
-    lastTrade: {
-      coin: string,
-      direction: 'LONG' | 'SHORT',
-      leverage: number,
-      timestamp: Date,
-      outcome: 'OPEN' | 'CLOSED',
-      pnl: number | null // null if still open
-    },
-    followerCount: number,
-    isLive: boolean // Green dot if actively trading
-  }>,
-  updateFrequency: number // 5 seconds
-}
-
-// Server broadcasts to all passive players
-wsServer.broadcast('spectator_update', spectatorData);
-```
-
-**Privacy Controls:**
-
-```
-Default: Public (all stats visible)
-
-Trader Settings:
-┌──────────────────────────────────────┐
-│ Spectator Settings                   │
-├──────────────────────────────────────┤
-│ ☑ Allow others to follow me          │
-│   Show my trades to passive players  │
-│                                      │
-│ ☑ Show my stats publicly             │
-│   Display PnL, win rate, follower #  │
-│                                      │
-│ ☐ Hide specific trade details       │
-│   Only show aggregate PnL            │
-│                                      │
-│ ☐ Private mode (ghost trader)       │
-│   Completely hide from spectators    │
-└──────────────────────────────────────┘
-```
-
-### 4.5 Hyperliquid Integration
-
-**Agent Wallet Management:**
-
-```typescript
-// Active tier only - automatic agent wallet creation
-async function createActiveEntry(userId: string, competitionId: string) {
-  // 1. Collect $100 entry fee from user
-  await collectEntryFee(userId, 100);
-
-  // 2. Create agent wallet (Hyperliquid SDK)
-  const agentWallet = await hyperliquid.createAgentWallet({
-    userId: userId,
-    competitionId: competitionId
-  });
-
-  // 3. Request user to transfer $1,000 USDC to agent wallet
-  const transferRequest = await requestUserTransfer({
-    from: user.walletAddress,
-    to: agentWallet.address,
-    amount: 1000,
-    token: 'USDC',
-    purpose: 'TRADING_CAPITAL'
-  });
-
-  // 4. Wait for user transfer confirmation
-  await waitForTransferConfirmation(transferRequest.id, {
-    timeout: 300000, // 5 minutes
-    onTimeout: () => {
-      throw new Error('User did not fund agent wallet within time limit');
-    }
-  });
-
-  // 5. Store agent wallet address and entry details
-  await db.entries.create({
-    userId: userId,
-    competitionId: competitionId,
-    tier: 'ACTIVE',
-    entryFee: 100,
-    tradingCapital: 1000,
-    agentWalletAddress: agentWallet.address,
-    capitalSource: 'USER_FUNDED'
-  });
-
-  return agentWallet;
-}
-```
-
-**Trade Enforcement:**
-
-```typescript
-// Server-side trade validation
-async function validateTrade(userId: string, trade: TradeRequest) {
-  const entry = await db.entries.findOne({ userId, competition: { status: 'LIVE' } });
-  
-  // Verify tier
-  if (entry.tier !== 'ACTIVE') {
-    throw new Error('Passive players cannot trade');
-  }
-  
-  // Verify coin is in roster
-  const roster = entry.rosterData.coins.map(c => c.id);
-  if (!roster.includes(trade.coinId)) {
-    throw new Error('Can only trade rostered coins');
-  }
-  
-  // Verify leverage limits
-  const position = entry.rosterData.coins.findIndex(c => c.id === trade.coinId);
-  const maxLeverage = position === 0 ? 20 : 10; // Captain vs regular
-  
-  if (trade.leverage > maxLeverage) {
-    throw new Error(`Max ${maxLeverage}x leverage for this position`);
-  }
-  
-  // Execute via agent wallet with builder code
-  const result = await hyperliquid.executeTrade({
-    agentWallet: entry.agentWalletAddress,
-    builderCode: PLATFORM_BUILDER_CODE,
-    trade: trade
-  });
-  
-  return result;
-}
-```
-
-**Settlement Price Source:**
-
-```typescript
-// Hyperliquid candle-based settlement
-async function settleCompetition(competitionId: string) {
-  const competition = await db.competitions.findOne({ id: competitionId });
-  
-  // Get candle close prices (authoritative source)
-  const finalPrices = await hyperliquid.getCandleClose({
-    timestamp: competition.endTime,
-    interval: competition.duration // '1h', '4h', or '24h'
-  });
-  
-  // Calculate market rankings
-  const marketRanking = calculateMarketRanking(
-    competition.baselinePrices,
-    finalPrices
-  );
-  
-  // Settle prizes
-  await settlePatternPrizes(competitionId, marketRanking);
-  await settleTradingPrizes(competitionId);
-  await settleJackpots(competitionId, marketRanking);
-}
-```
-
-### 4.6 Performance Requirements
-
-**Real-Time Updates:**
-- Price updates: Every 1 second (Hyperliquid WebSocket)
-- Leaderboard updates: Every 5 seconds (both pattern + trading)
-- PnL recalculation: Every 5 seconds (active players only)
-- Spectator feed: Every 5 seconds (top 3 traders)
-- Latency target: <100ms for UI updates
-
-**Scalability Targets:**
-- Concurrent competitions: 50+
-- Players per competition: 130 max (100 passive + 30 active)
-- Total concurrent players: 6,500+
-- Database queries: <50ms average response time
-
-**Data Integrity:**
-- All roster selections immutable after lock-in
-- Price snapshots stored from Hyperliquid (baseline + final)
-- Complete trade history audit logs
-- Prize distributions cryptographically signed
-
----
-
-## 5. USER EXPERIENCE FLOWS
-
-### 5.1 New User Onboarding
+### 4.1 New User Onboarding
 
 #### Passive Tier Onboarding (Recommended for First-Time Users)
 
@@ -1768,7 +1389,7 @@ Tutorial Competition (Demo Mode):
 
 **Time to First Competition:** 5-10 minutes (includes builder code approval)
 
-### 5.2 Experienced User Flows
+### 4.2 Experienced User Flows
 
 #### Passive Player Regular Flow
 
@@ -1823,7 +1444,7 @@ Tutorial Competition (Demo Mode):
 4. Review spectator engagement (followers gained)
 5. Plan next strategy
 
-### 5.3 Conversion Funnel (Passive → Active)
+### 4.3 Conversion Funnel (Passive → Active)
 
 **Week 1: Discovery (Passive Entry)**
 ```
@@ -1964,9 +1585,9 @@ Battle Grid Team
 
 ---
 
-## 6. COMPETITION TYPES & SCHEDULING
+## 5. COMPETITION TYPES & SCHEDULING
 
-### 6.1 Duration-Based Competitions
+### 5.1 Duration-Based Competitions
 
 **1-Hour Rapid Fire:**
 - Start times: Every hour on the hour
@@ -1986,7 +1607,7 @@ Battle Grid Team
 - Target: Long-term strategists
 - Best for: Daily/swing traders
 
-### 6.2 Category-Specific Competitions
+### 5.2 Category-Specific Competitions
 
 **By Market Sector (Hyperliquid-listed coins only):**
 
@@ -2016,7 +1637,7 @@ Battle Grid Team
 
 **Critical:** All categories limited to coins actively traded on Hyperliquid DEX. Delisted coins become immediately ineligible.
 
-### 6.3 Competition Entry Restrictions (MVP)
+### 5.3 Competition Entry Restrictions (MVP)
 
 **ONE COMPETITION AT A TIME:**
 
@@ -2055,7 +1676,7 @@ ACTIVE PLAYERS:
 • HyperEVM smart contracts enable multi-wallet management
 ```
 
-### 6.4 Minimum Player Thresholds
+### 5.4 Minimum Player Thresholds
 
 **Competition Start Requirements:**
 
@@ -2134,9 +1755,9 @@ Next competition: 4:00 PM"
 
 ---
 
-## 7. MVP SCOPE & ROADMAP
+## 6. MVP SCOPE & ROADMAP
 
-### 7.1 MVP Features (12-Week Development Sprint)
+### 6.1 MVP Features (12-Week Development Sprint)
 
 **Phase 1: Passive Tier Only (Weeks 1-4)**
 
@@ -2245,7 +1866,7 @@ Next competition: 4:00 PM"
 - MoonPay integration (credit card entry for passive players only)
 - Advanced features (private matches, tournaments, mobile app)
 
-### 7.2 MVP Exclusions (Post-Launch)
+### 6.2 MVP Exclusions (Post-Launch)
 
 **NOT in MVP:**
 - ❌ Salary cap system
@@ -2260,9 +1881,9 @@ Next competition: 4:00 PM"
 
 ---
 
-## 8. SUCCESS METRICS
+## 7. SUCCESS METRICS
 
-### 8.1 Key Performance Indicators
+### 7.1 Key Performance Indicators
 
 **Passive Tier Metrics:**
 
@@ -2358,9 +1979,9 @@ Spectator Engagement:
 
 ---
 
-## 9. GO-TO-MARKET STRATEGY
+## 8. GO-TO-MARKET STRATEGY
 
-### 9.1 Launch Plan
+### 8.1 Launch Plan
 
 **Soft Launch (Week 1-2):**
 - Invite-only beta (50 Hyperliquid power users)
@@ -2380,7 +2001,7 @@ Spectator Engagement:
 - Marketing campaign launch
 - Referral program activation
 
-### 9.2 User Acquisition Channels
+### 8.2 User Acquisition Channels
 
 **Primary:**
 
@@ -2413,7 +2034,7 @@ Spectator Engagement:
    - r/CryptoMarkets
    - r/FantasyFootball (crossover marketing)
 
-### 9.3 Messaging & Positioning
+### 8.3 Messaging & Positioning
 
 **Passive Tier Messaging:**
 > "DraftKings for Crypto: Pick 9 coins, predict their movements, win prizes. No trading required."
@@ -2447,9 +2068,9 @@ vs **Bybit/Binance Trading Competitions:**
 
 ---
 
-## 10. RISK MITIGATION & EDGE CASES
+## 9. RISK MITIGATION & EDGE CASES
 
-### 10.1 Gameplay Risks
+### 9.1 Gameplay Risks
 
 **Risk: Roster Fatigue**
 - Problem: Picking 9 coins every hour is exhausting
@@ -2474,7 +2095,7 @@ vs **Bybit/Binance Trading Competitions:**
   - Active players focus on trading pool (better odds: 30 vs 100)
   - Both tiers have positive EV in their primary competitions
 
-### 10.2 Technical Edge Cases
+### 9.2 Technical Edge Cases
 
 **Edge Case #1: All Top 3 Pattern Winners are Passive**
 ```
@@ -2542,7 +2163,7 @@ Resolution:
 ✅ Can still win Pattern/Perfect Grid Jackpot
 ```
 
-### 10.3 Fairness & Anti-Cheating
+### 9.3 Fairness & Anti-Cheating
 
 **Measures:**
 
@@ -2570,7 +2191,7 @@ Resolution:
 
 ---
 
-## 11. APPENDICES
+## 10. APPENDICES
 
 ### Appendix A: Glossary of Terms
 
