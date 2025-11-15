@@ -15,7 +15,7 @@
 
 **Dual-Track Competition Model:**
 - **Passive Tier ($25)**: Roster building + predictions only, no trading required
-- **Active Tier ($100)**: Roster building + predictions + live trading with platform-provided capital
+- **Active Tier ($100)**: Roster building + predictions + live trading with user's own capital ($1,000 USDC deposited to agent wallet)
 - **Unified Competition**: Both tiers compete simultaneously with separate prize pools and shared jackpots
 - **Active Advantage**: $100 entry grants access to BOTH leaderboards (pattern + trading) plus full jackpot eligibility
 
@@ -27,19 +27,22 @@
 - ⚠️ **Geo-Restrictions**: Follow Hyperliquid DEX policies
 - ✅ **KYC/AML**: Delegated to Hyperliquid infrastructure
 
-### Target Market
+## Total Addressable Market (TAM)
 
-**Passive Tier Target:**
-- DraftKings/FanDuel fantasy sports players (60M globally, excluding USA)
-- Prediction market enthusiasts (Polymarket, Kalshi users)
-- Crypto-curious sports bettors
-- **TAM**: 3-6M users (based on crypto wallet adoption rates)
+### 1. DEX Perpetuals Traders
+- **Hyperliquid**: 200K-500K active traders (60%+ market share of on-chain perpetuals)
+- **Total DEX Perpetuals Market**: 0.5-1M active traders (Hyperliquid + dYdX + GMX + others)
 
-**Active Tier Target:**
-- Hyperliquid active traders
-- Cryptocurrency perpetuals traders
-- Competitive traders seeking leaderboard status
-- **TAM**: 200K-500K users (skilled trader segment)
+### 2. Centralized Exchange Perpetual Traders
+- **Binance**: 162-182M futures traders (65% of 250-280M users)
+- **Bybit**: 39-49M derivatives traders (65% of 60-75M users)
+- **OKX, Bitget, Coinbase, Others**: 50-100M combined
+- **Total CEX Perpetuals**: 260-330M active perpetual futures traders globally
+
+### 3. Competition Participation Benchmark
+- **520,000 traders participated in Bybit WSOT 2025**, the largest crypto trading competition ever recorded
+- **Annual competition participants**: 10-30M tournament participants across all platforms (3-10% of CEX perps traders who compete at least once annually)
+
 
 ### Revenue Model
 
@@ -67,13 +70,14 @@
 
 **Capital Structure:**
 - Passive Tier: $0 trading capital (predictions only)
-- Active Tier: $1,000 USDC per player (platform-provided via agent wallets)
+- Active Tier: $1,000 USDC per player (user-provided, deposited to agent wallet)
 - Players keep ALL trading PnL profits (separate from prize pools)
 
 **Platform Risk Profile:**
 - Passive Tier: Zero capital risk (entry fees only)
-- Active Tier: $1,000 × active player count (typically 30 per competition)
-- Risk Reduction: 70% lower than single-tier model (30 active vs 100 total players)
+- Active Tier: ZERO trading capital risk (users provide their own capital)
+- Platform only manages entry fee prize pool obligations
+- Users bear 100% of trading losses and keep 100% of trading profits
 
 ---
 
@@ -96,7 +100,7 @@ Battle Grid offers two participation modes in a single unified competition:
 │  │                  │  │                  │       │
 │  │ 100 Slots       │  │ 30 Slots        │       │
 │  │ Pattern Prizes  │  │ BOTH Prizes     │       │
-│  │ Watch Traders   │  │ $1,000 Capital  │       │
+│  │ Watch Traders   │  │ $1,000 User Cap │       │
 │  └──────────────────┘  └──────────────────┘       │
 │                                                    │
 │  COMPETE SIMULTANEOUSLY IN ONE COMPETITION         │
@@ -141,10 +145,11 @@ Battle Grid offers two participation modes in a single unified competition:
 1. One-time builder code approval (first entry only)
 2. Select 9 cryptocurrencies and predict movements
 3. Lock roster before competition starts
-4. **Trade live** with $1,000 USDC platform-provided capital
-5. Open LONG/SHORT positions with leverage (3x-20x)
-6. Compete on BOTH leaderboards simultaneously
-7. Keep all trading PnL profits
+4. **Deposit $1,000 USDC** to agent wallet (user's own capital)
+5. **Trade live** with deposited capital
+6. Open LONG/SHORT positions with leverage (3x-20x)
+7. Compete on BOTH leaderboards simultaneously
+8. Keep all trading PnL profits
 
 **What Players Get (Single $100 Entry):**
 - ✅ Compete for Trading Prize Pool (top 3: $1,680/$480/$240 example)
@@ -156,10 +161,10 @@ Battle Grid offers two participation modes in a single unified competition:
 - ✅ **Value: Access to BOTH games for one entry fee**
 
 **Entry Requirements:**
-- Hyperliquid wallet with 100+ USDC
+- Hyperliquid wallet with **$1,100+ USDC** ($100 entry fee + $1,000 trading capital)
 - Builder code approval (one-time setup, ~2 minutes)
 - Agent wallet creation (automatic, platform-managed)
-- Platform funds agent wallet with $1,000 USDC
+- **User transfers $1,000 USDC** to agent wallet (requires approval transaction)
 - Time to entry: 5-10 minutes (first time), 3-5 minutes (subsequent)
 
 ### 1.4 Tier Comparison
@@ -308,11 +313,11 @@ When entering a competition, players choose their participation tier:
 └────────────────────────────────────┘
 ```
 
-**Step 5: Agent Wallet Creation**
+**Step 5: Agent Wallet Creation & Funding**
 - Platform creates agent wallet (automatic)
 - User approves agent wallet signature (one click)
-- Platform funds wallet with $1,000 USDC
-- Confirmation: "Agent wallet ready for trading"
+- **User transfers $1,000 USDC to agent wallet** (separate transaction)
+- Confirmation: "Agent wallet funded - ready for trading"
 
 **Step 6: Build Roster**
 - Same as passive (select 9 coins, rank, predict)
@@ -473,8 +478,8 @@ When entering a competition, players choose their participation tier:
 
 ### 2.4 Phase 2B: Live Competition (Active Tier)
 
-**Duration:** 1hr, 4hr, or 24hr (competition-specific)  
-**Trading Capital:** $1,000 USDC (platform-provided via agent wallet)
+**Duration:** 1hr, 4hr, or 24hr (competition-specific)
+**Trading Capital:** $1,000 USDC (user-provided, deposited to agent wallet)
 
 **Active Player Activities:**
 
@@ -1188,31 +1193,55 @@ Capital Required: $0
 
 Platform Risk:
 • Zero trading capital risk
-• Platform only risks entry fee prize pool obligations
+• Platform only manages entry fee prize pool obligations
 • No liquidation risk
 • No leverage risk
 ```
 
-#### Active Tier (Platform-Funded Trading)
+#### Active Tier (User-Funded Trading)
 
 ```
-Capital Provided: $1,000 USDC per player
+Capital Required: $1,000 USDC per player (user-provided)
+
+User Capital Flow:
+1. User deposits $100 USDC entry fee to platform
+2. User transfers $1,000 USDC to agent wallet (separate transaction)
+3. User trades with their own capital during competition
+4. User keeps ALL trading profits/losses
+5. User withdraws remaining capital from agent wallet post-competition
 
 Platform Risk Profile:
-• Trading capital exposure: $1,000 × active_player_count
-• Example: 30 active players = $30,000 capital exposure
-• Risk reduction: 70% vs all-active model (30 vs 100 players)
+• ZERO trading capital risk (users provide their own capital)
+• Platform only manages entry fee prize pool obligations
+• No liquidation exposure (users bear all trading losses)
+• No leverage risk exposure (Hyperliquid manages margin)
 
-Capital Efficiency:
-• Original Model: 100 active × $1,000 = $100,000 exposure
-• Dual-Track Model: 30 active × $1,000 = $30,000 exposure
-• Benefit: Platform can run 3x more competitions with same capital
+User Requirements:
+• Minimum wallet balance: $1,100 USDC
+  - $100 for entry fee
+  - $1,000 for trading capital deposit
+• Capital remains user's property throughout
+• Agent wallet can be reused for future competitions
+```
 
-Mitigation Strategies:
-✅ Leverage limits (20x captain, 10x others)
-✅ Position size caps ($10K per coin, $50K total portfolio)
+#### Capital Safety & User Controls
+
+```
+User Protections:
+✅ Leverage limits (20x captain, 10x others) prevent over-leveraging
+✅ Position size caps ($10K per coin, $50K total) limit exposure
+✅ Hyperliquid liquidation engine protects against negative balance
+✅ Real-time PnL tracking for informed decision-making
+
+Platform Controls:
 ✅ Competition entry restrictions (one at a time MVP)
-✅ Anti-liquidation rules [CLARITY REQUIRED]
+✅ Trade validation (only rostered coins, leverage limits)
+✅ Builder code enforcement (only platform trades count)
+
+Capital Recovery:
+✅ User maintains full control of agent wallet
+✅ Can withdraw capital anytime post-competition
+✅ No platform custody of user funds beyond competition duration
 ```
 
 #### Settlement Process (Positions Remain Open)
@@ -1224,20 +1253,24 @@ Why:
 ✅ Liquid markets ensure accurate mark pricing
 ✅ Players maintain control over their positions
 ✅ Fair settlement based on unrealized PnL
+✅ Users decide when to close positions post-competition
 
 Settlement Calculation:
 • Score snapshot taken at candle close timestamp
 • Unrealized PnL calculated from Hyperliquid mark prices
 • Trading Prize awarded based on PnL ranking
-• Players can monitor/close positions after competition ends
+• Users can monitor/close positions after competition ends
+• Capital remains in agent wallet for user withdrawal
 
 Example:
 Competition ends 12:00 PM UTC
 • Player A: Open LONG BTC position, unrealized PnL +$450
 • Trading Prize: Ranked #1 (highest PnL) → Wins $1,680
-• 12:05 PM: Player A closes BTC position for +$460
-• Prize based on 12:00 PM snapshot, post-competition price changes don't affect prize
-• Note: Player A's $100 entry also competed in pattern leaderboard + jackpots
+• 12:05 PM: Player A closes BTC position for +$460 actual
+• Prize based on 12:00 PM snapshot (unrealized PnL at settlement)
+• Player keeps the $460 realized profit from their own capital
+• Player also competed in pattern leaderboard + jackpots with $100 entry
+• Player withdraws remaining capital + profits from agent wallet
 ```
 
 ### 3.6 Revenue Model
@@ -1534,25 +1567,43 @@ Trader Settings:
 ```typescript
 // Active tier only - automatic agent wallet creation
 async function createActiveEntry(userId: string, competitionId: string) {
-  // 1. Create agent wallet (Hyperliquid SDK)
+  // 1. Collect $100 entry fee from user
+  await collectEntryFee(userId, 100);
+
+  // 2. Create agent wallet (Hyperliquid SDK)
   const agentWallet = await hyperliquid.createAgentWallet({
     userId: userId,
     competitionId: competitionId
   });
-  
-  // 2. Fund agent wallet with $1,000 USDC
-  await hyperliquid.fundAgentWallet(agentWallet.address, 1000);
-  
-  // 3. Store agent wallet address
+
+  // 3. Request user to transfer $1,000 USDC to agent wallet
+  const transferRequest = await requestUserTransfer({
+    from: user.walletAddress,
+    to: agentWallet.address,
+    amount: 1000,
+    token: 'USDC',
+    purpose: 'TRADING_CAPITAL'
+  });
+
+  // 4. Wait for user transfer confirmation
+  await waitForTransferConfirmation(transferRequest.id, {
+    timeout: 300000, // 5 minutes
+    onTimeout: () => {
+      throw new Error('User did not fund agent wallet within time limit');
+    }
+  });
+
+  // 5. Store agent wallet address and entry details
   await db.entries.create({
     userId: userId,
     competitionId: competitionId,
     tier: 'ACTIVE',
-    entryFee: 75,
+    entryFee: 100,
     tradingCapital: 1000,
-    agentWalletAddress: agentWallet.address
+    agentWalletAddress: agentWallet.address,
+    capitalSource: 'USER_FUNDED'
   });
-  
+
   return agentWallet;
 }
 ```
@@ -1702,11 +1753,12 @@ Tutorial Competition (Demo Mode):
    → Show trading panel (LONG/SHORT buttons)
    → Guide: "Open LONG SOL 20x position"
    → Demo wallet has $1,000 practice capital
-   
+   → **Note: In real competitions, YOU provide the $1,000 trading capital**
+
 5. "Manage your positions"
    → Guide: "Close SOL position for +$120 profit"
    → Show PnL tracking
-   
+
 6. "Competition ends! See BOTH leaderboards"
    → Show trading prize: "You won $1,680! (1st by PnL)"
    → Show pattern prize: "You won $280! (2nd by grid score)"
@@ -2121,12 +2173,13 @@ Next competition: 4:00 PM"
 
 **Deliverables:**
 1. Builder code approval flow (one-time setup)
-2. Agent wallet creation + funding ($1,000 USDC)
+2. Agent wallet creation + user capital transfer flow ($1,000 USDC user-funded)
 3. Live trading interface (LONG/SHORT buttons)
 4. Position management (leverage selection, close positions)
 5. Real-time PnL tracking
 6. Trading prize distribution (top 3 by PnL)
 7. Results screen (active template)
+8. Capital withdrawal system (post-competition recovery)
 
 **NOT Included:**
 - Dual-track (still separate passive and active competitions)
@@ -2545,10 +2598,11 @@ Resolution:
 - Passive: $25 entry, predictions only, pattern prizes
 - Active: $100 entry, trading + predictions, both prizes + full jackpot access
 
-**Agent Wallet:** Platform-controlled Hyperliquid wallet for active traders:
+**Agent Wallet:** Platform-managed Hyperliquid wallet for active traders:
 - Created automatically per competition
-- Funded with $1,000 USDC
+- **User deposits $1,000 USDC** to this wallet (user's own capital)
 - All trades executed via this wallet
+- User withdraws remaining capital post-competition
 
 **Builder Code:** Platform identifier on Hyperliquid:
 - Required for trade verification
@@ -2595,10 +2649,11 @@ Resolution:
 Battle Grid V2 introduces a revolutionary dual-track competition model that:
 
 ✅ **Expands addressable market** by 6-12x (60M DFS players vs 500K crypto traders)
-✅ **Reduces platform capital risk** by 70% (30 active vs 100 total players)
+✅ **Eliminates platform capital risk** (users provide their own trading capital)
 ✅ **Creates natural upgrade funnel** (spectate → participate conversion)
 ✅ **Maintains positive unit economics** for both tiers (passive: competitive EV, active: highly positive EV)
 ✅ **Builds social engagement** through spectator feeds and trader profiles
+✅ **Dual-revenue streams** (entry fees + builder code fees from active traders)
 
 **Development Timeline:** 12-week MVP sprint
 **Target Launch:** Q1 2026
