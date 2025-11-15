@@ -48,17 +48,17 @@
 
 **Passive Revenue:**
 - Entry fees: $25 per competition
-- Distribution: 80% pattern prize pool, 10% jackpot pool, 10% platform fee
+- Distribution: 90% pattern prize pool, 5% jackpot pool, 5% platform fee
 - No builder code fees (no trading activity)
 
 **Active Revenue:**
 - Entry fees: $100 per competition
-- Distribution: 80% trading prize pool, 10% jackpot pool, 10% platform fee
+- Distribution: 90% trading prize pool, 5% jackpot pool, 5% platform fee
 - Builder code fees: Up to 10 bps (0.1%) on perpetual trading volume
 - Collected via Hyperliquid on-chain fee system
 - **Value Proposition**: Single $100 entry competes in BOTH pattern and trading leaderboards simultaneously
 
-**Target Revenue:** $313K monthly by Month 3 ($3.76M annually)
+**Financial Projections:** See Section 7.1 for detailed revenue targets and user acquisition metrics
 
 ### Critical Technical Architecture
 
@@ -121,7 +121,7 @@ Battle Grid offers two participation modes in a single unified competition:
 6. Win pattern prizes based on prediction accuracy
 
 **What Players Get:**
-- ✅ Compete for Pattern Prize Pool (top 3: $980/$280/$140 example)
+- ✅ Compete for Pattern Prize Pool (top 3: $1,102.50/$315/$157.50 example)
 - ✅ Eligible for both jackpots (Perfect Grid + Pattern Bonus)
 - ✅ Watch active traders live (spectator feed)
 - ✅ Learn profitable trading strategies
@@ -152,8 +152,8 @@ Battle Grid offers two participation modes in a single unified competition:
 8. Keep all trading PnL profits
 
 **What Players Get (Single $100 Entry):**
-- ✅ Compete for Trading Prize Pool (top 3: $1,680/$480/$240 example)
-- ✅ Compete for Pattern Prize Pool (top 3: $980/$280/$140 example)
+- ✅ Compete for Trading Prize Pool (top 3: $1,890/$540/$270 example)
+- ✅ Compete for Pattern Prize Pool (top 3: $1,102.50/$315/$157.50 example)
 - ✅ **FULL eligibility for both jackpots** (Perfect Grid + Pattern Bonus)
 - ✅ Keep ALL trading profits (separate from prizes)
 - ✅ Social status (followers, verified trader badges)
@@ -239,7 +239,7 @@ When entering a competition, players choose their participation tier:
 │  │ ✓ Learn strategies    │  │ ✓ 2x win chances     │
 │  │                       │  │ ✓ FULL jackpot access│
 │  │                       │  │                       │
-│  │ Max Prize: $980      │  │ Max Prize: $2,900    │
+│  │ Max Prize: $1,102.50 │  │ Max Prize: $3,217.50 │
 │  │ + Jackpots           │  │ + Trading profits    │
 │  │                       │  │ + Jackpots (BOTH!)   │
 │  │                       │  │                       │
@@ -523,7 +523,7 @@ Approach:
 • Build roster for tradable volatility
 • Predictions secondary (just pick high movers)
 • Active scalping during competition
-• Target: Top 3 Trading Prize ($1,680/$480/$240)
+• Target: Top 3 Trading Prize ($1,890/$540/$270)
 
 Risk: May sacrifice pattern score
 Reward: Better odds (30 vs 100), keep PnL profits
@@ -535,7 +535,7 @@ Approach:
 • Build roster for accurate predictions
 • Minimal trading (hold positions)
 • Strategic entries to amplify correct predictions
-• Target: Top 3 Pattern Prize ($980/$280/$140)
+• Target: Top 3 Pattern Prize ($1,102.50/$315/$157.50)
 
 Risk: May lose trading leaderboard rank
 Reward: Compete in larger prize pool
@@ -547,7 +547,7 @@ Approach:
 • Build roster for both accuracy and tradability
 • Strategic trading to match predictions
 • Win BOTH leaderboards
-• Target: Both prizes ($2,660) + PnL profits
+• Target: Both prizes ($2,992.50) + PnL profits
 
 Risk: Most difficult to execute perfectly
 Reward: Maximum total winnings possible from single $100 entry
@@ -562,7 +562,7 @@ Reward: Maximum total winnings possible from single $100 entry
 │  Pattern Rank: #12/100 | Trading Rank: #3/30 🔥    │
 ├─────────────────────────────────────────────────────┤
 │  YOUR PERFORMANCE                                    │
-│  Trading PnL: +$480 💰 | Grid Score: ~3,100 XP     │
+│  Trading PnL: +$540 💰 | Grid Score: ~3,100 XP     │
 │  Open Positions: 2  |  Available Slots: 7           │
 │                                                      │
 │  ┌─────────┬─────────┬─────────┐                   │
@@ -644,21 +644,21 @@ Highest absolute change → Rank #1
 **Prize Pool Calculation:**
 
 ```
-Pattern Prize Pool = N_passive × $25 × 0.80
+Pattern Prize Pool = N_passive × $25 × 0.90
 ```
 
 Where:
 - `N_passive` = Number of passive tier entries
 
-**Example:** 70 passive players × $25 × 80% = **$1,400**
+**Example:** 70 passive players × $25 × 90% = **$1,575**
 
 **Prize Distribution Formula:**
 
 | Place | Formula | Example Amount |
 |-------|---------|----------------|
-| 1st | Pool × 70% | $980 |
-| 2nd | Pool × 20% | $280 |
-| 3rd | Pool × 10% | $140 |
+| 1st | Pool × 70% | $1,102.50 |
+| 2nd | Pool × 20% | $315 |
+| 3rd | Pool × 10% | $157.50 |
 
 **Ranking Method:**
 ```
@@ -674,21 +674,21 @@ Where:
 **Prize Pool Calculation:**
 
 ```
-Trading Prize Pool = N_active × $100 × 0.80
+Trading Prize Pool = N_active × $100 × 0.90
 ```
 
 Where:
 - `N_active` = Number of active tier entries
 
-**Example:** 30 active players × $100 × 80% = **$2,400**
+**Example:** 30 active players × $100 × 90% = **$2,700**
 
 **Prize Distribution Formula:**
 
 | Place | Formula | Example Amount |
 |-------|---------|----------------|
-| 1st | Pool × 70% | $1,680 |
-| 2nd | Pool × 20% | $480 |
-| 3rd | Pool × 10% | $240 |
+| 1st | Pool × 70% | $1,890 |
+| 2nd | Pool × 20% | $540 |
+| 3rd | Pool × 10% | $270 |
 
 **Ranking Method:**
 ```
@@ -706,10 +706,10 @@ Where:
 **Total Jackpot Pool Calculation:**
 
 ```
-Jackpot Pool = (N_passive × $2.50) + (N_active × $10)
+Jackpot Pool = (N_passive × $1.25) + (N_active × $5)
 ```
 
-**Example:** (70 × $2.50) + (30 × $10) = **$475**
+**Example:** (70 × $1.25) + (30 × $5) = **$237.50**
 
 ---
 
@@ -851,46 +851,46 @@ Diagonals: [0,4,8] and [2,4,6]
 - 30 active players @ $100 = $3,000
 - Total gross: $4,750
 
-**Pattern Prize Pool ($1,400):**
+**Pattern Prize Pool ($1,575):**
 ```
-🥇 1st: @AnalystPro (Passive) - 4,850 XP → $980
-🥈 2nd: @PatternKing (Active) - 4,200 XP → $280
-🥉 3rd: @PredictMaster (Passive) - 3,950 XP → $140
-```
-
-**Trading Prize Pool ($2,400):**
-```
-🥇 1st: @CryptoKing (Active) - +$890 PnL → $1,680
-🥈 2nd: @DiamondHands (Active) - +$720 PnL → $480
-🥉 3rd: @ScalpMaster (Active) - +$650 PnL → $240
+🥇 1st: @AnalystPro (Passive) - 4,850 XP → $1,102.50
+🥈 2nd: @PatternKing (Active) - 4,200 XP → $315
+🥉 3rd: @PredictMaster (Passive) - 3,950 XP → $157.50
 ```
 
-**Jackpot Pool ($475):**
+**Trading Prize Pool ($2,700):**
 ```
-Perfect Grid (50% = $237.50): NO WINNER → Rolls over to next competition
-Pattern Bonus (50% = $237.50): @AnalystPro (Passive, highest XP)
+🥇 1st: @CryptoKing (Active) - +$890 PnL → $1,890
+🥈 2nd: @DiamondHands (Active) - +$720 PnL → $540
+🥉 3rd: @ScalpMaster (Active) - +$650 PnL → $270
+```
+
+**Jackpot Pool ($237.50):**
+```
+Perfect Grid (50% = $118.75): NO WINNER → Rolls over to next competition
+Pattern Bonus (50% = $118.75): @AnalystPro (Passive, highest XP)
 ```
 
 **Winner Breakdown:**
 
 **@AnalystPro (Passive tier):**
 - Entry: $25
-- Pattern Prize: $980 (1st place)
-- Pattern Bonus Jackpot: $237.50
-- **Total Winnings: $1,217.50** (48x return!)
+- Pattern Prize: $1,102.50 (1st place)
+- Pattern Bonus Jackpot: $118.75
+- **Total Winnings: $1,221.25** (48x return!)
 
 **@CryptoKing (Active tier) - SINGLE $100 ENTRY:**
 - Entry: $100 (competes in BOTH games)
-- Trading Prize: $1,680 (1st place)
+- Trading Prize: $1,890 (1st place)
 - Trading PnL: +$890 (kept separately)
-- **Total Winnings: $2,570** (25x return + trading profits!)
+- **Total Winnings: $2,780** (27x return + trading profits!)
 - **Value: Won from trading leaderboard, eligible for pattern + jackpots too**
 
 **@PatternKing (Active tier) - SINGLE $100 ENTRY:**
 - Entry: $100 (competes in BOTH games)
-- Pattern Prize: $280 (2nd place)
+- Pattern Prize: $315 (2nd place)
 - Trading PnL: +$450 (ranked #5 in trading)
-- **Total Winnings: $730** (7x return + trading profits)
+- **Total Winnings: $765** (7x return + trading profits)
 - **Value: Won from pattern leaderboard with same entry that gave trading access**
 
 ### 2.6 Results Display
@@ -913,14 +913,14 @@ Pattern Bonus (50% = $237.50): @AnalystPro (Passive, highest XP)
 │      • Column 0 Complete: +800 XP ✅             │
 │    🎰 Jackpot Badge: Row + Column! ✅            │
 │                                                  │
-│ 🏆 PATTERN PRIZE: $980 (1st place!)             │
+│ 🏆 PATTERN PRIZE: $1,102.50 (1st place!)        │
 │    You ranked #1 out of 100 players              │
 │                                                  │
 │ 💰 JACKPOTS:                                     │
 │    Perfect Grid: ❌ Not exact match              │
-│    Pattern Bonus: $200 (Highest XP score!)       │
+│    Pattern Bonus: $118.75 (Highest XP score!)    │
 │                                                  │
-│ 💸 TOTAL WINNINGS: $1,180                       │
+│ 💸 TOTAL WINNINGS: $1,221.25                    │
 │                                                  │
 ├──────────────────────────────────────────────────┤
 │ 🚀 READY FOR MORE?                               │
@@ -931,7 +931,7 @@ Pattern Bonus (50% = $237.50): @AnalystPro (Passive, highest XP)
 │ 🔥 Upgrade to ACTIVE tier ($100):                │
 │    • Single entry = BOTH games (2x chances)      │
 │    • Trade live during competitions              │
-│    • Compete for Trading Prizes ($1,680+)        │
+│    • Compete for Trading Prizes ($1,890+)        │
 │    • Keep your trading profits                   │
 │    • Win from BOTH leaderboards                  │
 │    • FULL jackpot eligibility                    │
@@ -954,7 +954,7 @@ Pattern Bonus (50% = $237.50): @AnalystPro (Passive, highest XP)
 │    Best Trade: SHORT HYPE (+$180)                │
 │    Biggest Loss: LONG BTC (-$80)                 │
 │                                                  │
-│ 🏆 TRADING PRIZE: $1,680 (1st place!)           │
+│ 🏆 TRADING PRIZE: $1,890 (1st place!)           │
 │    You ranked #1 out of 30 active traders        │
 │                                                  │
 │ 🎯 GRID SCORE: 3,100 XP                          │
@@ -965,20 +965,20 @@ Pattern Bonus (50% = $237.50): @AnalystPro (Passive, highest XP)
 │      • Column 0 Complete: +800 XP ✅             │
 │    🎰 Jackpot Badge: Row + Column! ✅            │
 │                                                  │
-│ 🏆 PATTERN PRIZE: $240 (3rd place)              │
+│ 🏆 PATTERN PRIZE: $270 (3rd place)              │
 │    You ranked #3 out of 100 players              │
 │                                                  │
 │ 💰 JACKPOTS:                                     │
 │    Perfect Grid: ❌ Not exact match              │
 │    Pattern Bonus: ❌ Not highest score           │
 │                                                  │
-│ 💸 TOTAL WINNINGS: $2,640                       │
-│    Prize Pools: $1,920 (Trading + Pattern)       │
+│ 💸 TOTAL WINNINGS: $2,880                       │
+│    Prize Pools: $2,160 (Trading + Pattern)       │
 │    Trading PnL: +$720 (yours to keep)            │
 │                                                  │
 │ 🎯 YOUR $100 ENTRY COMPETED IN BOTH GAMES:       │
-│    ✅ Trading Leaderboard → Won $1,680           │
-│    ✅ Pattern Leaderboard → Won $240             │
+│    ✅ Trading Leaderboard → Won $1,890           │
+│    ✅ Pattern Leaderboard → Won $270             │
 │    ✅ Full Jackpot Access (both eligible)        │
 │                                                  │
 ├──────────────────────────────────────────────────┤
@@ -1002,14 +1002,14 @@ Pattern Bonus (50% = $237.50): @AnalystPro (Passive, highest XP)
 
 ```
 PASSIVE TIER ($25 USDC):
-├─ Pattern Prize Pool: 80% ($20)
-├─ Jackpot Pool: 10% ($2.50)
-└─ Platform Fee: 10% ($2.50)
+├─ Pattern Prize Pool: 90% ($22.50)
+├─ Jackpot Pool: 5% ($1.25)
+└─ Platform Fee: 5% ($1.25)
 
 ACTIVE TIER ($100 USDC):
-├─ Trading Prize Pool: 80% ($80)
-├─ Jackpot Pool: 10% ($10)
-└─ Platform Fee: 10% ($10)
+├─ Trading Prize Pool: 90% ($90)
+├─ Jackpot Pool: 5% ($5)
+└─ Platform Fee: 5% ($5)
 
 NOTE: Active players get BOTH leaderboard access + full jackpot eligibility
       for their single $100 entry (compete in 2 games simultaneously)
@@ -1028,11 +1028,11 @@ Total: $4,750
 ┌────────────────────────────────────────────────┐
 │ PATTERN PRIZE POOL (All 100 Players Compete)  │
 ├────────────────────────────────────────────────┤
-│ Source: 70 × $25 × 80% = $1,400               │
+│ Source: 70 × $25 × 90% = $1,575               │
 │                                                │
-│ 🥇 1st Place: $980 (70%)                      │
-│ 🥈 2nd Place: $280 (20%)                      │
-│ 🥉 3rd Place: $140 (10%)                      │
+│ 🥇 1st Place: $1,102.50 (70%)                 │
+│ 🥈 2nd Place: $315 (20%)                      │
+│ 🥉 3rd Place: $157.50 (10%)                   │
 │                                                │
 │ Eligible: ALL 100 players (passive + active)  │
 │ Note: Active players compete here WITH their  │
@@ -1042,11 +1042,11 @@ Total: $4,750
 ┌────────────────────────────────────────────────┐
 │ TRADING PRIZE POOL (30 Active Players Only)   │
 ├────────────────────────────────────────────────┤
-│ Source: 30 × $100 × 80% = $2,400              │
+│ Source: 30 × $100 × 90% = $2,700              │
 │                                                │
-│ 🥇 1st Place: $1,680 (70%)                    │
-│ 🥈 2nd Place: $480 (20%)                      │
-│ 🥉 3rd Place: $240 (10%)                      │
+│ 🥇 1st Place: $1,890 (70%)                    │
+│ 🥈 2nd Place: $540 (20%)                      │
+│ 🥉 3rd Place: $270 (10%)                      │
 │                                                │
 │ Eligible: ONLY 30 active players              │
 │ Note: Winners also keep trading PnL profits   │
@@ -1056,13 +1056,13 @@ Total: $4,750
 ┌────────────────────────────────────────────────┐
 │ JACKPOT POOL (All 100 Players Eligible)       │
 ├────────────────────────────────────────────────┤
-│ Source: (70 × $2.50) + (30 × $10) = $475      │
+│ Source: (70 × $1.25) + (30 × $5) = $237.50    │
 │                                                │
-│ Perfect Grid Jackpot (50% = $237.50):         │
+│ Perfect Grid Jackpot (50% = $118.75):         │
 │   • Split among exact ranking matches         │
 │   • Rolls over if no winner                   │
 │                                                │
-│ Pattern Bonus Jackpot (50% = $237.50):        │
+│ Pattern Bonus Jackpot (50% = $118.75):        │
 │   • Awarded to highest XP scorer              │
 │   • Always paid (never rolls over)            │
 │                                                │
@@ -1073,7 +1073,7 @@ Total: $4,750
 ┌────────────────────────────────────────────────┐
 │ PLATFORM FEE (Operations + Infrastructure)    │
 ├────────────────────────────────────────────────┤
-│ Source: (70 × $2.50) + (30 × $10) = $475      │
+│ Source: (70 × $1.25) + (30 × $5) = $237.50    │
 │                                                │
 │ Plus: Builder code fees (10 bps on active     │
 │       trading volume, collected on-chain)      │
@@ -1089,18 +1089,18 @@ Entry: $25
 
 Win Opportunities:
 • Pattern Prize (compete vs 100 players)
-  - 1st: $980 | 2nd: $280 | 3rd: $140
-• Perfect Grid Jackpot: $200 (split if multiple)
-• Pattern Bonus Jackpot: $200 (highest XP)
+  - 1st: $1,102.50 | 2nd: $315 | 3rd: $157.50
+• Perfect Grid Jackpot: $118.75 (split if multiple)
+• Pattern Bonus Jackpot: $118.75 (highest XP)
 
 Expected Value (EV) Calculation:
-• Pattern Prize: 3% chance × avg($600) = $18
-• Jackpot pools: 2% chance × avg($200) = $4
-• Total EV: $22 per $25 entry
+• Pattern Prize: 3% chance × avg($675) = $20.25
+• Jackpot pools: 2% chance × avg($118.75) = $2.38
+• Total EV: $22.63 per $25 entry
 
-ROI: ($22 - $25) / $25 = -12% (NEGATIVE but high upside)
+ROI: ($22.63 - $25) / $25 = -9.5% (NEGATIVE but high upside)
 
-Best Case: $1,380 (all prizes) = 55x return
+Best Case: $1,340 (all prizes) = 53x return
 Worst Case: $0 = -100%
 
 Why Players Play Despite Negative EV:
@@ -1118,23 +1118,23 @@ Entry: $100 (PLAYS BOTH GAMES SIMULTANEOUSLY)
 
 Win Opportunities from SINGLE $100 Entry:
 • Pattern Prize (compete vs 100 players)
-  - 1st: $980 | 2nd: $280 | 3rd: $140
+  - 1st: $1,102.50 | 2nd: $315 | 3rd: $157.50
 • Trading Prize (compete vs 30 active only)
-  - 1st: $1,680 | 2nd: $480 | 3rd: $240
-• Perfect Grid Jackpot: $237.50 (split if multiple)
-• Pattern Bonus Jackpot: $237.50 (highest XP)
+  - 1st: $1,890 | 2nd: $540 | 3rd: $270
+• Perfect Grid Jackpot: $118.75 (split if multiple)
+• Pattern Bonus Jackpot: $118.75 (highest XP)
 • PLUS: Keep all trading PnL profits
 
 Expected Value (EV) Calculation:
-• Pattern Prize: 3% chance × avg($600) = $18
-• Trading Prize: 10% chance × avg($800) = $80
-• Jackpot pools: 3% chance × avg($237) = $7
+• Pattern Prize: 3% chance × avg($675) = $20.25
+• Trading Prize: 10% chance × avg($900) = $90
+• Jackpot pools: 3% chance × avg($118.75) = $3.56
 • Trading PnL: +$150 avg (skill-dependent)
-• Total EV: $255 per $100 entry
+• Total EV: $263.81 per $100 entry
 
-ROI: ($255 - $100) / $100 = 155% (HIGHLY POSITIVE)
+ROI: ($263.81 - $100) / $100 = 164% (HIGHLY POSITIVE)
 
-Best Case: $3,337.50 + trading PnL = 33x+ return
+Best Case: $3,339.50 + trading PnL = 33x+ return
 Worst Case: -$100 - trading losses = variable
 
 Active Tier Advantages:
@@ -1154,7 +1154,7 @@ Active Tier Advantages:
 The Perfect Grid Jackpot rollover creates viral marketing similar to lottery jackpots:
 
 **How It Works:**
-1. **2.5% of EVERY entry fee** goes into Perfect Grid Jackpot (50% of 10% jackpot allocation)
+1. **1.25% of EVERY entry fee** goes into Perfect Grid Jackpot (50% of 5% jackpot allocation)
 2. **If no one hits Perfect Grid**: Jackpot ROLLS OVER to next competition
 3. **Jackpot accumulates** until someone wins
 
@@ -1273,7 +1273,7 @@ Settlement Calculation:
 Example:
 Competition ends 12:00 PM UTC
 • Player A: Open LONG BTC position, unrealized PnL +$450
-• Trading Prize: Ranked #1 (highest PnL) → Wins $1,680
+• Trading Prize: Ranked #1 (highest PnL) → Wins $1,890
 • 12:05 PM: Player A closes BTC position for +$460 actual
 • Prize based on 12:00 PM snapshot (unrealized PnL at settlement)
 • Player keeps the $460 realized profit from their own capital
@@ -1283,43 +1283,43 @@ Competition ends 12:00 PM UTC
 
 ### 3.6 Revenue Model
 
+**Platform Revenue Formula:**
+
 ```
-PLATFORM REVENUE STREAMS:
+REVENUE STREAMS:
 
-1. Passive Entry Fee Rake (10%):
-   • Entry: $25 per player
-   • Platform: $2.50 per entry
-   • Monthly estimate (5,000 MAU × 10 comps): $125K
+1. Passive Entry Fee Rake (5%):
+   • Entry fee: $25 per player
+   • Platform fee: $1.25 per entry
+   • Revenue = N_passive_entries × $1.25
 
-2. Active Entry Fee Rake (10%):
-   • Entry: $100 per player
-   • Platform: $10 per entry
-   • Monthly estimate (1,000 MAU × 8 comps): $80K
+2. Active Entry Fee Rake (5%):
+   • Entry fee: $100 per player
+   • Platform fee: $5 per entry
+   • Revenue = N_active_entries × $5
    • Note: Single entry gives access to BOTH leaderboards
 
 3. Builder Code Fees (Active Only):
-   • Trading volume: ~$300K per competition (30 players × $10K avg)
-   • Competitions per day: 24
-   • Monthly volume: $216M
    • Builder code rate: 5 bps (0.05%)
-   • Monthly builder fees: $108K
+   • Revenue = Total_Trading_Volume × 0.0005
+   • Collected on-chain via Hyperliquid fee system
 
-TOTAL MONTHLY REVENUE: $313K
-• Entry fee rake: $205K (65%)
-• Builder code fees: $108K (35%)
-
-ANNUAL REVENUE: $3.76M
-
-Operating Costs (estimated):
-• Infrastructure: $15K/month
-• Team (5 people): $75K/month
-• Marketing: $50K/month
-• Legal/compliance: $10K/month
-• Total: $150K/month
-
-NET PROFIT: $163K/month = $1.96M annually
-Margin: 52%
+TOTAL REVENUE = Passive_Rake + Active_Rake + Builder_Fees
 ```
+
+**Operating Cost Structure:**
+
+```
+Fixed Monthly Costs:
+• Infrastructure (hosting, services)
+• Team (engineering, operations, support)
+• Marketing (user acquisition, content)
+• Legal/Compliance (licensing, audits)
+
+Margin = (Total Revenue - Operating Costs) / Total Revenue
+```
+
+**For detailed revenue projections, user acquisition targets, and financial metrics, see Section 7.1 Success Metrics.**
 
 ---
 
@@ -1357,7 +1357,7 @@ Tutorial Competition (Demo Mode):
    
 6. "Competition ends! See your results"
    → Show pattern prize (top 3 by grid score)
-   → Highlight: "You won $140 pattern prize! (3rd place)"
+   → Highlight: "You won $157.50 pattern prize! (3rd place)"
    → Display: "Want to trade next time? Upgrade to Active tier"
 ```
 
@@ -1389,9 +1389,9 @@ Tutorial Competition (Demo Mode):
    → Show PnL tracking
 
 6. "Competition ends! See BOTH leaderboards"
-   → Show trading prize: "You won $1,680! (1st by PnL)"
-   → Show pattern prize: "You won $280! (2nd by grid score)"
-   → Total: "$1,960 + kept your $120 trading profit!"
+   → Show trading prize: "You won $1,890! (1st by PnL)"
+   → Show pattern prize: "You won $315! (2nd by grid score)"
+   → Total: "$2,205 + kept your $120 trading profit!"
    → "Your single $100 entry competed in BOTH games!"
 ```
 
@@ -1462,7 +1462,7 @@ User Journey:
 • Enters first passive competition ($25)
 • Builds roster, locks predictions
 • Watches competition unfold
-• Wins $140 (3rd place pattern prize!)
+• Wins $157.50 (3rd place pattern prize!)
 
 Psychological State:
 ✅ "This is fun! I'm good at predictions"
@@ -1476,7 +1476,7 @@ Psychological State:
 User Journey:
 • Enters 3-5 more passive competitions
 • Actively watches spectator feed
-• Sees @CryptoKing win $1,680 + $800 PnL
+• Sees @CryptoKing win $1,890 + $800 PnL
 • Clicks "Follow Trader" to study strategy
 • Notices: "He goes LONG on predicted UP coins"
 • Realizes: "I could do that..."
@@ -1492,9 +1492,9 @@ Psychological State:
 **Week 3: Temptation (Upgrade CTAs)**
 ```
 User Journey:
-• Wins passive pattern prize ($280, 2nd place)
+• Wins passive pattern prize ($315, 2nd place)
 • Results screen shows upgrade CTA
-• Sees: "$2,400 trading pool ÷ 30 = $80 avg"
+• Sees: "$2,700 trading pool ÷ 30 = $90 avg"
 • Math: "3x better odds than pattern!"
 • Realizes: "I'm confident in predictions"
 • Notices: "$100 entry = BOTH games + jackpots!"
@@ -1514,8 +1514,8 @@ User Journey:
 • Agent wallet created automatically
 • Enters first active ($100)
 • Executes 5-8 trades during competition
-• Wins $240 trading + $140 pattern + $120 PnL
-• Total: $500 from $100 (5x return!)
+• Wins $270 trading + $157.50 pattern + $120 PnL
+• Total: $547.50 from $100 (5x return!)
 
 Psychological State:
 🎉 "I did it! I'm an active trader!"
@@ -1530,7 +1530,7 @@ Psychological State:
 **1. Results Screen CTAs:**
 ```
 ┌──────────────────────────────────────────────────┐
-│ You won $280 (2nd place)! 🎉                     │
+│ You won $315 (2nd place)! 🎉                     │
 ├──────────────────────────────────────────────────┤
 │ 🚀 READY FOR MORE?                               │
 │                                                  │
@@ -1553,7 +1553,7 @@ Psychological State:
 **2. Spectator Feed Nudges:**
 ```
 ┌──────────────────────────────────────────────────┐
-│ 🔴 LIVE: @CryptoKing just won $1,680 + $890!    │
+│ 🔴 LIVE: @CryptoKing just won $1,890 + $890!    │
 │                                                  │
 │ You're watching from Passive tier.               │
 │ His $100 entry competed in BOTH games!           │
@@ -1572,8 +1572,8 @@ Hey @PatternMaster,
 You ranked #8/100 in L1 Chains 4hr. That's top 10%! 🏆
 
 Active players in this comp won:
-• Trading Prize: $1,680 (1st)
-• Pattern Prize: $280 (2nd - also active!)
+• Trading Prize: $1,890 (1st)
+• Pattern Prize: $315 (2nd - also active!)
 • Avg PnL: +$250
 
 Remember: $100 entry = BOTH games simultaneously
@@ -1929,7 +1929,7 @@ Monetization:
 - Avg passive players per comp: Target 70
 - Daily passive gross: Target $42,000
 - Monthly passive gross: Target $1.26M
-- Platform rake (10%): Target $126K/month
+- Platform rake (5%): Target $63K/month
 
 ---
 
@@ -1952,20 +1952,31 @@ Monetization:
 - Avg active players per comp: Target 30
 - Daily active gross: Target $72,000
 - Monthly active gross: Target $2.16M
-- Platform rake (10%): Target $216K/month
+- Platform rake (5%): Target $108K/month
 - Builder code fees (5 bps): Target $5K/month
-- Total active revenue: Target $221K/month
+- Total active revenue: Target $113K/month
 - Note: Single entry competes in BOTH games (trading + pattern)
 
 ---
 
 **Combined Metrics:**
 
-Total Monthly Revenue:
-- Passive rake: $126K (38%)
-- Active rake: $216K (61%)
-- Builder fees: $5K (1%)
-- **Total: $347K/month ($4.16M annually)**
+Total Monthly Revenue (Month 3 Target):
+- Passive rake: $63K (36%)
+- Active rake: $108K (61%)
+- Builder fees: $5K (3%)
+- **Total Revenue: $176K/month ($2.112M annually)**
+
+Operating Costs (Monthly):
+- Infrastructure: $15K/month (hosting, APIs, services)
+- Team: $75K/month (5 people: engineering, ops, support)
+- Marketing: $50K/month (user acquisition, content, campaigns)
+- Legal/Compliance: $10K/month (licensing, audits, KYC/AML)
+- **Total Costs: $150K/month**
+
+Profitability:
+- **Net Profit: $26K/month ($312K annually)**
+- **Profit Margin: 15%**
 
 User Conversion:
 - Passive → Active conversion: Target 10-15% within 90 days
@@ -2137,9 +2148,9 @@ Resolution:
 **Edge Case #2: Active Player Wins Trading Prize But Loses Money**
 ```
 Scenario:
-• Wins 3rd place trading prize ($240)
+• Wins 3rd place trading prize ($270)
 • Has -$150 trading PnL (bad trades)
-• Net: +$90 from $100 entry
+• Net: +$120 from $100 entry
 • BUT: Also competed in pattern leaderboard (potential additional prize)
 
 Resolution:
@@ -2236,7 +2247,7 @@ Resolution:
 - Unrealized PnL: Open positions at settlement
 - Determines Trading Prize winner
 
-**Jackpot Pool:** 10% of all entry fees, split into two jackpots:
+**Jackpot Pool:** 5% of all entry fees, split into two jackpots:
 - Perfect Grid Jackpot (50%): Exact roster ranking match (can roll over)
 - Pattern Bonus Jackpot (50%): Highest grid score (always awarded)
 
@@ -2307,9 +2318,9 @@ Battle Grid V2 introduces a revolutionary dual-track competition model that:
 
 ---
 
-**Document Status:** ✅ READY FOR DEVELOPMENT  
-**Next Milestone:** Phase 1 - Passive Tier MVP (Weeks 1-4)  
-**Estimated Monthly Revenue (Month 3):** $293K ($3.5M annually)
+**Document Status:** ✅ READY FOR DEVELOPMENT
+**Next Milestone:** Phase 1 - Passive Tier MVP (Weeks 1-4)
+**Financial Projections:** See Section 7.1 for complete revenue targets, user metrics, and profitability analysis
 
 ---
 
