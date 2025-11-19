@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BattleGrid - The Opportunity</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 1920px;
+            height: 1080px;
+            border: 3px solid #00ffff;
+            padding: 50px;
+            background: #111;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .header {
+            background: #00ffff;
+            color: #0a0a0a;
+            padding: 10px 20px;
+            margin: -50px -50px 40px -50px;
+            font-weight: bold;
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            font-size: 14px;
+            font-weight: bold;
+            
+            letter-spacing: 1px;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 15px;
+        }
+
+        .exit-btn {
+            background: #0a0a0a;
+            color: #00ffff;
+            border: 2px solid #0a0a0a;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        h1 {
+            font-size: 64px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .underline {
+            height: 3px;
+            background: #00ffff;
+            margin-bottom: 35px;
+        }
+
+        .context-text {
+            font-size: 18px;
+            color: #cccccc;
+            margin-bottom: 45px;
+            line-height: 1.7;
+            max-width: 1700px;
+        }
+
+        .highlight {
+            color: #00ffff;
+            font-weight: bold;
+        }
+
+        .markets-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .market-column {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 30px;
+            background: #0a0a0a;
+            border: 2px solid #00ffff;
+            padding: 40px;
+        }
+
+        .market-icon {
+            font-size: 72px;
+            flex-shrink: 0;
+        }
+
+        .market-content {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .market-title {
+            font-size: 24px;
+            color: #00ffff;
+            font-weight: bold;
+            line-height: 1.3;
+        }
+
+        .market-description {
+            font-size: 18px;
+            color: #cccccc;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-left">C:\BATTLEGRID.TRADE</span>
+            <div class="header-right">
+                <a href="00_contents.html" class="exit-btn" style="text-decoration: none;">X</a>
+                <a href="04_problem.html" class="exit-btn" style="text-decoration: none;">→</a>
+            </div>
+        </div>
+        
+        <h1>OPPORTUNITY</h1>
+        <div class="underline"></div>
+
+        <div class="context-text">
+            <span class="highlight">Crypto trading behavior has fundamentally shifted.</span> The meme-coin era created traders who value speed over patience, competition over isolation. They don't want to hold — they want to compete. Yet <span class="highlight">no platform offers continuous competitions.</span> Exchanges run monthly tournaments, forcing traders to wait weeks between events. <span class="highlight">BattleGrid is the first mover</span> at the convergence of crypto wagering, prediction markets, and DEX perpetuals. The infrastructure exists. The demand is proven. The competition doesn't exist yet.
+        </div>
+
+        <div class="markets-container">
+                <div class="market-column">
+                    <div class="market-icon">💰</div>
+                    <div class="market-content">
+                        <div class="market-title">CRYPTO WAGERING</div>
+                        <div class="market-description">
+                            $81.4B GGR in 2024 (5x since 2022) • 17M+ daily active users • 70% QoQ growth
+                        </div>
+                    </div>
+                </div>
+
+                <div class="market-column">
+                    <div class="market-icon">🎯</div>
+                    <div class="market-content">
+                        <div class="market-title">PREDICTION MARKETS</div>
+                        <div class="market-description">
+                            ~$3B monthly volume (40% of $7.4B total) • 18x YoY growth in crypto betting category
+                        </div>
+                    </div>
+                </div>
+
+                <div class="market-column">
+                    <div class="market-icon">📊</div>
+                    <div class="market-content">
+                        <div class="market-title">DEX PERPS TRADING</div>
+                        <div class="market-description">
+                            $2.6T annual volume (2024) • 600K+ active users • 138% YoY growth
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BattleGrid - Cover</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 1920px;
+            height: 1080px;
+            border: 3px solid #00ffff;
+            padding: 50px;
+            background: #111;
+            box-sizing: border-box;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .header {
+            background: #00ffff;
+            color: #0a0a0a;
+            padding: 10px 20px;
+            margin: -50px -50px 40px -50px;
+            font-weight: bold;
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-left {
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 15px;
+        }
+
+        .exit-btn {
+            background: #0a0a0a;
+            color: #00ffff;
+            border: 2px solid #0a0a0a;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .content-center {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+        }
+
+        .logo-large {
+            font-size: 96px;
+            font-weight: bold;
+            letter-spacing: 4px;
+            margin-bottom: 20px;
+        }
+
+        .logo-battle {
+            color: #ffffff;
+        }
+
+        .logo-grid {
+            color: #00ffff;
+        }
+
+        .divider {
+            width: 400px;
+            height: 4px;
+            background: #00ffff;
+        }
+
+        .tagline {
+            font-size: 32px;
+            color: #ffffff;
+            line-height: 1.6;
+            max-width: 1200px;
+            font-weight: normal;
+        }
+
+        .highlight {
+            color: #00ffff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-left">C:\BATTLEGRID.TRADE</span>
+            <div class="header-right">
+                <a href="00_contents.html" class="exit-btn" style="text-decoration: none;">X</a>
+                <a href="02_overview.html" class="exit-btn" style="text-decoration: none;">→</a>
+            </div>
+        </div>
+
+        <div class="content-center">
+            <div class="logo-large">
+                <span class="logo-battle">BATTLE</span><span class="logo-grid">GRID</span>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="tagline">
+                Where traders compete.
+            </div>
+        </div>
+    </div>
+</body>
+</html>
