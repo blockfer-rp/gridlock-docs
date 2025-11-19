@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BattleGrid - Financial Projections</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 1920px;
+            height: 1080px;
+            border: 3px solid #00ffff;
+            padding: 50px;
+            background: #111;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .header {
+            background: #00ffff;
+            color: #0a0a0a;
+            padding: 10px 20px;
+            margin: -50px -50px 40px -50px;
+            font-weight: bold;
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-left {
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 15px;
+        }
+
+        .exit-btn {
+            background: #0a0a0a;
+            color: #00ffff;
+            border: 2px solid #0a0a0a;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+
+        h1 {
+            font-size: 52px;
+            margin-bottom: 12px;
+            font-weight: bold;
+        }
+
+        .underline {
+            height: 3px;
+            background: #00ffff;
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            color: #ffffff;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .metrics-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #0a0a0a;
+            color: #ffffff;
+            border: 3px solid #00ffff;
+            margin-bottom: 25px;
+        }
+
+        .metrics-table th {
+            background: #00ffff;
+            color: #0a0a0a;
+            padding: 15px 18px;
+            text-align: left;
+            font-weight: bold;
+            border: 2px solid #00ffff;
+            font-size: 16px;
+        }
+
+        .metrics-table td {
+            padding: 15px 18px;
+            border: 2px solid #00ffff;
+            background: #1a1a1a;
+            font-size: 15px;
+        }
+
+        .metrics-table th:first-child {
+            width: 50%;
+        }
+
+        .metrics-table th:not(:first-child) {
+            text-align: center;
+            width: 25%;
+        }
+
+        .metrics-table td:not(:first-child) {
+            text-align: center;
+            color: #00ffff;
+            font-weight: bold;
+        }
+
+        .revenue-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .revenue-block {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .table-title {
+            background: #00ffff;
+            color: #0a0a0a;
+            padding: 12px 18px;
+            font-weight: bold;
+            font-size: 16px;
+            border: 3px solid #00ffff;
+            border-bottom: none;
+        }
+
+        .revenue-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #0a0a0a;
+            border: 3px solid #00ffff;
+            border-top: none;
+        }
+
+        .revenue-table th {
+            background: #00ffff;
+            color: #0a0a0a;
+            padding: 12px 15px;
+            text-align: center;
+            font-weight: bold;
+            border: 2px solid #00ffff;
+            font-size: 14px;
+        }
+
+        .revenue-table td {
+            padding: 12px 15px;
+            border: 2px solid #00ffff;
+            background: #1a1a1a;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .revenue-table td:first-child {
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .revenue-table td:not(:first-child) {
+            color: #00ffff;
+            text-align: right;
+        }
+
+        .bottom-line {
+            font-size: 15px;
+            color: #cccccc;
+            line-height: 1.7;
+            margin-top: 15px;
+        }
+
+        .highlight {
+            color: #00ffff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-left">C:\BATTLEGRID.TRADE</span>
+            <div class="header-right">
+                <span class="exit-btn">X</span>
+            </div>
+        </div>
+
+        <h1>Financial_projections</h1>
+        <div class="underline"></div>
+
+        <div class="section-title">Key Metrics:</div>
+
+        <table class="metrics-table">
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>$25 Entry Games</th>
+                    <th>$100 Entry Games</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Revenue per player per game</td>
+                    <td>$1.25</td>
+                    <td>$5.00</td>
+                </tr>
+                <tr>
+                    <td>Daily players needed for $10K/day</td>
+                    <td>8,000 players</td>
+                    <td>2,000 players</td>
+                </tr>
+                <tr>
+                    <td>Daily players needed for $1M/year</td>
+                    <td>2,192 players</td>
+                    <td>548 players</td>
+                </tr>
+                <tr>
+                    <td>Wager volume needed for $1M/year</td>
+                    <td>$20M total wagered</td>
+                    <td>$20M total wagered</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="revenue-section">
+            <div class="revenue-block">
+                <div class="table-title">$25 Entry Games (5% rake)</div>
+                <table class="revenue-table">
+                    <thead>
+                        <tr>
+                            <th>Daily Players</th>
+                            <th>Daily Revenue</th>
+                            <th>Monthly (30 days)</th>
+                            <th>Annual (365 days)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>500</td>
+                            <td>$625</td>
+                            <td>$18,750</td>
+                            <td>$228,125</td>
+                        </tr>
+                        <tr>
+                            <td>750</td>
+                            <td>$937.50</td>
+                            <td>$28,125</td>
+                            <td>$342,188</td>
+                        </tr>
+                        <tr>
+                            <td>1,000</td>
+                            <td>$1,250</td>
+                            <td>$37,500</td>
+                            <td>$456,250</td>
+                        </tr>
+                        <tr>
+                            <td>1,250</td>
+                            <td>$1,562.50</td>
+                            <td>$46,875</td>
+                            <td>$570,313</td>
+                        </tr>
+                        <tr>
+                            <td>1,500</td>
+                            <td>$1,875</td>
+                            <td>$56,250</td>
+                            <td>$684,375</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="revenue-block">
+                <div class="table-title">$100 Entry Games (5% rake)</div>
+                <table class="revenue-table">
+                    <thead>
+                        <tr>
+                            <th>Daily Players</th>
+                            <th>Daily Revenue</th>
+                            <th>Monthly (30 days)</th>
+                            <th>Annual (365 days)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>500</td>
+                            <td>$2,500</td>
+                            <td>$75,000</td>
+                            <td>$912,500</td>
+                        </tr>
+                        <tr>
+                            <td>750</td>
+                            <td>$3,750</td>
+                            <td>$112,500</td>
+                            <td>$1,368,750</td>
+                        </tr>
+                        <tr>
+                            <td>1,000</td>
+                            <td>$5,000</td>
+                            <td>$150,000</td>
+                            <td>$1,825,000</td>
+                        </tr>
+                        <tr>
+                            <td>1,250</td>
+                            <td>$6,250</td>
+                            <td>$187,500</td>
+                            <td>$2,281,250</td>
+                        </tr>
+                        <tr>
+                            <td>1,500</td>
+                            <td>$7,500</td>
+                            <td>$225,000</td>
+                            <td>$2,737,500</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="bottom-line">
+            <span class="highlight">Bottom Line:</span> At 1,000 players/day wagering $100 each with 5% rake, Hypergrid generates <span class="highlight">$1.8M in annual game rake revenue.</span>
+        </div>
+    </div>
+</body>
+</html>

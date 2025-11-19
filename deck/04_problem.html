@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BattleGrid - The Problem</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 1920px;
+            height: 1080px;
+            border: 3px solid #00ffff;
+            padding: 50px;
+            background: #111;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .header {
+            background: #00ffff;
+            color: #0a0a0a;
+            padding: 10px 20px;
+            margin: -50px -50px 40px -50px;
+            font-weight: bold;
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            font-size: 14px;
+            font-weight: bold;
+            
+            letter-spacing: 1px;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 15px;
+        }
+
+        .exit-btn {
+            background: #0a0a0a;
+            color: #00ffff;
+            border: 2px solid #0a0a0a;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        h1 {
+            font-size: 64px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .underline {
+            height: 3px;
+            background: #00ffff;
+            margin-bottom: 35px;
+        }
+
+        .context-text {
+            font-size: 18px;
+            color: #cccccc;
+            margin-bottom: 40px;
+            line-height: 1.7;
+            max-width: 1700px;
+        }
+
+        .problems-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .problem-column {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 25px;
+            background: #0a0a0a;
+            border: 2px solid #00ffff;
+            padding: 30px;
+        }
+
+        .problem-icon {
+            font-size: 64px;
+            flex-shrink: 0;
+        }
+
+        .problem-content {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .problem-title {
+            color: #00ffff;
+            font-weight: bold;
+            line-height: 1.3;
+        }
+
+        .problem-description {
+            font-size: 16px;
+            color: #cccccc;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-left">C:\BATTLEGRID.TRADE</span>
+            <div class="header-right">
+                <a href="00_contents.html" class="exit-btn" style="text-decoration: none;">X</a>
+                <a href="05_solution.html" class="exit-btn" style="text-decoration: none;">→</a>
+            </div>
+        </div>
+        
+        <h1>PROBLEM</h1>
+        <div class="underline"></div>
+
+        <div class="context-text">
+            Traders desperately want to compete, but centralized exchanges fail to deliver accessible, fair, and frequent competitions. Current tournaments lock out retail traders with impossible barriers.
+        </div>
+
+        <div class="problems-container">
+            <div class="problem-column">
+                <div class="problem-icon">⏰</div>
+                <div class="problem-content">
+                    <div class="problem-title">Long Duration = High Commitment</div>
+                    <div class="problem-description">
+                        Competitions run for 20-28 days requiring sustained focus. Most retail traders can't dedicate a full month to competitions while managing jobs and life.
+                    </div>
+                </div>
+            </div>
+
+            <div class="problem-column">
+                <div class="problem-icon">📅</div>
+                <div class="problem-content">
+                    <div class="problem-title">Infrequent Events</div>
+                    <div class="problem-description">
+                        Major competitions happen monthly or quarterly only. Traders who miss registration must wait weeks or months for another chance to compete.
+                    </div>
+                </div>
+            </div>
+
+            <div class="problem-column">
+                <div class="problem-icon">🎯</div>
+                <div class="problem-content">
+                    <div class="problem-title">No Prediction Element</div>
+                    <div class="problem-description">
+                        Pure execution-only competitions favor high-frequency traders. No way to compete on market analysis or forecasting skill without fast execution.
+                    </div>
+                </div>
+            </div>
+
+            <div class="problem-column">
+                <div class="problem-icon">⚖️</div>
+                <div class="problem-content">
+                    <div class="problem-title">Unfair Starting Points</div>
+                    <div class="problem-description">
+                        No standardized starting capital across participants. Whales with 100x larger accounts dominate volume-based leaderboards against retail traders.
+                    </div>
+                </div>
+            </div>
+
+            <div class="problem-column">
+                <div class="problem-icon">💸</div>
+                <div class="problem-content">
+                    <div class="problem-title">Personal Capital Risk</div>
+                    <div class="problem-description">
+                        Traders must risk their own funds with no capital protection. One bad trading week can wipe out an entire month's progress and profits.
+                    </div>
+                </div>
+            </div>
+
+            <div class="problem-column">
+                <div class="problem-icon">👁️</div>
+                <div class="problem-content">
+                    <div class="problem-title">No Spectator Economy</div>
+                    <div class="problem-description">
+                        No way to watch, learn, or follow top traders competing. Pure participation model with no education path or entertainment value for observers.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

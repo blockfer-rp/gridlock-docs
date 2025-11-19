@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BattleGrid - Community Games</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 1920px;
+            height: 1080px;
+            border: 3px solid #00ffff;
+            padding: 50px;
+            background: #111;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .header {
+            background: #00ffff;
+            color: #0a0a0a;
+            padding: 10px 20px;
+            margin: -50px -50px 40px -50px;
+            font-weight: bold;
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-left {
+            font-size: 14px;
+            font-weight: bold;
+            
+            letter-spacing: 1px;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 15px;
+        }
+
+        .exit-btn {
+            background: #0a0a0a;
+            color: #00ffff;
+            border: 2px solid #0a0a0a;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        h1 {
+            font-size: 52px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: #ffffff;
+        }
+
+        .cyan {
+            color: #00ffff;
+        }
+
+        .underline {
+            height: 3px;
+            background: #00ffff;
+            margin-bottom: 25px;
+        }
+
+        .subtitle {
+            color: #ffffff;
+            margin-bottom: 35px;
+            line-height: 1.6;
+        }
+
+        .screenshot-container {
+            width: 100%;
+            height: 480px;
+            background: #1a1a1a;
+            border: 3px solid #00ffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 35px;
+            position: relative;
+        }
+
+        .screenshot-placeholder {
+            text-align: center;
+            color: #00ffff;
+        }
+
+        .screenshot-placeholder::before {
+            content: '🖼';
+            font-size: 80px;
+            display: block;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .screenshot-placeholder span {
+            font-size: 24px;
+            opacity: 0.7;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+            border: 3px solid #00ffff;
+        }
+
+        .content-header {
+            background: #0a0a0a;
+            border-right: 2px solid #00ffff;
+            padding: 20px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .content-header:last-child {
+            border-right: none;
+        }
+
+        .content-box {
+            background: #111;
+            border-right: 2px solid #00ffff;
+            border-top: 2px solid #00ffff;
+            padding: 20px;
+            font-size: 17px;
+            line-height: 1.6;
+            color: #cccccc;
+        }
+
+        .content-box:last-child {
+            border-right: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-left">C:\BATTLEGRID.TRADE</span>
+            <div class="header-right">
+                <a href="00_contents.html" class="exit-btn" style="text-decoration: none;">X</a>
+                <a href="09_tam.html" class="exit-btn" style="text-decoration: none;">→</a>
+            </div>
+        </div>
+        
+        <h1>BATTLE<span class="cyan">GRID</span>: COMMUNITY GAMES</h1>
+        <div class="underline"></div>
+
+        <div class="subtitle">
+            Custom Games: Allow users to host and set their own trading rules, and high stakes wagers.
+        </div>
+
+        <div class="screenshot-container">
+            <div class="screenshot-placeholder">
+                <span>Community Games Interface Screenshot Placeholder</span>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <div class="content-header">Core Platform</div>
+            <div class="content-header">Ecosystem Evolution</div>
+            <div class="content-header">Community Features</div>
+
+            <div class="content-box">
+                Trade only BTC vs ETH, Last man standing and more. Tradegrid is the centerpiece of the Hypergrid ecosystem — a decentralized PvP trading platform where players compete in timed trading sessions for a winner-takes-all reward.
+            </div>
+            <div class="content-box">
+                As the ecosystem evolves, weekly elimination tournaments, team battles, and player-hosted matches will launch — with hosts earning 5% of the action
+            </div>
+            <div class="content-box">
+                Community-driven competitions enable custom rule sets, unique prize structures, and specialized game modes that foster engagement and create diverse competitive experiences across skill levels.
+            </div>
+        </div>
+    </div>
+</body>
+</html>
