@@ -13,7 +13,7 @@
 
         body {
             background: #0a0a0a;
-            color: #00ffff;
+            color: #ffffff;
             font-family: 'Courier New', monospace;
             display: flex;
             justify-content: center;
@@ -47,6 +47,12 @@
             gap: 15px;
         }
 
+        .header-left {
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
         .header-right {
             display: flex;
             gap: 15px;
@@ -61,6 +67,18 @@
             font-family: 'Courier New', monospace;
             font-weight: bold;
             font-size: 20px;
+        }
+
+        h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .underline {
+            height: 3px;
+            background: #00ffff;
+            margin-bottom: 25px;
         }
 
         .title-section {
@@ -101,7 +119,7 @@
         .timeline {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             margin: 15px 0 20px 0;
             position: relative;
         }
@@ -109,7 +127,7 @@
         .timeline::before {
             content: '';
             position: absolute;
-            top: 50%;
+            top: 45px;
             left: 0;
             right: 0;
             height: 3px;
@@ -130,22 +148,29 @@
             background: #0a0a0a;
             border: 3px solid #00ffff;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             margin: 0 auto 10px;
             clip-path: polygon(30% 0%, 70% 0%, 100% 50%, 70% 100%, 30% 100%, 0% 50%);
-            font-size: 28px;
+            gap: 2px;
+        }
+
+        .quarter-marker .quarter-num {
+            font-size: 24px;
             font-weight: bold;
         }
 
-        .quarter-label {
+        .quarter-marker .quarter-year {
+            font-size: 10px;
+            font-weight: bold;
             color: #888;
-            font-size: 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 5px;
+        }
+
+        .quarter-stage {
+            color: #00ffff;
+            font-size: 14px;
+            font-weight: bold;
             text-transform: uppercase;
         }
 
@@ -177,7 +202,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
+            font-size: 24px;
             font-weight: bold;
             flex-shrink: 0;
         }
@@ -218,40 +243,45 @@
 <body>
     <div class="container">
         <div class="header">
-            <span style="font-size: 14px; font-weight: bold; letter-spacing: 1px;">C:\BATTLEGRID.TRADE</span>
+            <span class="header-left">C:\BATTLEGRID.TRADE</span>
             <div class="header-right">
                 <a href="13_team.html" class="exit-btn" style="text-decoration: none;">←</a>
                 <a href="15_funding.html" class="exit-btn" style="text-decoration: none;">→</a>
                 <a href="00_contents.html" class="exit-btn" style="text-decoration: none;">X</a>
             </div>
         </div>
-        
-        <div class="title-section">
-            <div class="left-title">
-                <h1>ROADMAP</h1>
-            </div>
-            <div class="right-details">
-                <div class="runway-time">12 Months</div>
-                <div class="runway-info">MVP → Full Product Ecosystem</div>
-            </div>
-        </div>
+
+        <h1>ROADMAP</h1>
+        <div class="underline"></div>
         
         <div class="timeline">
             <div class="quarter">
-                <div class="quarter-marker">Q4</div>
-                <div class="quarter-label">2025</div>
+                <div class="quarter-marker">
+                    <div class="quarter-num">Q4</div>
+                    <div class="quarter-year">2025</div>
+                </div>
+                <div class="quarter-stage">MVP</div>
             </div>
             <div class="quarter">
-                <div class="quarter-marker">Q1</div>
-                <div class="quarter-label">2026</div>
+                <div class="quarter-marker">
+                    <div class="quarter-num">Q1</div>
+                    <div class="quarter-year">2026</div>
+                </div>
+                <div class="quarter-stage">BETA</div>
             </div>
             <div class="quarter">
-                <div class="quarter-marker">Q2</div>
-                <div class="quarter-label">2026</div>
+                <div class="quarter-marker">
+                    <div class="quarter-num">Q2</div>
+                    <div class="quarter-year">2026</div>
+                </div>
+                <div class="quarter-stage">PUBLIC</div>
             </div>
             <div class="quarter">
-                <div class="quarter-marker">Q3</div>
-                <div class="quarter-label">2026</div>
+                <div class="quarter-marker">
+                    <div class="quarter-num">Q3</div>
+                    <div class="quarter-year">2026</div>
+                </div>
+                <div class="quarter-stage">ECOSYSTEM</div>
             </div>
         </div>
 

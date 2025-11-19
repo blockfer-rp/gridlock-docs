@@ -14,7 +14,7 @@
 
         body {
             background: #0a0a0a;
-            color: #00ffff;
+            color: #ffffff;
             font-family: 'Courier New', monospace;
             display: flex;
             justify-content: center;
@@ -48,6 +48,12 @@
             gap: 15px;
         }
 
+        .header-left {
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
         .header-right {
             display: flex;
             gap: 15px;
@@ -62,6 +68,18 @@
             font-family: 'Courier New', monospace;
             font-weight: bold;
             font-size: 20px;
+        }
+
+        h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .underline {
+            height: 3px;
+            background: #00ffff;
+            margin-bottom: 25px;
         }
 
         .title-section {
@@ -176,28 +194,65 @@
             line-height: 1.6;
         }
 
+        .kpis-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .kpi-box {
+            border: 3px solid #00ffff;
+            padding: 25px;
+            background: #0a0a0a;
+            text-align: center;
+        }
+
+        .kpi-box-label {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .kpi-box-value {
+            font-size: 32px;
+            color: #00ffff;
+            font-weight: bold;
+        }
+
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <span style="font-size: 14px; font-weight: bold; letter-spacing: 1px;">C:\BATTLEGRID.TRADE</span>
+            <span class="header-left">C:\BATTLEGRID.TRADE</span>
             <div class="header-right">
                 <a href="14_roadmap.html" class="exit-btn" style="text-decoration: none;">←</a>
                 <a href="16_connect.html" class="exit-btn" style="text-decoration: none;">→</a>
                 <a href="00_contents.html" class="exit-btn" style="text-decoration: none;">X</a>
             </div>
         </div>
-        
-        <div class="title-section">
-            <div class="left-title">
-                <h1>FUNDING</h1>
-                <div class="subtitle">Funds will be allocated across the following pillars:</div>
+
+        <h1>FUNDING</h1>
+        <div class="underline"></div>
+
+        <div class="kpis-section">
+            <div class="kpi-box">
+                <div class="kpi-box-label">ROUND SIZE</div>
+                <div class="kpi-box-value">$250K</div>
             </div>
-            <div class="right-details">
-                <div class="funding-amount">$250,000</div>
-                <div class="funding-type">$2.5M Valuation Cap</div>
-                <div class="funding-info">Pre-Seed Raise</div>
+            <div class="kpi-box">
+                <div class="kpi-box-label">RUNWAY</div>
+                <div class="kpi-box-value">12 Months</div>
+            </div>
+            <div class="kpi-box">
+                <div class="kpi-box-label">VALUATION CAP</div>
+                <div class="kpi-box-value">$2.5M</div>
+            </div>
+            <div class="kpi-box">
+                <div class="kpi-box-label">ROUND</div>
+                <div class="kpi-box-value">Pre-Seed</div>
             </div>
         </div>
 
