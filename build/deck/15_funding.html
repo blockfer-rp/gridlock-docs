@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hypergrid - Funding Requirements</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            overflow-y: auto;
+        }
+
+        .container {
+            width: 1920px;
+            height: 1080px;
+            border: 3px solid #00ffff;
+            padding: 50px;
+            background: #111;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        .header {
+            background: #00ffff;
+            color: #0a0a0a;
+            padding: 10px 20px;
+            margin: -50px -50px 40px -50px;
+            font-weight: bold;
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-left {
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 15px;
+        }
+
+        .exit-btn {
+            background: #0a0a0a;
+            color: #00ffff;
+            border: 2px solid #0a0a0a;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .underline {
+            height: 3px;
+            background: #00ffff;
+            margin-bottom: 25px;
+        }
+
+        .title-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 40px;
+            gap: 60px;
+        }
+
+        .left-title {
+            flex: 1;
+        }
+
+        .left-title h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .left-title .subtitle {
+            color: #cccccc;
+        }
+
+        .right-details {
+            flex: 1;
+            text-align: right;
+        }
+
+        .funding-amount {
+            font-size: 64px;
+            color: #00ffff;
+            font-weight: bold;
+            margin-bottom: 15px;
+            line-height: 1.1;
+        }
+
+        .funding-info {
+            color: #cccccc;
+        }
+
+        .funding-type {
+            font-size: 24px;
+            color: #00ffff;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .chart-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: start;
+            margin-top: 0px;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 600px;
+        }
+
+        .legend {
+            display: flex;
+            flex-direction: column;
+            gap: 35px;
+            padding-top: 50px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .legend-color {
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            border: 3px solid #00ffff;
+            margin-top: 5px;
+        }
+
+        .legend-text h3 {
+            color: #00ffff;
+            font-size: 26px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .legend-text .title-row {
+            display: flex;
+            align-items: baseline;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .legend-text .percentage {
+            color: #00ffff;
+            font-size: 40px;
+            font-weight: bold;
+        }
+
+        .legend-text .category {
+            color: #00ffff;
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        .legend-text p {
+            color: #cccccc;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .kpis-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .kpi-box {
+            border: 3px solid #00ffff;
+            padding: 25px;
+            background: #0a0a0a;
+            text-align: center;
+        }
+
+        .kpi-box-label {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .kpi-box-value {
+            font-size: 32px;
+            color: #00ffff;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-left">C:\BATTLEGRID.TRADE</span>
+            <div class="header-right">
+                <a href="14_roadmap.html" class="exit-btn" style="text-decoration: none;">←</a>
+                <a href="16_connect.html" class="exit-btn" style="text-decoration: none;">→</a>
+                <a href="00_contents.html" class="exit-btn" style="text-decoration: none;">X</a>
+            </div>
+        </div>
+
+        <h1>FUNDING</h1>
+        <div class="underline"></div>
+
+        <div class="kpis-section">
+            <div class="kpi-box">
+                <div class="kpi-box-label">ROUND SIZE</div>
+                <div class="kpi-box-value">$250K</div>
+            </div>
+            <div class="kpi-box">
+                <div class="kpi-box-label">RUNWAY</div>
+                <div class="kpi-box-value">12 Months</div>
+            </div>
+            <div class="kpi-box">
+                <div class="kpi-box-label">VALUATION CAP</div>
+                <div class="kpi-box-value">$2.5M</div>
+            </div>
+            <div class="kpi-box">
+                <div class="kpi-box-label">ROUND</div>
+                <div class="kpi-box-value">Pre-Seed</div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-wrapper">
+                <canvas id="fundsChart"></canvas>
+            </div>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #00ffff;"></div>
+                    <div class="legend-text">
+                        <div class="title-row">
+                            <span class="percentage">45%</span>
+                            <span class="category">Core Development</span>
+                        </div>
+                        <p>Finalizing the Hypergrid platform, improving in-game systems, and conducting smart contract audits.</p>
+                    </div>
+                </div>
+
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #00d4d4;"></div>
+                    <div class="legend-text">
+                        <div class="title-row">
+                            <span class="percentage">25%</span>
+                            <span class="category">Marketing & Community Growth</span>
+                        </div>
+                        <p>Creating visibility through KOL partnerships, content campaigns, and large-scale jackpot events.</p>
+                    </div>
+                </div>
+
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #00aaaa;"></div>
+                    <div class="legend-text">
+                        <div class="title-row">
+                            <span class="percentage">20%</span>
+                            <span class="category">Specialized Outsourcing</span>
+                        </div>
+                        <p>Hiring external professionals and studios to fast-track UI/UX polish, feature stability, and full launch readiness.</p>
+                    </div>
+                </div>
+
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #008080;"></div>
+                    <div class="legend-text">
+                        <div class="title-row">
+                            <span class="percentage">10%</span>
+                            <span class="category">Entity Formation & Compliance</span>
+                        </div>
+                        <p>Establishing company structure, banking, and legal groundwork.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('fundsChart').getContext('2d');
+        
+        const data = {
+            labels: [
+                'Core Development',
+                'Marketing & Community Growth',
+                'Specialized Outsourcing',
+                'Entity Formation & Compliance'
+            ],
+            datasets: [{
+                data: [45, 25, 20, 10],
+                backgroundColor: [
+                    '#00ffff',
+                    '#00d4d4',
+                    '#00aaaa',
+                    '#008080'
+                ],
+                borderColor: '#0a0a0a',
+                borderWidth: 3
+            }]
+        };
+
+        const config = {
+            type: 'pie',
+            data: data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#00ffff',
+                        titleColor: '#0a0a0a',
+                        bodyColor: '#0a0a0a',
+                        borderColor: '#00ffff',
+                        borderWidth: 2,
+                        padding: 12,
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        new Chart(ctx, config);
+    </script>
+</body>
+</html>

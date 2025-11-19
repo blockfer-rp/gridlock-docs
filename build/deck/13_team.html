@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hypergrid - Core Team</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            overflow-y: auto;
+        }
+
+        .container {
+            width: 1920px;
+            height: 1080px;
+            border: 3px solid #00ffff;
+            padding: 50px;
+            background: #111;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        .header {
+            background: #00ffff;
+            color: #0a0a0a;
+            padding: 10px 20px;
+            margin: -50px -50px 40px -50px;
+            font-weight: bold;
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-left {
+            font-size: 14px;
+            font-weight: bold;
+            
+            letter-spacing: 1px;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 15px;
+        }
+
+        .exit-btn {
+            background: #0a0a0a;
+            color: #00ffff;
+            border: 2px solid #0a0a0a;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .underline {
+            height: 3px;
+            background: #00ffff;
+            margin-bottom: 25px;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+        }
+
+        .team-member {
+            width: 75%;
+            margin: 0 auto;
+            aspect-ratio: 3/4;
+            border: 3px solid #00ffff;
+            background: #0a0a0a;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .team-member::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85%;
+            height: 85%;
+            border: 2px dashed #00ffff;
+            opacity: 0.2;
+        }
+
+        .role-tag {
+            background: #00ffff;
+            color: #0a0a0a;
+            display: inline-block;
+            padding: 10px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            position: relative;
+            z-index: 1;
+        }
+
+        .member-name {
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: bold;
+            position: relative;
+            z-index: 1;
+        }
+
+        .member-icon {
+            font-size: 72px;
+            color: #00ffff;
+            opacity: 0.3;
+            position: relative;
+            z-index: 1;
+        }
+
+        .description {
+            font-size: 24px;
+            line-height: 1.8;
+            color: #ffffff;
+            margin-bottom: 40px;
+        }
+
+        .description .highlight {
+            font-weight: bold;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-left">C:\BATTLEGRID.TRADE</span>
+            <div class="header-right">
+                <a href="12_financials.html" class="exit-btn" style="text-decoration: none;">←</a>
+                <a href="14_roadmap.html" class="exit-btn" style="text-decoration: none;">→</a>
+                <a href="00_contents.html" class="exit-btn" style="text-decoration: none;">X</a>
+            </div>
+        </div>
+        
+        <h1>TEAM</h1>
+        <div class="underline"></div>
+
+        <div class="description">
+            The team combines deep expertise across protocol development, web2/web3 applications, and real-world business operations bringing over <span class="highlight">15 years of collective experience</span> in the crypto industry.
+        </div>
+
+        <div class="team-grid">
+            <div class="team-member">
+                <div class="role-tag">CEO & Founder</div>
+                <div class="member-name">Ramon Perez</div>
+                <div class="member-icon">👤</div>
+            </div>
+
+            <div class="team-member">
+                <div class="role-tag">Biz Dev & co-Founder</div>
+                <div class="member-name">Christian D. Few</div>
+                <div class="member-icon">👤</div>
+            </div>
+
+            <div class="team-member">
+                <div class="role-tag">Smart Contract Eng.</div>
+                <div class="member-name">Kasper K.</div>
+                <div class="member-icon">👤</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hypergrid - TAM/SAM/SOM</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            overflow-y: auto;
+        }
+
+        .container {
+            width: 1920px;
+            height: 1080px;
+            border: 3px solid #00ffff;
+            padding: 50px;
+            background: #111;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        .header {
+            background: #00ffff;
+            color: #0a0a0a;
+            padding: 10px 20px;
+            margin: -50px -50px 40px -50px;
+            font-weight: bold;
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-left {
+            font-size: 14px;
+            font-weight: bold;
+            
+            letter-spacing: 1px;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 15px;
+        }
+
+        .exit-btn {
+            background: #0a0a0a;
+            color: #00ffff;
+            border: 2px solid #0a0a0a;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .underline {
+            height: 3px;
+            background: #00ffff;
+            margin-bottom: 25px;
+        }
+
+        .subtitle {
+            background: #00ffff;
+            color: #0a0a0a;
+            display: inline-block;
+            padding: 8px 20px;
+            font-size: 17px;
+            font-weight: bold;
+            margin-bottom: 35px;
+        }
+
+        .context-text {
+            font-size: 16px;
+            color: #cccccc;
+            margin-bottom: 35px;
+            line-height: 1.6;
+            max-width: 1600px;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            height: calc(100% - 200px);
+            align-items: center;
+        }
+
+        .left-section {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            padding-left: 40px;
+        }
+
+        .market-tier {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .tier-header {
+            display: flex;
+            align-items: center;
+            gap: 0px;
+        }
+
+        .tier-title {
+            font-size: 28px;
+            color: #00ffff;
+            font-weight: bold;
+        }
+
+        .tier-description {
+            color: #cccccc;
+            font-size: 19px;
+            line-height: 1.7;
+            margin-left: 0px;
+        }
+
+        .tier-data {
+            color: #ffffff;
+            font-size: 18px;
+            margin-left: 0px;
+            margin-top: 10px;
+        }
+
+        .right-section {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .circles-container {
+            position: relative;
+            width: 600px;
+            height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .circle-tam {
+            width: 600px;
+            height: 600px;
+            background: #003d5c;
+            border: 4px solid #00ffff;
+        }
+
+        .circle-tam .circle-value {
+            color: #00ffff;
+            position: absolute;
+            top: 50px;
+        }
+
+        .circle-tam .circle-desc {
+            color: #cccccc;
+            position: absolute;
+            top: 120px;
+        }
+
+        .circle-sam {
+            width: 420px;
+            height: 420px;
+            background: #0066aa;
+            z-index: 2;
+        }
+
+        .circle-som {
+            width: 240px;
+            height: 240px;
+            background: #00ffff;
+            z-index: 3;
+        }
+
+        .circle-desc {
+            font-size: 16px;
+            margin-top: 12px;
+            text-align: center;
+            max-width: 200px;
+        }
+
+        .circle-sam .circle-desc {
+            color: #cccccc;
+        }
+
+        .circle-som .circle-desc {
+            color: #0a0a0a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-left">C:\BATTLEGRID.TRADE</span>
+            <div class="header-right">
+                <a href="08_community.html" class="exit-btn" style="text-decoration: none;">←</a>
+                <a href="10_business.html" class="exit-btn" style="text-decoration: none;">→</a>
+                <a href="00_contents.html" class="exit-btn" style="text-decoration: none;">X</a>
+            </div>
+        </div>
+        
+        <h1>TAM</h1>
+        <div class="underline"></div>
+        <div class="context-text">
+            Hypergrid targets three nested market segments, from the broadest crypto wagering ecosystem down to our immediate beachhead in competitive perpetual trading.
+        </div>
+
+        <div class="content-grid">
+            <div class="left-section">
+                <div class="market-tier">
+                    <div class="tier-header">
+                        <div class="tier-title">Crypto Wagering</div>
+                    </div>
+                    <div class="tier-description">
+                        Your total market if every potential customer used your product. Your maximum possible reach.
+                    </div>
+                    <div class="tier-data">
+                        $81.4B GGR in 2024 (5x since 2022) • 17M+ daily active users • 70% QoQ growth
+                    </div>
+                </div>
+
+                <div class="market-tier">
+                    <div class="tier-header">
+                        <div class="tier-title">Crypto Competitions</div>
+                    </div>
+                    <div class="tier-description">
+                        The part of that market you can serve based on your product, audience, and location. Your realistic scope.
+                    </div>
+                    <div class="tier-data">
+                        10-30M potential participants • $10M+ in active prize pools • $20K WSOT record
+                    </div>
+                </div>
+
+                <div class="market-tier">
+                    <div class="tier-header">
+                        <div class="tier-title">DEX Perpetuals</div>
+                    </div>
+                    <div class="tier-description">
+                        The share you can win right now, based on your resources, reach, and competition. Your starting point.
+                    </div>
+                    <div class="tier-data">
+                        500K-1M active traders • $2.6T annual volume (2024) • 138% YoY growth
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-section">
+                <div class="circles-container">
+                    <div class="circle circle-tam">
+                        <div class="circle-value">$2.9B</div>
+                        <div class="circle-desc">Crypto Wagering</div>
+                    </div>
+                    <div class="circle circle-sam">
+                        <div class="circle-value">$150M</div>
+                        <div class="circle-desc">Crypto Competitions</div>
+                    </div>
+                    <div class="circle circle-som">
+                        <div class="circle-value">$7M</div>
+                        <div class="circle-desc">DEX Perpetuals</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

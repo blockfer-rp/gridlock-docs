@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BattleGrid - Let's Connect</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            overflow-y: auto;
+        }
+
+        .container {
+            width: 1920px;
+            height: 1080px;
+            border: 3px solid #00ffff;
+            padding: 50px;
+            background: #111;
+            box-sizing: border-box;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: #00ffff;
+            color: #0a0a0a;
+            padding: 10px 20px;
+            margin: -50px -50px 40px -50px;
+            font-weight: bold;
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-left {
+            font-size: 14px;
+            font-weight: bold;
+            
+            letter-spacing: 1px;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 15px;
+        }
+
+        .exit-btn {
+            background: #0a0a0a;
+            color: #00ffff;
+            border: 2px solid #0a0a0a;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .underline {
+            height: 3px;
+            background: #00ffff;
+            margin-bottom: 25px;
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .thank-you {
+            font-size: 32px;
+            color: #ffffff;
+        }
+
+        .contact-text {
+            font-size: 24px;
+            color: #ffffff;
+            line-height: 1.8;
+        }
+
+        .email {
+            color: #00ffff;
+            font-weight: bold;
+        }
+
+        .logo-container {
+            margin-bottom: 60px;
+        }
+
+        .logo {
+            font-size: 96px;
+            font-weight: bold;
+            letter-spacing: 4px;
+        }
+
+        .logo-battle {
+            color: #ffffff;
+        }
+
+        .logo-grid {
+            color: #00ffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-left">C:\BATTLEGRID.TRADE</span>
+            <div class="header-right">
+                <a href="15_funding.html" class="exit-btn" style="text-decoration: none;">←</a>
+                <a href="00_contents.html" class="exit-btn" style="text-decoration: none;">X</a>
+            </div>
+        </div>
+
+        <h1>CONNECT</h1>
+        <div class="underline"></div>
+
+        <div class="logo-container">
+            <div class="logo">
+                <span class="logo-battle">BATTLE</span><span class="logo-grid">GRID</span>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="thank-you">
+                Thank you for your attention.
+            </div>
+
+            <div class="contact-text">
+                Should you have any questions please<br>
+                contact us at <span class="email">invest@battlegrid.trade</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

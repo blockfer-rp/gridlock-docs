@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BattleGrid - Financial Projections</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            overflow-y: auto;
+        }
+
+        .container {
+            width: 1920px;
+            height: 1080px;
+            border: 3px solid #00ffff;
+            padding: 50px;
+            background: #111;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        .header {
+            background: #00ffff;
+            color: #0a0a0a;
+            padding: 10px 20px;
+            margin: -50px -50px 40px -50px;
+            font-weight: bold;
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-left {
+            font-size: 14px;
+            font-weight: bold;
+            
+            letter-spacing: 1px;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 15px;
+        }
+
+        .exit-btn {
+            background: #0a0a0a;
+            color: #00ffff;
+            border: 2px solid #0a0a0a;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .underline {
+            height: 3px;
+            background: #00ffff;
+            margin-bottom: 25px;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 40px;
+            height: calc(100% - 140px);
+        }
+
+        .left-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-container {
+            flex: 1;
+            position: relative;
+            background: #0a0a0a;
+            border: 3px solid #00ffff;
+            padding: 30px;
+        }
+
+        .chart-title {
+            font-size: 22px;
+            color: #00ffff;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: calc(100% - 50px);
+        }
+
+        .right-section {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .wager-section {
+            flex: 1;
+            background: #0a0a0a;
+            border: 3px solid #00ffff;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .wager-section.trading {
+            border-color: #00ffff;
+        }
+
+        .wager-section.prediction {
+            border-color: #0088aa;
+        }
+
+        .section-title {
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid;
+        }
+
+        .wager-section.trading .section-title {
+            color: #00ffff;
+            border-bottom-color: #00ffff;
+        }
+
+        .wager-section.prediction .section-title {
+            color: #0088aa;
+            border-bottom-color: #0088aa;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .metric-card {
+            background: #111;
+            border: 2px solid;
+            padding: 15px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .wager-section.trading .metric-card {
+            border-color: #00ffff;
+        }
+
+        .wager-section.prediction .metric-card {
+            border-color: #0088aa;
+        }
+
+        .metric-label {
+            font-size: 15px;
+            color: #cccccc;
+            margin-bottom: 10px;
+        }
+
+        .metric-value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .wager-section.trading .metric-value {
+            color: #00ffff;
+        }
+
+        .wager-section.prediction .metric-value {
+            color: #0088aa;
+        }
+
+        .highlight {
+            color: #00ffff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-left">C:\BATTLEGRID.TRADE</span>
+            <div class="header-right">
+                <a href="11_competition.html" class="exit-btn" style="text-decoration: none;">←</a>
+                <a href="13_team.html" class="exit-btn" style="text-decoration: none;">→</a>
+                <a href="00_contents.html" class="exit-btn" style="text-decoration: none;">X</a>
+            </div>
+        </div>
+
+        <h1>FINANCIALS</h1>
+        <div class="underline"></div>
+
+        <div class="content-grid">
+            <div class="left-section">
+                <div class="wager-section trading">
+                    <div class="section-title">Trading Wagers ($100 Entry)</div>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-label">Revenue/Player</div>
+                            <div class="metric-value">$5.00</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Platform Rake</div>
+                            <div class="metric-value">5%</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">$1M Target</div>
+                            <div class="metric-value">548/day</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">1K Players</div>
+                            <div class="metric-value">$1.8M/yr</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="wager-section prediction">
+                    <div class="section-title">Prediction Wagers ($25 Entry)</div>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-label">Revenue/Player</div>
+                            <div class="metric-value">$1.25</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Platform Rake</div>
+                            <div class="metric-value">5%</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">$1M Target</div>
+                            <div class="metric-value">2,192/day</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">1K Players</div>
+                            <div class="metric-value">$456K/yr</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-section">
+                <div class="chart-container">
+                    <div class="chart-title">Annual Revenue by Daily Player Count</div>
+                    <div class="chart-wrapper">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+
+        const data = {
+            labels: ['500', '750', '1,000', '1,250', '1,500'],
+            datasets: [
+                {
+                    label: 'Active Players ($100)',
+                    data: [912500, 1368750, 1825000, 2281250, 2737500],
+                    backgroundColor: '#00ffff',
+                    borderColor: '#00ffff',
+                    borderWidth: 2
+                },
+                {
+                    label: 'Passive Players ($25)',
+                    data: [228125, 342188, 456250, 570313, 684375],
+                    backgroundColor: '#0088aa',
+                    borderColor: '#0088aa',
+                    borderWidth: 2
+                }
+            ]
+        };
+
+        const config = {
+            type: 'bar',
+            data: data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            color: '#00ffff',
+                            font: {
+                                family: "'Courier New', monospace",
+                                size: 14
+                            },
+                            padding: 15,
+                            usePointStyle: true,
+                            pointStyle: 'rect'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#00ffff',
+                        titleColor: '#0a0a0a',
+                        bodyColor: '#0a0a0a',
+                        borderColor: '#00ffff',
+                        borderWidth: 2,
+                        padding: 12,
+                        displayColors: true,
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': $' + context.parsed.y.toLocaleString();
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: '#00ffff',
+                            font: {
+                                family: "'Courier New', monospace",
+                                size: 12
+                            },
+                            callback: function(value) {
+                                return '$' + (value / 1000000).toFixed(1) + 'M';
+                            }
+                        },
+                        grid: {
+                            color: '#333',
+                            borderColor: '#00ffff'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#00ffff',
+                            font: {
+                                family: "'Courier New', monospace",
+                                size: 12
+                            }
+                        },
+                        grid: {
+                            display: false,
+                            borderColor: '#00ffff'
+                        }
+                    }
+                }
+            }
+        };
+
+        new Chart(ctx, config);
+    </script>
+</body>
+</html>

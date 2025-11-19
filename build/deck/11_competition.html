@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hypergrid - Competitor Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            overflow-y: auto;
+        }
+
+        .container {
+            width: 1920px;
+            height: 1080px;
+            border: 3px solid #00ffff;
+            padding: 50px;
+            background: #111;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        .header {
+            background: #00ffff;
+            color: #0a0a0a;
+            padding: 10px 20px;
+            margin: -50px -50px 40px -50px;
+            font-weight: bold;
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-left {
+            font-size: 14px;
+            font-weight: bold;
+            
+            letter-spacing: 1px;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 15px;
+        }
+
+        .exit-btn {
+            background: #0a0a0a;
+            color: #00ffff;
+            border: 2px solid #0a0a0a;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .underline {
+            height: 3px;
+            background: #00ffff;
+            margin-bottom: 25px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #0a0a0a;
+            color: #ffffff;
+            font-size: 18px;
+            border: 3px solid #00ffff;
+        }
+
+        .comparison-table th {
+            background: #00ffff;
+            color: #0a0a0a;
+            padding: 25px 18px;
+            text-align: left;
+            font-weight: bold;
+            border: 2px solid #00ffff;
+        }
+
+        .comparison-table td {
+            padding: 24px 18px;
+            border: 2px solid #00ffff;
+            vertical-align: top;
+            background: #1a1a1a;
+        }
+
+        .comparison-table tr:first-child th {
+            font-size: 22px;
+        }
+
+        .comparison-table tr:first-child th:first-child {
+            width: 18%;
+        }
+
+        .comparison-table tr:first-child th:not(:first-child) {
+            width: 20.5%;
+        }
+
+        .comparison-table td:first-child {
+            font-weight: bold;
+            background: #0a0a0a;
+            color: #00ffff;
+        }
+
+        .check {
+            color: #00ff00;
+            font-weight: bold;
+            font-size: 22px;
+        }
+
+        .cross {
+            color: #ff0000;
+            font-weight: bold;
+            font-size: 22px;
+        }
+
+        .hypergrid-col {
+            background: #002a2a;
+        }
+
+        .highlight-text {
+            font-weight: bold;
+            color: #00ffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-left">C:\BATTLEGRID.TRADE</span>
+            <div class="header-right">
+                <a href="10_business.html" class="exit-btn" style="text-decoration: none;">←</a>
+                <a href="12_financials.html" class="exit-btn" style="text-decoration: none;">→</a>
+                <a href="00_contents.html" class="exit-btn" style="text-decoration: none;">X</a>
+            </div>
+        </div>
+        
+        <h1>COMPETITION</h1>
+        <div class="underline"></div>
+
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th>PVP.trade</th>
+                    <th>LARP.RUN</th>
+                    <th>LEGEND.TRADING</th>
+                    <th>HYPERGRID</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Platform</td>
+                    <td>Telegram only</td>
+                    <td>Web app</td>
+                    <td>Multi-chain</td>
+                    <td class="hypergrid-col">Web app + planned mobile</td>
+                </tr>
+                <tr>
+                    <td>Trading Capital</td>
+                    <td>User's own</td>
+                    <td>None (fake $)</td>
+                    <td>User's own</td>
+                    <td class="hypergrid-col">User's own ($1K std)</td>
+                </tr>
+                <tr>
+                    <td>Competition Format</td>
+                    <td>Clan leaderboards</td>
+                    <td>Weekly fantasy</td>
+                    <td>None (copy only)</td>
+                    <td class="hypergrid-col"><span class="highlight-text">Time-boxed PvP matches</span></td>
+                </tr>
+                <tr>
+                    <td>Prediction Layer</td>
+                    <td><span class="cross">✗</span> None</td>
+                    <td><span class="check">✓</span> Yes</td>
+                    <td><span class="cross">✗</span> None</td>
+                    <td class="hypergrid-col"><span class="check">✓</span> <span class="highlight-text">Roster + direction</span></td>
+                </tr>
+                <tr>
+                    <td>Live Trading</td>
+                    <td><span class="check">✓</span> Yes</td>
+                    <td><span class="cross">✗</span> No</td>
+                    <td><span class="check">✓</span> Yes (copied)</td>
+                    <td class="hypergrid-col"><span class="check">✓</span> <span class="highlight-text">Yes (head-to-head)</span></td>
+                </tr>
+                <tr>
+                    <td>Progression System</td>
+                    <td><span class="cross">✗</span> Points only</td>
+                    <td><span class="cross">✗</span> None</td>
+                    <td><span class="cross">✗</span> None</td>
+                    <td class="hypergrid-col"><span class="check">✓</span> <span class="highlight-text">XP + jackpots + credits</span></td>
+                </tr>
+                <tr>
+                    <td>Spectator Mode</td>
+                    <td>Group chat</td>
+                    <td><span class="cross">✗</span> No</td>
+                    <td><span class="cross">✗</span> No</td>
+                    <td class="hypergrid-col"><span class="check">✓</span> <span class="highlight-text">Watch top traders live</span></td>
+                </tr>
+                <tr>
+                    <td>Entry Fee Model</td>
+                    <td>Builder fees</td>
+                    <td>Prize pool</td>
+                    <td>Subscription</td>
+                    <td class="hypergrid-col"><span class="highlight-text">Prize pool + builder fees</span></td>
+                </tr>
+                <tr>
+                    <td>Value Loop</td>
+                    <td><span class="cross">✗</span> One-way fees</td>
+                    <td><span class="cross">✗</span> No retention</td>
+                    <td><span class="cross">✗</span> Subscription churn</td>
+                    <td class="hypergrid-col"><span class="check">✓</span> <span class="highlight-text">Circular economy</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
