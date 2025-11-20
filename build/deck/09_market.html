@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BattleGrid - Market Opportunity</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            overflow-y: auto;
+        }
+
+        .container {
+            width: 1920px;
+            height: 1080px;
+            border: 3px solid #00ffff;
+            padding: 50px;
+            background: #111;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        .header {
+            background: #00ffff;
+            color: #0a0a0a;
+            padding: 10px 20px;
+            margin: -50px -50px 40px -50px;
+            font-weight: bold;
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-left {
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 15px;
+        }
+
+        .exit-btn {
+            background: #0a0a0a;
+            color: #00ffff;
+            border: 2px solid #0a0a0a;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .underline {
+            height: 4px;
+            background: #00ffff;
+            margin-bottom: 25px;
+        }
+
+        .intro-text {
+            font-size: 18px;
+            line-height: 1.7;
+            color: #cccccc;
+            margin-bottom: 35px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 45% 55%;
+            gap: 50px;
+        }
+
+        .left-section {
+            display: flex;
+            flex-direction: column;
+            gap: 35px;
+            padding: 20px 0;
+        }
+
+        .content-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .content-title {
+            font-size: 24px;
+            color: #00ffff;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .subsection {
+            margin-top: 12px;
+        }
+
+        .subsection-title {
+            font-size: 14px;
+            color: #00ffff;
+            font-weight: bold;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .content-data {
+            font-size: 14px;
+            color: #ffffff;
+            line-height: 1.8;
+        }
+
+        .right-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .tam-box {
+            border: 4px solid #00ffff;
+            padding: 35px;
+            background: rgba(0, 61, 92, 0.4);
+            width: 100%;
+            max-width: 760px;
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tam-header {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ffff;
+            margin-bottom: 8px;
+        }
+
+        .tam-sublabel {
+            font-size: 16px;
+            color: #ffffff;
+            margin-bottom: 25px;
+        }
+
+        .sam-box {
+            border: 4px solid #00ffff;
+            padding: 30px;
+            background: rgba(0, 102, 170, 0.5);
+            margin-bottom: 0;
+            min-height: 400px;
+            margin-top: auto;
+            align-self: flex-end;
+            width: 85%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sam-header {
+            font-size: 22px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .sam-sublabel {
+            font-size: 16px;
+            color: #ffffff;
+            margin-bottom: 25px;
+        }
+
+        .som-box {
+            border: 4px solid #00ffff;
+            padding: 25px;
+            background: rgba(0, 150, 150, 0.6);
+            width: 70%;
+            min-height: 200px;
+            margin-top: auto;
+            align-self: flex-end;
+        }
+
+        .som-header {
+            font-size: 20px;
+            font-weight: bold;
+            color: #00ffff;
+            margin-bottom: 8px;
+        }
+
+        .som-sublabel {
+            font-size: 16px;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-left">C:\BATTLEGRID.TRADE</span>
+            <div class="header-right">
+                <a href="08_community.html" class="exit-btn" style="text-decoration: none;">←</a>
+                <a href="10_business.html" class="exit-btn" style="text-decoration: none;">→</a>
+                <a href="00_contents.html" class="exit-btn" style="text-decoration: none;">X</a>
+            </div>
+        </div>
+
+        <h1>MARKET OPPORTUNITY</h1>
+        <div class="underline"></div>
+
+        <div class="intro-text">
+            Short-format trading competitions modeled after poker Sit & Go tournaments—15min to 4hr durations where top 30% break even and winners earn 20-25x returns.
+        </div>
+
+        <div class="main-content">
+            <div class="left-section">
+                <div class="content-section">
+                    <div class="content-title">TAM: $208M</div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">MARKET DEFINITION</div>
+                        <div class="content-data">
+                            - 20M competitive traders<br>
+                            - 10-year vision
+                        </div>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">MARKET VALIDATION</div>
+                        <div class="content-data">
+                            - $81.4B wagering (2024)<br>
+                            - 70% QoQ growth
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <div class="content-title">SAM: $198M</div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">ADDRESSABLE MARKET</div>
+                        <div class="content-data">
+                            - 9.5M DEX perp traders<br>
+                            - 5-year category win
+                        </div>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">MARKET DYNAMICS</div>
+                        <div class="content-data">
+                            - $2.6T annual volume<br>
+                            - 138% YoY growth
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <div class="content-title">SOM: $14.8M → $70.3M</div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">BEACHHEAD</div>
+                        <div class="content-data">
+                            - 850K Hyperliquid wallets<br>
+                            - Growing 70% YoY
+                        </div>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">REVENUE MODEL</div>
+                        <div class="content-data">
+                            - $695/user/year<br>
+                            - 12 competitions/month<br>
+                            - 15min-4hr Sit & Go
+                        </div>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">COMPETITION STRUCTURE</div>
+                        <div class="content-data">
+                            - 60% passive / 40% active<br>
+                            - Top 30% break even<br>
+                            - 5% platform rake
+                        </div>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">GROWTH TRAJECTORY</div>
+                        <div class="content-data">
+                            - Year 1: 10% → $14.8M<br>
+                            - Year 3: 20% → $70.3M
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-section">
+                <div class="tam-box">
+                    <div class="tam-header">TAM: $208M</div>
+                    <div class="tam-sublabel">20M Competitive Traders</div>
+
+                    <div class="sam-box">
+                        <div class="sam-header">SAM: $198M</div>
+                        <div class="sam-sublabel">9.5M DEX Perp Traders</div>
+
+                        <div class="som-box">
+                            <div class="som-header">SOM: $14.8M → $70.3M</div>
+                            <div class="som-sublabel">850K Hyperliquid Wallets</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BattleGrid - Ecosystem & Business Model</title>
+    <title>BattleGrid - Business</title>
     <style>
         * {
             margin: 0;
@@ -97,6 +97,50 @@
             color: #cccccc;
             line-height: 1.6;
             margin-bottom: 25px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 2px solid #00ffff;
+            margin-bottom: 12px;
+        }
+
+        th {
+            background: #00ffff;
+            color: #0a0a0a;
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: bold;
+            border: 1px solid #00ffff;
+            font-size: 13px;
+        }
+
+        td {
+            padding: 10px 12px;
+            border: 1px solid #00ffff;
+            background: #0a0a0a;
+            color: #ffffff;
+            font-size: 13px;
+        }
+
+        tr:nth-child(even) td {
+            background: #1a1a1a;
+        }
+
+        .table-caption {
+            font-size: 13px;
+            color: #cccccc;
+            margin-top: 8px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .table-header {
+            font-size: 16px;
+            color: #00ffff;
+            font-weight: bold;
+            margin-bottom: 12px;
         }
 
         .content-grid {
@@ -225,7 +269,7 @@
         <div class="header">
             <span class="header-left">C:\BATTLEGRID.TRADE</span>
             <div class="header-right">
-                <a href="09_tam.html" class="exit-btn" style="text-decoration: none;">←</a>
+                <a href="09_market.html" class="exit-btn" style="text-decoration: none;">←</a>
                 <a href="11_competition.html" class="exit-btn" style="text-decoration: none;">→</a>
                 <a href="00_contents.html" class="exit-btn" style="text-decoration: none;">X</a>
             </div>
@@ -235,39 +279,108 @@
         <div class="underline"></div>
 
         <div class="intro-text">
-            All game modes operate under one ecosystem — XP, in-game credits, and rewards sync across every <span class="highlight">BATTLEGRID</span> experience, creating a continuous progression system that ties gameplay directly to real market engagement.
+            Tournament rake model: <span class="highlight">5% platform fee</span> on entry fees, supplemented by trading volume revenue share. Top <span class="highlight">30% break even</span>, winners earn <span class="highlight">20-200x returns</span>.
         </div>
 
         <div class="content-grid">
             <div class="left-section">
-                <div class="business-section">
-                    <div class="section-title">
-                        <span class="icon">💰</span>
-                        <span>Core Revenue Driver</span>
-                    </div>
-                    <div class="section-content">
-                        Hypergrid earns a <span class="highlight">5% rake</span> on every wagered PvP match — a scalable, volume-based model directly tied to player activity and engagement.
-                    </div>
+                <div class="table-header">COMPETITION SCALE ECONOMICS</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Players</th>
+                            <th>Entry</th>
+                            <th>Prize Pool</th>
+                            <th>1st Place</th>
+                            <th>Platform $</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>100</td>
+                            <td>$100</td>
+                            <td>$9,500</td>
+                            <td>$2,090</td>
+                            <td>$500</td>
+                        </tr>
+                        <tr>
+                            <td>500</td>
+                            <td>$100</td>
+                            <td>$47,500</td>
+                            <td>$10,450</td>
+                            <td>$2,500</td>
+                        </tr>
+                        <tr>
+                            <td>1,000</td>
+                            <td>$100</td>
+                            <td>$95,000</td>
+                            <td>$20,900</td>
+                            <td>$5,000</td>
+                        </tr>
+                        <tr>
+                            <td>5,000</td>
+                            <td>$100</td>
+                            <td>$475,000</td>
+                            <td>$104,500</td>
+                            <td>$25,000</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="table-caption">
+                    Fixed 5% rake + top 30% break even = viral marketing as scale increases
                 </div>
 
-                <div class="business-section">
-                    <div class="section-title">
-                        <span class="icon">👥</span>
-                        <span>Supplementary Streams</span>
-                    </div>
-                    <div class="section-content">
-                        Additional revenue comes from builder and referral fees, with a portion redistributed back into the economy as in-game credits to reward ongoing participation.
-                    </div>
-                </div>
-
-                <div class="business-section">
-                    <div class="section-title">
-                        <span class="icon">📊</span>
-                        <span>Growth Strategy</span>
-                    </div>
-                    <div class="section-content">
-                        Focused on <span class="highlight">user acquisition</span> through competitive tournaments, KOL partnerships, and community-driven jackpot events that drive organic growth and retention.
-                    </div>
+                <div class="table-header">PRIZE DISTRIBUTION (100-Player Example)</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Position</th>
+                            <th>Payout</th>
+                            <th>Multiple</th>
+                            <th>% of Pool</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1st</td>
+                            <td>$2,090</td>
+                            <td>20.9x</td>
+                            <td>22%</td>
+                        </tr>
+                        <tr>
+                            <td>2nd</td>
+                            <td>$1,425</td>
+                            <td>14.5x</td>
+                            <td>15%</td>
+                        </tr>
+                        <tr>
+                            <td>3rd</td>
+                            <td>$950</td>
+                            <td>9.5x</td>
+                            <td>10%</td>
+                        </tr>
+                        <tr>
+                            <td>4-10th</td>
+                            <td>$150-665</td>
+                            <td>1.5-6.7x</td>
+                            <td>2-7% ea</td>
+                        </tr>
+                        <tr>
+                            <td>11-30th</td>
+                            <td>$100</td>
+                            <td>1.0x</td>
+                            <td>Breakeven</td>
+                        </tr>
+                        <tr>
+                            <td>31-100th</td>
+                            <td>$0</td>
+                            <td>—</td>
+                            <td>—</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="table-caption">
+                    Poker-style payout structure optimized for retention and virality
                 </div>
             </div>
 
